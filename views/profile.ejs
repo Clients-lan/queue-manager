@@ -1,0 +1,60 @@
+<%- include('./components/sidebar') -%>
+<% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
+
+<section class="user-profile-section main-layout">
+    <div class="row">
+        <div class="three columns">
+            <h5 class="user-d-dashboard"><%= user.first %> <%= user.last %> Dashbaord</h5>
+            <div class="profile-holder">
+                <img src="/assets/profile-placeholder.jpg">
+            </div>
+            <div class="profile-buttons">
+                <a href="/u/profile" class="button btn-fill u-full-width"><ion-icon name="settings-outline" class="u-pull-left"></ion-icon> Account Settings</a>
+                <a href="/u/billing" class="button u-full-width btn-outline"><ion-icon name="card-outline" class="u-pull-left"></ion-icon> Billing</a>
+            </div>
+        </div>
+        <div class="seven columns">
+            <div class="wrapper-ninety">
+                <% if(success_msg != '') { %>
+                    <div class="alert-success">
+                      <div class="notify-success">
+                      <%= success_msg %>
+                      </div>
+                    </div>
+                <% } %>
+            </div>
+ 
+            <div class="globe-box no-bxs wrapper-ninety">
+                <form action="/u/update-profile" method="POST">
+                    <div class="header-box">Account Settings</div>
+                    <div class="--dash"></div>
+                    <div class="row">
+                        <div class="one-half column"><label class="label-box">Change First name</label></div>
+                        <div class="one-half column"><input type="text" class="u-full-width" name="first" value="<%= user.first %>" placeholder=""></div>
+                    </div>
+                    <div class="--dash"></div>
+                    <div class="row">
+                        <div class="one-half column"><label class="label-box">Change Last name</label></div>
+                        <div class="one-half column"><input type="text" class="u-full-width" name="last" placeholder="" value="<%= user.last %>"></div>
+                    </div>
+                    <div class="--dash"></div>
+                    <button class="btn-outline my-3 u-pull-right">update</button>
+                </form>
+            </div>
+            <form action="/u/delete-account" method="POST" class="mt-5">
+                <div class="globe-box no-bxs wrapper-ninety">
+                    <div class="header-box">Danger Zone</div>
+                    <div class="--dash"></div>
+                    <div class="row">
+                        <div class="twelve column mt-3">
+                            <button class="btn-danger u-pull-left">Delete Account <span>🥺</span></button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<% } %>
+
+<%- include('./components/uialert') -%>

@@ -1,0 +1,461 @@
+<!-- Load Leaflet from CDN -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+  integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+  crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+  integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+  crossorigin=""></script>
+  <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.css" />
+
+<!-- If you use the default popups, use this. -->
+<link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+<link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css" />
+<% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
+
+
+
+
+<!-- Start -->
+  <% if(locationList){ %>
+    <% locationList.forEach(location => { %>
+     <% if(location._id == verify){ %>
+
+        <div class="global-upper-section main-layout">
+            <div class="wrapper-ninety">
+                <a href="/u/places" class="btn-playful mr-layout my-5"><ion-icon name="location-outline"></ion-icon> <span>back to places</span></a>
+                <h3>Create Custom Rules</h3>
+            </div>
+            
+        </div>
+
+        <section class="single-locations grid-3">
+            <a href="#" class="location-name card">
+                <img src="/assets/Guacamole Illustrations/svg/13_map_general.svg">
+                <div class="--dash mt-5"></div>
+                <p>Location</p>
+            </a>
+            <a href="#" class="opening-hours card">
+                <div class="mt-5"></div>
+                <img src="/assets/Guacamole Illustrations/svg/5_student_general.svg" alt="">
+                <div class="--dash mt-5"></div>
+                <p>Opening Hour</p>
+            </a>
+            <a href="#" class="visit-planner card">
+                <img src="/assets/Guacamole Illustrations/svg/1_work_at_home_general.svg" alt="">
+                <div class="--dash mt-5"></div>
+                <p>Visit Planner</p>
+            </a>
+            <a href="#" class="set-sms card">
+                <img src="/assets/Guacamole Illustrations/svg/16_message_sent_general.svg" alt="">
+                <div class="--dash mt-5"></div>
+                <p>Text Messages</p>
+            </a>
+            <a href="#" class="team-members card">
+                <img src="/assets/Guacamole Illustrations/svg/18_workflow_general.svg" alt="">
+                <div class="--dash mt-5"></div>
+                <p>Manage Team</p>
+            </a>
+        </section>
+
+        <!-- END OF CARDS -->
+
+ <!-- Location -->
+ <div class="global-page --location">
+     <div class="close-page btn-playful"><ion-icon name="arrow-back-outline"></ion-icon><span>back</span></div>
+    <form class="update-location wrapper">
+        <div class="globe-box wrapper-small" id="location-wrapper">
+                <h3 class="header-box"><%= location.name %> </h3>
+                <div class="--dash"></div>
+                <div class="row">
+                    <div class="one-half column">
+                        <label class="label-box">Location title</label>
+                    </div>
+                    <div class="one-half column">
+                        <input type="text" class="u-full-width" value="<%= location.name %>" name="title">
+                    </div>
+                </div>
+                <div class="--dash"></div>
+                <div class="row">
+                    <div class="one-half column has-child-paragraph">
+                        <label class="label-box">Desk number</label>
+                        <p>Optional — leave this part blank if not needed</p>
+                    </div>
+                    <div class="one-half column">
+                        <input type="text" class="u-full-width" placeholder="594" value="<%= location.num %>" name="num">
+                    </div>
+                </div>
+                <div class="--dash"></div>
+                  <div id="smap"></div>
+                   <div class="--dash my-2"></div>
+                     <div class="row">
+                       <div class="one-half column"></div>
+                         <div class="one-half column u-pull-right">
+                        <input type="hidden" name="locid" value="<%= location._id %>">  
+                         <button type="submit" class="btn-block btn-outline">update location</button>
+                    </div>
+                </div>
+        </div>
+    </form>
+ </div>
+<!-- Planner -->
+ <div class="global-page --planner">
+    <div class="close-page btn-playful"><ion-icon name="arrow-back-outline"></ion-icon><span>back</span></div>
+   <form class="location-visit-planner wrapper">
+       <!-- Visit Planner -->
+      
+       <div class="globe-box wrapper-small" id="planner-wrapper">
+        <div class="header-box">Queueing Page</div>
+        <div class="--dash"></div>
+             <div class="copy-code row">
+                 <div class="one-half column">
+                    <i class="tag"><%= location.vpurl %></i>
+                    <textarea class="ac-to-clip"><%= location.vpurl %></textarea>
+                 </div>
+                 <div class="one-half column">
+                    <small class="copy-info">Copy page link</small>
+                    <p>Once setup, you can share the link with you visitors</p>
+                    <a href="/queue/<%= location.vpurl %>" target="_blank"><%= location.vpurl %></a>
+                 </div>
+                </div>
+           
+           
+                    <div class="--dash"></div>
+                    <div class="row">
+                        <div class="one-half column">
+                            <label class="label-box">Page title</label>
+                        </div>
+                        <div class="one-half column">
+                            <input type="text" class="u-full-width" value="<%= location.header %>" name="header" placeholder="Our New York Office" required>
+                        </div>
+                    </div>
+                    <div class="--dash"></div>
+                    <div class="row has-child-paragraph">
+                        <div class="one-half column">
+                            <label class="label-box">Description</label>
+                            <p>Add a brief description to your visual queue</p>
+                        </div>
+                        <div class="one-half column">
+                            <input type="text" class="u-full-width" value="<%= location.subheader %>" name="subheader" placeholder="New morning sessions">
+                        </div>
+                    </div>
+                    <div class="--dash"></div>
+                    <div class="row has-child-paragraph">
+                        <div class="one-half column">
+                            <label class="label-box">Notes</label>
+                            <p>Optional — leave this part blank if not needed</p>
+                        </div>
+                            <div class="one-half column">
+                            <input type="text" class="u-full-width" value="<%= location.notes %>" name="notes" placeholder="notes...">
+                            </div>
+                        </div>
+                        <div class="--dash"></div>
+                        <div class="row has-child-paragraph">
+                        <div class="one-half column">
+                            <label class="label-box">Page URL</label>
+                            <p>This is the page your visitors will sign up to join the queue</p>
+                        </div>
+                            <div class="one-half column">
+                                <input type="text" class="u-full-width" value="<%= location.vpurl %>" name="vpurl" placeholder="my amazing page" required>
+                            </div>
+                        </div>
+                        <div class="--dash"></div>
+                        <div class="row has-child-paragraph">
+                        <div class="column">
+                            <label class="label-box">Thank you message</label>
+                            <p>Message to show visitors after signing in</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column">
+                            <textarea placeholder="Thank you for joining" name="msg" required><%= location.msg %></textarea>
+                        </div>
+                    </div>
+                        <div class="--dash"></div>
+                        <div class="header-box">Planner Info</div>
+                        <div class="--dash"></div>
+                        <div class="row has-child-paragraph">
+                            <div class="one-half column">
+                            <label class="label-box">Planner Email</label>
+                            <p>This email will be visible on the queue page</p>
+                            </div>
+                            <div class="one-half column">
+                                <input type="email" name="adminmail" class="u-full-width" value="<%= location.adminmail %>" placeholder="info@company.com">
+                            </div>
+                        </div>
+                        <div class="--dash"></div>
+                        <div class="row has-child-paragraph">
+                            <div class="one-half column">
+                            <label class="label-box">Planner Phone</label>
+                            <p>This phone number will be visible on the queue page</p>
+                            </div>
+                            <div class="one-half column">
+                                <input type="text" name="adminphone" class="u-full-width" value="<%= location.adminphone %>" placeholder="1303940403">
+                            </div>
+                        </div>
+                        <div class="--dash"></div>
+                        <div class="header-box">Set Remote Sign-in</div>
+                        <div class="--dash"></div>
+                        <div class="row has-child-paragraph">
+                            <div class="one-half column">
+                              <label class="label-box">Join queue</label>
+                               <p><p>Allow people to sign in and to wait outside your premises</p></p>
+                            </div>
+                            <div class="one-half column mt-3">
+                                <input type="checkbox" id="remote" class="checkbox opacity" name="allowqueue">
+                                <label for="remote" class="switch"></label>
+                                <input type="hidden" value="<%= location.allowqueue %>" id="allowRemoteValue">
+                            </div>
+                        </div>
+                        <div class="--dash"></div>
+                        <div class="row has-child-paragraph">
+                            <div class="one-half column">
+                                <div class="mt-3"></div>
+                              <label class="label-box">Email required?</label>
+                            </div>
+                            <div class="one-half column mt-3">
+                                <input type="checkbox" id="reqemail" class="checkbox opacity" name="requiredemail">
+                                <label for="reqemail" class="switch"></label>
+                                <input type="hidden" value="<%= location.requiredemail %>" id="requiredEmailValue">
+                               
+                            </div>
+                        </div>
+                        <div class="--dash"></div>
+                        <div class="row has-child-paragraph">
+                            <div class="one-half column">
+                                <div class="mt-3"></div>
+                              <label class="label-box">Phone required?</label>
+                            </div>
+                            <div class="one-half column mt-3">
+                                <input type="checkbox" id="reqphone" class="checkbox opacity" name="requiredphone">
+                                <label for="reqphone" class="switch"></label>
+                                <input type="hidden" value="<%= location.requiredphone %>" id="checkreqphone">
+                            </div>
+                        </div>
+                        <div class="--dash"></div>
+                        <br>
+                        <div class="row ">
+                            <div class="one-half column"></div>
+                              <div class="one-half column u-pull-right">
+                             <input type="hidden" name="locid" value="<%= location._id %>">  
+                              <button type="submit" class="btn-block btn-outline">update queueing page</button>
+                         </div>
+                     </div>
+       </div>
+   </form>
+</div>
+<!-- Calendar -->
+<div class="global-page --calendar">
+    <div class="close-page btn-playful"><ion-icon name="arrow-back-outline"></ion-icon><span>back</span></div>
+   <form class="location-name-settings wrapper alt-globe-box">
+       <div class="input-controller-mod" id="calendar-wrapper">
+        <div class="calendar-wrapper">
+            <div id="calendar"></div>
+            <div class="calendar-text-holder">
+                <div>
+                    <h4>This week</h4>
+                </div>
+                <div>
+                    <h4>Next Week</h4>
+                </div>
+            </div>
+                <div class="hour-week-wrapper">
+                    <% location.fweek.forEach(weeks => { %>
+                    <div class="attached-attr">
+                        <div class="first-week">
+                            <div class="week-props">
+                                <input type="text" class="sun" name="sun" value="<%= weeks.sun %>">
+                            </div>
+                            <div class="week-props">
+                                <input type="text" class="mon" name="mon" value="<%= weeks.mon %>">
+                            </div>
+                            <div class="week-props">
+                                <input type="text" class="tue" name="tue" value="<%= weeks.tue %>">
+                            </div>
+                            <div class="week-props">
+                                <input type="text" class="wen" name="wen" value="<%= weeks.wen %>">
+                            </div>
+                            <div class="week-props">
+                                <input type="text" class="thu" name="thu" value="<%= weeks.thu %>">
+                            </div>
+                            <div class="week-props">
+                                <input type="text" class="fri" name="fri" value="<%= weeks.fri %>">
+                            </div>
+                            <div class="week-props">
+                                <input type="text" class="sat" name="sat" value="<%= weeks.sat %>">
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+                    <% location.sweek.forEach(week => { %>
+                        <div class="attached-attr">
+                            <div class="second-week">
+                                <div class="week-props">
+                                    <input type="text" class="--sun" name="sun2" value="<%= week.sun %>">
+                                </div>
+                                <div class="week-props">
+                                    <input type="text" class="--mon" name="mon2" value="<%= week.mon %>">
+                                </div>
+                                <div class="week-props">
+                                    <input type="text" class="--tue" name="tue2" value="<%= week.tue %>">
+                                </div>
+                                <div class="week-props">
+                                    <input type="text" class="--wen" name="wen2" value="<%= week.wen %>">
+                                </div>
+                                <div class="week-props">
+                                    <input type="text" class="--thu" name="thu2" value="<%= week.thu %>">
+                                </div>
+                                <div class="week-props">
+                                    <input type="text" class="--fri" name="fri2" value="<%= week.fri %>">
+                                </div>
+                                <div class="week-props">
+                                    <input type="text" class="--sat" name="sat2" value="<%= week.sat %>">
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+                </div>
+                <div class="calendar-overlay-settings hide">
+                    <div class="date-time-calendar">
+                        <div class="row">
+                            <div class="one-half column"> <label class="label-box">From</label> </div>
+                            <div class="one-half column"><input type="time" class="u-full-width" name="start" id=""></div>
+                        </div>
+                        <div class="--dash"></div>
+                        <div class="row">
+                            <div class="one-half column"> <label class="label-box">To</label> </div>
+                            <div class="one-half column"><input type="time" class="u-full-width" name="end"></div>
+                        </div>
+                        <div class="--dash"></div>
+                    </div>
+                    <input type="hidden" name="locid" value="<%= location._id %>"> 
+                    <button type="submit" class="btn-control btn-block btn-outline">update</button>
+                     close
+                </div> 
+            </div>
+        </form>
+    </div>
+
+    <!-- SMS -->
+    <div class="global-page --text-sms">
+        <div class="close-page btn-playful"><ion-icon name="arrow-back-outline"></ion-icon><span>back</span></div>
+        <div class="globe-box wrapper-small">
+        <form class="update-sms">
+                <h1 class="header-box">Set Text Message</h1>
+                <div class="--dash"></div>
+                <div class="row has-child-paragraph">
+                    <div class="column">
+                        <label class="label-box">SMS Message</label>
+                        <p>Set up text message to nofify visitors about thier turn</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <textarea placeholder="Text messaging allows you to send your visitors automated notifications about their queue and service status" name="sms"><%= location.sms %></textarea>
+                    </div>
+                </div>
+            
+            <!-- Button -->
+            <div class="--dash mb-5"></div>
+              <div class="row">
+               <div class="one-half column"></div>
+                <div class="one-half column u-pull-right">
+                  <input type="hidden" name="locid" value="<%= location._id %>">  
+                  <button type="submit" class="btn-block btn-outline">save text message</button>
+                </div>
+            </div>
+          </form>
+        </div>
+    </div>
+
+        <!-- Team Memebers -->
+        <div class="global-page --team">
+            <div class="close-page btn-playful"><ion-icon name="arrow-back-outline"></ion-icon> <span>back</span></div>
+            <div class="globe-box wrapper-small location-setting-team">
+                <a href="#" class="invite-btn invite-tm-btn u-pull-right btn-playful"><ion-icon name="person-add-outline"></ion-icon> <span>Add team member</span></a>
+                <div class="header-box">Teams</div>
+                <div class="--dash"></div>
+                
+                <% if(teams){ %>
+                   <%  teams.forEach(team => { %>
+                       <% if(team.locationId == location._id){ %>
+                        <div class="row team-list">
+                            <div class="one-third column">
+                                <span><%= team.fullname %></span></div>
+                            <div class="one-third column">
+                                <span class="tag">
+                                <%= team.role %> </span><i>at</i>  <span><%= team.location %></span></div>
+                            <div class="one-third column">
+                                <span><%= team.workemail %></span></div>
+                        </div>
+                        <div class="--dash"></div>
+                       <% } %>
+                   <% }) %>
+                <% } %>
+              
+             <form class="hide add-teams">
+              <div class="header-box">Invite Team</div>
+            <div class="--dash"></div>
+                <div class="row">
+                    <div class="one-half column">
+                        <label class="label-box">Work Email</label>
+                    </div>
+                    <div class="one-half column">
+                        <input type="text" class="u-full-width" name="workemail" placeholder="collins@gmail.com" required>
+                    </div>
+                </div>
+                <div class="--dash"></div>
+                <div class="row">
+                    <div class="one-half column">
+                        <label class="label-box">Fullname</label>
+                    </div>
+                    <div class="one-half column">
+                        <input type="text" class="u-full-width" name="fullname" placeholder="Collins Walker" required>
+                    </div>
+                </div>
+                <div class="--dash"></div>
+                <div class="row">
+                    <div class="one-half column">
+                        <label class="label-box">Role</label>
+                    </div>
+                    <div class="one-half column">
+                        <select name="role" class="u-full-width">
+                            <option value="clerk"> Clerk </option>
+                            <option value="manager">Location Manager </option>
+                            <option value="admin"> Administrator </option>
+                        </select>
+                    </div>
+                </div>
+  
+                <div class="--dash"></div>
+                <!-- Button -->
+                <div class="row">
+                 <div class="one-half column"></div>
+                  <div class="one-half column u-pull-right">
+                    <input type="hidden" name="locid" value="<%= location._id %>">
+                    <input type="hidden" name="location" value="<%= location.name %>">    
+                    <button type="submit" class="btn-block btn-outline mt-3">Invite</button>
+                    </div>
+                </div>
+            </form>
+            </div>
+        </div>
+
+
+            <div class="leaf-attr hide">
+                <p id="addr"><%= location.address %></p>
+                <p id="lat"><%= location.lat %></p>
+                <p id="lng"><%= location.lng %></p>
+            </div>
+
+   <% } %>    
+  <% }) %>
+<% } %>
+<%- include('./components/uialert') -%>
+<% } %>
+<script src="https://uicdn.toast.com/tui.code-snippet/latest/tui-code-snippet.js"></script>
+<script src="https://uicdn.toast.com/tui.dom/v3.0.0/tui-dom.js"></script>
+<script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.min.js"></script>
+<script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.min.js"></script>
+<script src="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.js"></script>
+

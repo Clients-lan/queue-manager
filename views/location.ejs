@@ -1,0 +1,40 @@
+
+
+<%- include('./components/sidebar') -%>
+<% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
+
+
+<div class="global-upper-section main-layout">
+    <div class="row">
+        <div class="one-half column"><h3>All Locations</h3></div>
+        <div class="one-half column">
+            <a href="/u/new-location" class="btn-add-loaction u-pull-right btn-playful mr-layout"><ion-icon name="create-outline"></ion-icon> <span>Create new location</span></a>
+        </div>
+    </div>
+</div>
+<section class="locations main-layout">
+ 
+   <% if(locationList){ %>
+     <% locationList.forEach(location => { %>
+        <div class="location-tabs">
+            <span class="top-l-section tag"><%= location.date %></span>
+            <div class="circle">
+                <div class="inner-circle">
+                    <ion-icon name="pin-outline"></ion-icon>
+                </div>
+            </div>
+            <div class="location-bottom-tab">
+                <h5><%= location.name %></h5>
+                <p class="address-tab"><%= location.address %></p>
+                <div class="bottom-content">
+                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veritatis fugiat sit voluptatem! Ad impedit voluptate nesciunt ratione excepturi. Cupiditate, officia!</p>
+                </div>
+                <a href="location/<%= location._id %>" class="button">Edit this location</a>
+            </div>
+        </div>
+     <% }) %>
+    <% } %>
+</section>
+
+<% } %>
+<%- include('./components/uialert') -%>

@@ -1,0 +1,37 @@
+<title>Login</title>
+
+<section class="auth">
+    <div class="auth-wrapper">
+        <form action="/u/login" method="post">
+          <h3>Hey yo! 😀</h3>
+          <p>How are you doing?</p>
+            <% if(error_msg != '') { %>
+              <div class="alert-errors">
+                <div class="notify-warning">
+                  <%= error_msg %>
+              </div>
+            <% } %>
+        
+            <% if(error != '') { %>
+              <div class="alert-errors">
+                  <div class="notify-warning">
+                  <%= error %>
+                  </div>
+              </div>
+            <% } %>
+        
+            <% if(success_msg != '') { %>
+                <div class="alert-success">
+                  <div class="notify-success">
+                  <%= success_msg %>
+                  </div>
+                </div>
+            <% } %>
+            
+            <input type="email" class="u-full-width" placeholder="Email address" name="email">
+            <input type="password" class="u-full-width" placeholder="Password" name="password">
+            <button type="submit" class="btn-fill btn-block">Sign in</button>
+            <p>Don't have any account? <a href="/u/register"> Sign Up</a></p>
+          </form>
+    </div>
+</section>

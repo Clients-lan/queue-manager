@@ -1,0 +1,93 @@
+<%- include('./components/sidebar') -%>
+
+<% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
+
+<div class="global-upper-section main-layout">
+    <div class="row">
+        <div class="one-half column"><h3>Team</h3></div>
+        <div class="one-half column">
+            <a href="#" class="invite-btn u-pull-right btn-playful mr-layout"><ion-icon name="create-outline"></ion-icon> <span>add new member</span></a>
+        </div>
+    </div>
+    
+<section class="team-panel globe-box">
+    <% if(teams){ %>
+        <%  teams.forEach(team => { %>
+             <div class="row team-list">
+                 <div class="one-third column">
+                     <span><%= team.fullname %></span></div>
+                 <div class="one-third column">
+                     <span class="tag">
+                     <%= team.role %> </span><i>@</i>  <span><%= team.location %></span></div>
+                 <div class="one-third column">
+                     <span><%= team.workemail %></span></div>
+             </div>
+             <div class="--dash"></div>
+        <% }) %>
+     <% } %>
+
+     <form class="hide add-teams">
+        <div class="header-box">Invite Team</div>
+      <div class="--dash"></div>
+          <div class="row">
+              <div class="one-half column">
+                  <label class="label-box">Work Email</label>
+              </div>
+              <div class="one-half column">
+                  <input type="text" class="u-full-width" name="workemail" placeholder="collins@gmail.com" required>
+              </div>
+          </div>
+          <div class="--dash"></div>
+          <div class="row">
+              <div class="one-half column">
+                  <label class="label-box">Fullname</label>
+              </div>
+              <div class="one-half column">
+                  <input type="text" class="u-full-width" name="fullname" placeholder="Collins Walker" required>
+              </div>
+          </div>
+          <div class="--dash"></div>
+          <div class="row">
+              <div class="one-half column">
+                  <label class="label-box">Role</label>
+              </div>
+              <div class="one-half column">
+                  <select name="role" class="u-full-width">
+                      <option value="clerk"> Clerk </option>
+                      <option value="manager">Location Manager </option>
+                      <option value="admin"> Administrator </option>
+                  </select>
+              </div>
+          </div>
+          <div class="--dash"></div>
+          <div class="row">
+              <div class="one-half column">
+                  <label class="label-box">Select location</label>
+              </div>
+              <div class="one-half column">
+                <select name="locid" id="location-team" class="u-full-width">
+                    <% data.forEach(items => { %>
+                      <option value="<%= items._id %>"><%= items.name %></option>
+                    <% }) %>
+                </select>
+              </div>
+          </div>
+          <div class="--dash"></div>
+          <div class="row">
+           <div class="one-half column"></div>
+            <div class="one-half column u-pull-right">
+             <input type="hidden" name="location" id="teamLocation">
+              <button type="submit" class="btn-block btn-outline mt-3">Invite</button>
+              </div>
+          </div>
+      </form>
+</div>
+</section>
+
+<% } %>
+
+<%- include('./components/uialert') -%>
+
+
+
+

@@ -1,0 +1,56 @@
+$brand-color: #1c96aa;
+$secondary-color: #6c8eef;
+$font-color: #4a4a4a;
+$s-font-color: #2C384F;
+$bg-color: #F8FAFF;
+$bx-sh-left: rgba(0,0,0,0.1) 0 7px 25px 0;
+$bx-sh-hover: rgba(50,50,93,0.25) 0 30px 60px -12px;
+$glob-border: 1px solid #dbdbdb;
+$box-header-color: #363636;
+$box-bg-color: #fffefc;
+$card-box-sh: rgba(0,0,0,0.1) 0 7px 25px 0;
+$tag-props: whitesmoke;
+$faded-gray: #7a7a7a;
+$heading-color: #363636;
+$green: #3ecf8e;
+$bg-opacity: rgba(0, 0, 0, .7);
+$forge-white: #a4bdc0;
+
+
+@mixin cardHover {
+    box-shadow: rgba(50,50,93,0.25) 0 30px 60px -12px;
+    transform: translateY(-5px);
+    -webkit-transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+    transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+
+@mixin elFixedTC {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+}
+
+@mixin alertSuccess {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-radius: 5px;
+    text-align: center;
+    padding: 1rem;
+    border-color: #bee5eb; a, p, span{
+        color: #0c5460;
+    }
+}
+
+@mixin btnReset {
+    font-size: 11px;
+    white-space: nowrap;
+    letter-spacing: .1rem;
+}
+@mixin tinyFont {
+    padding: 0;
+    color: $faded-gray;
+    font-size: 1.1rem;
+}

@@ -1,0 +1,108 @@
+<title>Serve visitors</title>
+
+<%- include('./components/sidebar') -%>
+<% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
+
+<% if(data){ %>
+        <section class="main-layout">
+            <div class="row">
+                <div class="four columns">
+                    <div class="row left-service-top --is-service-page select-wrapper">
+                            <select name="filter" id="filter" class="btn-playful u-full-width">
+                                <% data.forEach(items => { %>
+                                <option value="<%= items._id %>"><%= items.name %></option>
+                                <% }) %>
+                            </select>
+                            <span class="icon-near-select"><ion-icon name="chevron-down-circle"></ion-icon></span>
+                        </div>
+                    <div class="left-service-middle">
+                        <div class="top-serving">
+                            <h5>No visitor</h5>
+                            <p>Serving now</p>
+                        </div>
+                        <div class="virtual-queue">
+                            <ul id="queue-holder"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="eight columns">
+                    <div class="center-panel">
+                        <div class="row">
+                            <div class="one-half v-details-section column">
+                                <span class="header-box">No visitor</span> <span class="serving-phone"></span> <div class="served-id"></div> <div class="serve-email"></div>
+                            </div>
+                            <!-- <div class="one-half column">
+                                <span class="serving-timer hide">Serving now <ion-icon name="timer-outline"></ion-icon> <i class="shr"></i> hr <i class="smin"></i> min <i class="ssec"></i> sec</span>
+                            </div> -->
+                        </div>
+                        <div class="--dash"></div>
+                        <div class="track-activity">
+                            <div class="top-activity">
+                                <div class="serving-timer">
+                                    <div class="row">
+                                        <div class="one-third column">
+                                            <p>Time serving</p>
+                                            <h3><span class="shr">0</span> <span class="sub-text">Hours</span></h3>
+                                        </div>
+                                        <div class="one-third column">
+                                            <h3><span class="smin">0</span> <span class="sub-text">Minutes</span></h3>
+                                        </div>
+                                        <div class="one-third column">
+                                            <h3><span class="ssec">0</span> <span class="sub-text">Seconds</span></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="middle-track">
+                                
+                            </div>
+                        </div>
+                       
+                        <div class="queue-u-actions">
+                            <div class="--dash"></div>
+                            <div class="row mt-5">
+                                <div class="one-third column">
+                                   <a href="#" class="button u-pull-right btn-outline add-visitor-v-admin">add visitor</a>
+                                </div>
+                                <div class="one-third column"><a href="#" class="button u-pull-right finish-visitor-v-admin hide">finish serving this visitor</a></div>
+                                <div class="one-third column">
+                                    <a href="#" class="button btn-fill call-visitor-v-admin">call next visitor</a> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+      
+            <form class="add-v-via-admin__form hide">
+              <div class="header-box">Add visitor to queue</div>
+                <div class="--dash mb-5"></div>
+                <div class="wrapper-ninety">
+                <div class="row">
+                    <div class="one-half column">
+                        <input type="text" name="firstname" class="u-full-width" placeholder="Fullname" required>
+                    </div>
+                    <div class="one-half column">
+                        <input type="text" name="phone" class="u-full-width" placeholder="Number" required>
+                    </div>
+                </div>
+                </div>
+                <div class="--dash mt-5 mb-5"></div>
+                 <input type="hidden" name="locid">
+                 <input type="hidden" name="labels" value="<%= user.email %>">
+                <div class="wrapper-ninety">
+                  <button class="btn-outline btn-block">add visitor</button>
+                </div>
+            </form>
+        
+
+ 
+<% } %>
+<div class="--serving-page"></div>
+<div class="global-overlay hide"></div>
+
+<% } %>
+<%- include('./components/uialert') -%>
+

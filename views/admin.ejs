@@ -1,0 +1,48 @@
+
+<%- include('./components/sidebar') -%>
+<% if(data){ %>
+    <section class="main-layout">
+        <div class="left-service-top select-wrapper">
+            <select name="filter" id="filter" class="btn-playful u-full-width">
+                <% data.forEach(items => { %>
+                <option value="<%= items._id %>"><%= items.name %></option>
+                <% }) %>
+            </select>
+            <span class="icon-near-select"><ion-icon name="chevron-down-circle"></ion-icon></span>
+        </div>
+
+        <div class="dash-upper-layer mt-3 stat-buttons">
+            <a href="#" class="today-stat btn-playful"><ion-icon name="today-outline"></ion-icon> <span> today</span></a>
+            <a href="#" class="daily-stat btn-playful"><ion-icon name="sunny-outline"></ion-icon> <span> daily reports</span></a>
+            <a href="#" class="weekly-stat btn-playful"><ion-icon name="calendar-outline"></ion-icon> <span> weekly reports</span></a>
+        </div>
+
+
+        <div class="custom-row dash-bottom-layer">
+            <div class="col-3">
+                <h5>Visitors waiting <span class="visitors-number"></span> </h5>
+                <div class="virtual-queue">
+                    <ul id="queue-holder"></ul>
+                </div>
+            </div>
+            <div class="col-3 middle">
+                <h5>Clerks Busy</h5>
+               
+            </div>
+            <div class="col-3">
+                <h5>Visitors served <span class="served-v-number"></span> </h5>
+                <div class="virtual-queue">
+                    <ul id="served-holder"></ul>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <div class="out"></div>
+<% } %>
+<div class="global-overlay add-visitor-v-admin add-v-via-admin__form hide"></div>
+<input type="hidden" name="locid">
+<input type="hidden" name="labels" value="<%= user.email %>">
+<%- include('./components/uialert') -%>
+

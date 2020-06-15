@@ -1,0 +1,49 @@
+<%- include('./components/sidebar') -%>
+
+<% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
+
+<section class="user-profile-section main-layout">
+    <div class="row">
+        <div class="three columns">
+            <h5 class="user-d-dashboard"><%= user.first %> <%= user.last %> Dashbaord</h5>
+            <div class="profile-holder">
+                <img src="/assets/profile-placeholder.jpg">
+            </div>
+            <div class="profile-buttons">
+                <a href="/u/profile" class="button u-full-width btn-outline"><ion-icon name="settings-outline" class="u-pull-left"></ion-icon> Account Settings</a>
+                <a href="/u/billing" class="button u-full-width btn-fill"><ion-icon name="card-outline" class="u-pull-left"></ion-icon> Billing</a>
+            </div>
+        </div>
+        <div class="seven columns">
+            <div class="wrapper-ninety">
+                <% if(success_msg != '') { %>
+                    <div class="alert-success">
+                      <div class="notify-success">
+                      <%= success_msg %>
+                      </div>
+                    </div>
+                <% } %>
+            </div>
+            <div class="pricing-page">
+                <%- include('./components/pricing') -%>
+            </div>
+            <div class="cancel-plan wrapper-ninety">
+                <form action="/cancel-plan" method="POST" class="mt-5">
+                    <div class="globe-box no-bxs wrapper-ninety">
+                        <div class="header-box">Danger Zone</div>
+                        <div class="--dash"></div>
+                        <div class="row">
+                            <div class="twelve column mt-3">
+                                <button type="submit" class="btn-danger u-pull-left">Cancel plan <span>🥺</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<% } %>
+
+<%- include('./components/uialert') -%>

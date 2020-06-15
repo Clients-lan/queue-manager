@@ -1,0 +1,118 @@
+<!-- Load Leaflet from CDN -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+  integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+  crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+  integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+  crossorigin=""></script>
+  <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.css" />
+
+
+
+    <% data.location.forEach(loc => { %>
+        <% if (loc.vpurl == url) { %>
+          <title><%= loc.header %></title>
+          <div class="top-queue-section container">
+          <div class="row">
+              <div class="two-thirds column">
+                  <img src="/assets/Guacamole Illustrations/svg/3_music_general.svg">
+              </div>
+              <div class="one-third column">
+                  <div class="people-on-queue__total">
+                      <h3>20</h3>
+                      <p class="q-waiting">Waiting Visitors at</p>
+                      <p class="tag"><%= loc.address %></p>
+                  </div>
+                  <div class="queue-action-buttons">
+                      <div class="card-queue">
+                          <h4>Already joined the queue?</h4>
+                          <a href="#" class="button btn-danger">see your position <span>🙂</span></a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+
+        <div class="bottom-queue__section">
+            <div class="container">
+                <h1><%= loc.header %></h1>
+               <% if(loc.subheader != '' || loc.subheader != ""){ %>
+                <p><%= loc.subheader %></p>
+               <% } %>
+               <div class="--dash"></div>
+               <div class="custom-row">
+                   <div class="col-3 card">
+                       <div class="header-box">How to reach</div>
+                       <div class="--dash my-3"></div>
+                       <div id="pagemap"></div>
+                       <div class="--dash"></div>
+                   </div>
+                   <div class="col-3">
+
+                   </div>
+                   <div class="col-3">
+
+                   </div>
+               </div>
+            </div>
+        </div>
+
+
+
+         <% data.visitors.forEach(people => { %>
+
+            <li><%= people.firstname %></li>
+         <% }) %>
+
+
+
+
+
+
+
+          <div class="join-queue-via-planner">
+            <form action="/join-queue" method="post">
+                <input type="text" name="firstname" class="form-control" placeholder="Fullname">
+                <input type="text" name="phone" class="form-control">
+                <input type="hidden" name="locid" value="<%= loc._id %>">
+                <input type="hidden" name="labels" value="<%= data.email %>">
+                <button class="btn-control but-classic">join queue</button>
+            </form>
+        </div>
+
+        <div class="leaf-attr hide">
+            <p id="addr"><%= loc.address %></p>
+            <p id="lat"><%= loc.lat %></p>
+            <p id="lng"><%= loc.lng %></p>
+        </div>
+
+       <% } %>
+      <% }) %>
+      <%- include('./components/uialert') -%>
+
+      <script>
+
+              
+const addr = document.querySelector('#addr').innerHTML;
+const lat = document.querySelector('#lat').innerHTML;
+const lng = document.querySelector('#lng').innerHTML;
+
+    
+
+let pageMap = L.map('pagemap').setView([40.91, -96.63], 4);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 18
+      }).addTo(pageMap);
+      pageMap.panTo(new L.LatLng(parseInt(lat), parseInt(lng)));
+      L.marker([parseInt(lat), parseInt(lng)], 5).addTo(pageMap).bindPopup(addr).openPopup();
+
+      </script>
+
+
+
+
+
+
+
+

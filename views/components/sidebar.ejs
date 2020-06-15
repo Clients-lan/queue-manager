@@ -1,0 +1,29 @@
+<% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
+
+<div class="sidebar">
+    <div class="top-item">
+        <a href="#" class="brand-logo"><img src="/assets/logo-fake.png"></a>
+        <a href="/u/dashboard"><ion-icon name="logo-web-component"></ion-icon> <span>Overview</span> </a>
+        <a href="/u/service"><ion-icon name="chatbubbles-outline"></ion-icon> <span>Service</span> </a>
+        <a href="/u/analysis"><ion-icon name="stats-chart"></ion-icon> <span>Analysis</span> </a>
+        <a href="/u/team"><ion-icon name="people-outline"></ion-icon> <span>Team</span></a>
+        <a href="/u/places"><ion-icon name="location-outline"></ion-icon> <span>Locations</span> </a>
+    </div>
+    <div class="bottom-item">
+        <a href="#" class="user-cred-hover"><ion-icon name="person-circle-sharp"></ion-icon></a>
+    </div>
+</div>
+
+<div class="user-cred-hover__placeholder hide">
+    <div class="top-u-cred">
+        <div class="topper">
+            <h5><%= user.first %> <%= user.last %></h5>
+            <i>Owner Account</i>
+        </div>
+        <a href="/u/profile">Profile Setup</a>
+        <a href="/u/billing">Billing</a>
+    </div>
+    <a href="/u/logout" class="bottom-u-cred">Logout</a>
+</div>
+
+<% } %>

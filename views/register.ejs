@@ -1,0 +1,38 @@
+<title> [Brand]  </title>
+ 
+<section class="auth">
+ 
+    <div class="auth-wrapper">
+        <form action="/u/register" method="post">
+            <% if(typeof errors != 'undefined') { %>
+            <div class="alert-errors">
+                <% errors.forEach(function(error) { %>
+                <ul class="notify-warning">
+                    <li><%= error.msg %></li>
+                </ul>
+                <% }); %>
+            </div>
+            <% } %>
+
+            <h3>Hello there 👋</h3>
+             <p>Come on in, there is a free trial</p>
+            <div class="row">
+             <input type="text" class="one-half column" placeholder="First Name" name="first">
+             <input type="text" class="one-half column" placeholder="Last Name" name="last">
+            </div>
+            <input type="email" class="u-full-width" placeholder="Enter Email" name="email">
+            <input type="password" class="u-full-width" placeholder="Enter Password" name="password">
+            <input type="password" class="u-full-width" placeholder="Comfirm Password" name="password2">
+            <input type="hidden" name="locisadded" value="false">
+            <input type="hidden" name="plan" value="<%= plan %>">
+            <input type="hidden" name="subscribed" value="false">
+            <input type="hidden" name="plancode" value="<%= plancode %>">
+            <button type="submit" class="btn-fill btn-block">Create Account</button>
+             <p>Already have an account? <a href="/u/login">Login</a></p>
+          </form>
+    </div>
+
+    
+</section>
+
+
