@@ -27,8 +27,14 @@
                 <h5><%= location.name %></h5>
                 <p class="address-tab"><%= location.address %></p>
                 <div class="bottom-content">
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veritatis fugiat sit voluptatem! Ad impedit voluptate nesciunt ratione excepturi. Cupiditate, officia!</p>
+                    <div class="header-box">Remote Sign-in: 
+                    <% if(location.allowqueue == 'yes'){ %>
+                        <span class="green-tag">Available</span>
+                   <% } else { %>
+                        <span class="red-tag">Unavailable</span>
+                   <% } %>
                 </div>
+                <br>
                 <a href="location/<%= location._id %>" class="button">Edit this location</a>
             </div>
         </div>

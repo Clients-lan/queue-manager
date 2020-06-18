@@ -126,9 +126,8 @@ app.post('/serve-visitor', (req, res) => {
               if (smsText._id == locationId) {
             
                 const to = doc.phone;
-                const from = `Brand from ${smsText.name}`;
+                const from = `Flex-Q from ${smsText.name}`;
                 const text = `Hello ${doc.firstname}, ${smsText.sms}`//smsText.sms;
-
                 //@Send SMS
                  nexmo.message.sendSms(from, to, text, {type: 'unicode'}, (err, responseData) => {
                     if (err) {
@@ -138,10 +137,9 @@ app.post('/serve-visitor', (req, res) => {
                             console.log('Message sent successfully. ');
                         } else {
                             console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
-                        }
+                      }
                     }
                 })
-              
               }
             })
             res.send({ data: doc })
@@ -163,6 +161,25 @@ app.post('/finish-visitor', (req, res) => {
 })
 
 
+app.post('/text-user', (req, res) => {
+  const { phone, text } = req.body;
+
+  const from = `Flex-Q`;
+  //@Send SMS
+   nexmo.message.sendSms(from, phone, text, {type: 'unicode'}, (err, responseData) => {
+      if (err) {
+          console.log(err);
+      } else {
+          if(responseData.messages[0]['status'] === "0") {
+            console.log('Message sent successfully. ');
+            res.status(201)
+          } else {
+              console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
+        }
+      }
+  })
+  res.send()
+})
 
 
 

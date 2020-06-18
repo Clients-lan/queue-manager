@@ -500,13 +500,26 @@ if (dom.querySelector('.left-service-top')) {
                             <small class="location-id hide">${res.location._id}</small>
                             <span class="queue-status">${found.status}</span> in <small>${res.location.name}</small>
                            <div class="queue-time-real tag">
-                          <small class="waiting-hours"></small> hrs
-                        <small class="waiting-minutes"></small> mins
-                        </div>
-                        </p>
+                            <small class="waiting-hours"></small> hrs
+                            <small class="waiting-minutes"></small> mins
+                           </div>
+                         </p>
+                         <div class="update-user-progress buttn">
+                           <ion-icon name="chatbox-ellipses-outline"></ion-icon>
+                          <span class="u-number">${found.phone}</span>
+                         </dv>
                         `
                         queueHolder.innerHTML = ''
                         setTimeout(() => { queueHolder.appendChild(li) }, 1000);
+                        //@Eventlistener for SMS click to send meesage
+                        let uProgressSmS = li.querySelector('.update-user-progress')
+                        uProgressSmS.addEventListener('click', (e) => {
+                            let gotPhone = e.target.nextElementSibling
+                            if (dom.querySelector('#uus')) {
+                                dom.querySelector('#uus').value = gotPhone.innerHTML;
+                                dom.querySelector('.update-u-sms').classList.remove('hide')
+                            }
+                        })
                         function parseISOString(s) {
                             var b = s.split(/\D+/);
                             return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
@@ -737,6 +750,36 @@ if (dom.querySelector('.left-service-top')) {
                 }
                 
             })
+        })
+
+        //@Text Visitor
+          const sendUUpdateSms = dom.querySelector('.update-u-sms')
+
+            sendUUpdateSms.addEventListener('submit', (e) => {
+                e.preventDefault()
+
+                fetch('/text-user', {
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            phone: sendUUpdateSms['upuphone'].value,
+                            text: sendUUpdateSms['cmsg'].value,
+                        })
+                    }).then(res => {
+                        if (res.status === 201 || res.status === 200) {
+                            uialertText.innerHTML = 'SMS sent!'
+                            callUIalert()
+                            sendUUpdateSms.classList.add('hide')
+                            sendUUpdateSms['upuphone'].value = ''
+                        }
+                    })
+            })
+
+        dom.querySelector('.close-u-up__form').addEventListener('click', () => {
+            sendUUpdateSms.classList.add('hide')
+            sendUUpdateSms['upuphone'].value = ''
         })
     }
 }

@@ -222,7 +222,11 @@ body::-webkit-scrollbar {
     height: 0px;
 }
 
-
+.admin{
+    .update-user-progress{
+        display: none;
+    }
+}
 
 .has-child-paragraph{
     p{
@@ -744,9 +748,25 @@ textarea{
     height: 100px;
     padding: 3% 0;
     background-color: $bg-color;
-    z-index: 0;
+    z-index: 7;
     .icon-near-select{
         transform: translate(0rem, 110%);
+    }
+}
+.update-u-sms{
+    width: 70%;
+    margin: 3rem auto;
+    position: relative;
+    transform: translate(-3.3rem, -15rem);
+    textarea{
+        height: 100px;
+    }
+    .close-u-up__form{
+        font-size: 2.4rem;
+        position: absolute;
+        right: 1rem;
+        top: 1rem;
+        cursor: pointer;
     }
 }
 .left-service-middle{
@@ -759,7 +779,7 @@ textarea{
         position: fixed;
         top: 15%;
         width: 331px;
-        z-index: 0;
+        z-index: 7;
         h5, p{
             margin: 0;
             padding: 0;
@@ -771,6 +791,23 @@ textarea{
        position: relative;
        width: 331px;
        z-index: -9;
+       z-index: 6;
+       .update-user-progress{
+           position: absolute;
+           left: 90%;
+           top: .5rem;
+           cursor: pointer;
+           z-index: 9;
+           display: none;
+           box-shadow: $card-box-sh;
+           padding: 0;
+           ion-icon{
+               font-size: 2rem;
+           }
+           .u-number{
+               display: none;
+           }
+       }
     }
         ul{
             margin: 0;
@@ -781,7 +818,9 @@ textarea{
             li{
                 border-bottom: $glob-border;
                 padding: 1rem;
-                
+                &:hover .update-user-progress{
+                    display: block;
+                }
             }
         }
     
@@ -795,6 +834,7 @@ textarea{
     margin-left: -10%;
     border-radius: 5px;
     border: $glob-border;
+    z-index: 5;
     .queue-u-actions{
         position: absolute;
         left: 50%;
@@ -892,7 +932,6 @@ textarea{
         margin: 2rem;
         margin-bottom: 0;
     }
-
     .virtual-method{
         width: 100%;
     }
@@ -935,6 +974,21 @@ textarea{
 }
 .card-selected{
     border: 2px solid $brand-color;
+}
+.lession{
+    border: $glob-border;
+    border-radius: 5px;
+    padding: .5rem;
+    position: absolute;
+    left: 2%;
+    top: 24rem;
+    box-shadow: $bx-sh-left;
+    display: inline-block;
+    background-color: #fff;
+    color: $faded-gray;
+    ion-icon{
+        color: $brand-color;
+    }
 }
 
 
@@ -1930,11 +1984,9 @@ tbody{
             padding: 2rem;
             color: #ccc;
             font-size: 1.6rem;
-        }
-    }
-    a{
-        &:hover{
-            color: #fff !important;
+            &:hover{
+                color: $front-o-color !important;
+            }
         }
     }
     .u-logs{

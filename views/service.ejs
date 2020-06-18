@@ -54,7 +54,30 @@
                                 </div>
                             </div>
                             <div class="middle-track">
-                                
+                                <form class="update-u-sms hide globe-box">
+                                    <div class="header-box">Send custom message to visitor</div>
+                                     <ion-icon name="close-outline" class="u-pull-right close-u-up__form"></ion-icon>
+                                        <div class="--dash"></div>
+                                        <div class="row has-child-paragraph">
+                                        <div class="column">
+                                            <label class="label-box">SMS Text</label>
+                                            <p>Let them know about their progress or changes to the visit</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="column">
+                                            <textarea placeholder="Hi, something just came up...." name="cmsg" required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="one-half column">
+                                            <button type="submit">Send</button>
+                                        </div>
+                                        <div class="one-half column">
+                                            <input type="text" name="upuphone" class=" u-full-width" id="uus">
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                        
@@ -106,4 +129,6 @@
 
 <% } %>
 <%- include('./components/uialert') -%>
+
+
 
