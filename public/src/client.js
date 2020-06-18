@@ -416,9 +416,9 @@ if (dom.querySelector('.setup')) {
                       })
                     }).then(res => {
                     if (res.status == 200) {
-                        uialertText.innerHTML = 'This location has been save!'
+                        uialertText.innerHTML = 'This location has been saved!'
                         callUIalert()
-                        setTimeout(() => { location.href = '/u/dashboard' }, 3000)
+                        setTimeout(() => { location.href = '/u/places' }, 3000)
                         
                       }
                     })
@@ -843,7 +843,8 @@ let pageMap = L.map('pagemap').setView([40.91, -96.63], 4);
                     setTimeout(() => {
                         dom.querySelector('.join-queue-via-planner').classList.add('hide')
                         queueMsg.classList.remove('hide')
-                        queueMsg.innerHTML = joinQform['msg'].value
+                        queueMsg.innerHTML = joinQform['msg'].value;
+                        location.reload()
                     }, 1000);
                 })
 

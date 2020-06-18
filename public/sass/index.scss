@@ -287,7 +287,7 @@ textarea{
 //@Places Page
 .locations{
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr) !important;
     grid-gap: 20px;
     padding-bottom: 5rem;
     .location-tabs{

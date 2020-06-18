@@ -65,7 +65,7 @@
                                 <input type="hidden" name="locid" value="<%= loc._id %>">
                                 <input type="hidden" name="labels" value="<%= data.email %>">
                                 <input type="hidden" name="msg" value="<%= loc.msg %>">
-                                <button class="btn-outline btn-block">sign in to join</button>
+                                <button type="submit" class="btn-outline btn-block">sign in to join</button>
                             </form>
                         </div>
                    <% } %>
@@ -111,7 +111,7 @@
 
          <% data.visitors.forEach(people => { %>
             <ul id="queue-page-vistiors-planner" class="hide">
-            <% if(people.status == 'Waiting'){ %>
+            <% if(people.status == 'Waiting' && people.line == loc._id){ %>
                 <li class="pwoqlist"><%= people.phone %></li>
            <% } %>
             </ul>
