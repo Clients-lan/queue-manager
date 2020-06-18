@@ -808,7 +808,7 @@ if (dom.querySelector('#queue-page-vistiors-planner')) {
 
     
 
-let pageMap = L.map('pagemap').setView([40.91, -96.63], 4);
+let pageMap = L.map('pagemap').setView([parseInt(lat), parseInt(lng)], 4);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 18
