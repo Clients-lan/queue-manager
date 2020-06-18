@@ -800,55 +800,8 @@ if (dom.querySelector('.topper')) {
 
 //@Planner Page - VIRTUL QUEUE
 if (dom.querySelector('#queue-page-vistiors-planner')) {
-                  
-    const addr = dom.querySelector('#addr').innerHTML;
-    const lat = dom.querySelector('#lat').innerHTML;
-    const lng = dom.querySelector('#lng').innerHTML;
-    const queueMsg = dom.querySelector('.queue-msg')
-
-    
-
-let pageMap = L.map('pagemap').setView([parseInt(lat), parseInt(lng)], 4);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 18
-      }).addTo(pageMap);
-      pageMap.panTo(new L.LatLng(parseInt(lat), parseInt(lng)));
-      L.marker([parseInt(lat), parseInt(lng)], 5).addTo(pageMap).bindPopup(addr).openPopup();
-
-
-      let queuePageCount = dom.querySelectorAll('#queue-page-vistiors-planner li')
-      dom.querySelector('.poqt-counter').innerHTML = queuePageCount.length
-
-      const joinQform = dom.querySelector('.join-queue-vp__form')
-
-
-        joinQform.addEventListener('submit', (e) => {
-            e.preventDefault()
-
-            fetch('/join-queue', {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        locid: joinQform['locid'].value,
-                        labels: joinQform['labels'].value,
-                        firstname: joinQform['firstname'].value,
-                        phone: joinQform['phone'].value.replace(/\D/g, '')
-                    })
-                }).then((res) => {
-                    return res.json()
-                }).then(res => {
-                    setTimeout(() => {
-                        dom.querySelector('.join-queue-via-planner').classList.add('hide')
-                        queueMsg.classList.remove('hide')
-                        queueMsg.innerHTML = joinQform['msg'].value;
-                        location.reload()
-                    }, 1000);
-                })
-
-        })
+                
+  
     
     //@Check Position
         const checkPositionForm = dom.querySelector('.check-v-position__form')

@@ -10,7 +10,7 @@
 
 
     <% data.location.forEach(loc => { %>
-        <% if (loc.vpurl == url) { %>
+        <% if (loc.vpurl === url) { %>
           <title><%= loc.header %></title>
           <div class="top-queue-section container">
           <div class="row">
@@ -173,6 +173,62 @@
      
 
 
+      <script>
+
+          
+  const addr = document.querySelector('#addr').innerHTML;
+    const lat = document.querySelector('#lat').innerHTML;
+    const lng = document.querySelector('#lng').innerHTML;
+    
+
+let pageMap = L.map('pagemap').setView([parseInt(lat), parseInt(lng)], 4);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 18
+      }).addTo(pageMap);
+      pageMap.panTo(new L.LatLng(parseInt(lat), parseInt(lng)));
+      L.marker([parseInt(lat), parseInt(lng)], 5).addTo(pageMap).bindPopup(addr).openPopup();
+
+
+      let queuePageCount = document.querySelectorAll('#queue-page-vistiors-planner li')
+      document.querySelector('.poqt-counter').innerHTML = queuePageCount.length
+     
+
+
+
+      //@Join Queue
+      const queueMsg = document.querySelector('.queue-msg')
+      const joinQform = document.querySelector('.join-queue-vp__form')
+
+
+        joinQform.addEventListener('submit', (e) => {
+            e.preventDefault()
+
+            fetch('/join-queue', {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        locid: joinQform['locid'].value,
+                        labels: joinQform['labels'].value,
+                        firstname: joinQform['firstname'].value,
+                        phone: joinQform['phone'].value.replace(/\D/g, '')
+                    })
+                }).then((res) => {
+                    return res.json()
+                }).then(res => {
+                    setTimeout(() => {
+                        document.querySelector('.join-queue-via-planner').classList.add('hide')
+                        queueMsg.classList.remove('hide')
+                        queueMsg.innerHTML = joinQform['msg'].value;
+                        location.reload()
+                    }, 1000);
+                })
+
+        })
+     
+     </script>
 
 
 
