@@ -19,14 +19,14 @@
               </div>
               <div class="one-third column">
                   <div class="people-on-queue__total">
-                      <h3>20</h3>
+                      <h3 class="poqt-counter"></h3>
                       <p class="q-waiting">Waiting Visitors at</p>
                       <p class="tag"><%= loc.address %></p>
                   </div>
                   <div class="queue-action-buttons">
                       <div class="card-queue">
-                          <h4>Already joined the queue?</h4>
-                          <a href="#" class="button btn-danger">see your position <span>🙂</span></a>
+                          <h4>Already signed in?</h4>
+                          <a href="#" class="button call-vp btn-danger">see your position <span>🙂</span></a>
                       </div>
                   </div>
               </div>
@@ -35,50 +35,87 @@
 
         <div class="bottom-queue__section">
             <div class="container">
-                <h1><%= loc.header %></h1>
+                <h4><%= loc.header %></h4>
                <% if(loc.subheader != '' || loc.subheader != ""){ %>
                 <p><%= loc.subheader %></p>
                <% } %>
-               <div class="--dash"></div>
+               <div class="card-queue">
+                   <div class="header-box">Remote Sign-in: 
+                       <% if(loc.allowqueue == 'yes'){ %>
+                           <span class="green-tag">Available</span>
+                      <% } else { %>
+                           <span class="red-tag">Unavailable</span>
+                      <% } %>
+                    </div>
+               </div>
                <div class="custom-row">
                    <div class="col-3 card">
                        <div class="header-box">How to reach</div>
-                       <div class="--dash my-3"></div>
                        <div id="pagemap"></div>
                        <div class="--dash"></div>
                    </div>
-                   <div class="col-3">
-
+                   <div class="col-3 card">
+                    <% if(loc.allowqueue == 'yes'){ %>
+                        <div class="queue-msg notify-success hide"></div>
+                        <div class="join-queue-via-planner">
+                            <div class="header-box">Not signed in already?</div>
+                            <form class="join-queue-vp__form">
+                                <input type="text" name="firstname" class="u-full-width" placeholder="Your Fullname" required>
+                                <input type="text" name="phone" class="u-full-width" placeholder="Enter phone number" required>
+                                <input type="hidden" name="locid" value="<%= loc._id %>">
+                                <input type="hidden" name="labels" value="<%= data.email %>">
+                                <input type="hidden" name="msg" value="<%= loc.msg %>">
+                                <button class="btn-outline btn-block">sign in to join</button>
+                            </form>
+                        </div>
+                   <% } %>
+                
+                      <div class="header-box">Already signed in?</div>
+                     <div class="--dash mt-5 mb-5"></div>
+                    <a href="#" class="button call-vp btn-danger">see your position <span>🙂</span></a>
+                    <div class="q-planner-info">
+                        <a href="tel:<%= loc.adminphone %>"><%= loc.adminphone %></a>
+                        <a href="mailto:<%= loc.adminmail %>"><%= loc.adminmail %></a>
+                    </div>
+                    
                    </div>
-                   <div class="col-3">
-
+                   <div class="col-3 card">
+                    <label class="header-box">availabilty (this week)</label>
+                    <ul class="this-week-q">
+                       <% loc.fweek.forEach(fw => { %>
+                           <li>Sun: <%= fw.sun %></li>
+                           <li>Mon: <%= fw.mon %></li>
+                           <li>Tue: <%= fw.tue %></li>
+                           <li>Wen: <%= fw.wen %></li>
+                           <li>Thu: <%= fw.thu %></li>
+                           <li>Fri: <%= fw.fri %></li>
+                           <li>Sat: <%= fw.sat %></li>
+                       <% }) %>
+                   </ul>
+                   <label class="header-box">availabilty (next week)</label>
+                   <ul class="this-week-q">
+                   <% loc.fweek.forEach(fw => { %>
+                       <li>Sun: <%= fw.sun2 %></li>
+                       <li>Mon: <%= fw.mon2 %></li>
+                       <li>Tue: <%= fw.tue2 %></li>
+                       <li>Wen: <%= fw.wen2 %></li>
+                       <li>Thu: <%= fw.thu2 %></li>
+                       <li>Fri: <%= fw.fri2 %></li>
+                       <li>Sat: <%= fw.sat2 %></li>
+                   <% }) %>
+               </ul>
                    </div>
                </div>
             </div>
         </div>
 
-
-
          <% data.visitors.forEach(people => { %>
-
-            <li><%= people.firstname %></li>
+            <ul id="queue-page-vistiors-planner" class="hide">
+            <% if(people.status == 'Waiting'){ %>
+                <li class="pwoqlist"><%= people.phone %></li>
+           <% } %>
+            </ul>
          <% }) %>
-
-
-
-
-
-
-
-          <div class="join-queue-via-planner">
-            <form action="/join-queue" method="post">
-                <input type="text" name="firstname" class="form-control" placeholder="Fullname">
-                <input type="text" name="phone" class="form-control">
-                <input type="hidden" name="locid" value="<%= loc._id %>">
-                <input type="hidden" name="labels" value="<%= data.email %>">
-                <button class="btn-control but-classic">join queue</button>
-            </form>
-        </div>
 
         <div class="leaf-attr hide">
             <p id="addr"><%= loc.address %></p>
@@ -86,31 +123,54 @@
             <p id="lng"><%= loc.lng %></p>
         </div>
 
+
+            <form class="check-v-position__form check-v-postion hide">
+                <div class="header-box">Check your position</div>
+                <div class="--dash"></div>
+                <div class="row mt-5">
+                    <div class="one-half column">
+                        <label class="label-box">Phone</label>
+                    </div>
+                    <div class="one-half column">
+                        <input type="text" placeholder="Enter phone number" class="u-full-width" name="phone" required>
+                    </div>
+                </div>
+                <div class="--dash"></div>
+                <div class="row">
+                    <input type="hidden" name="locid" value="<%= loc._id %>">
+                    <input type="hidden" name="labels" value="<%= data.email %>">
+                    <button type="submit" class="btn-outline btn-block">Check postion</button>
+                </div>
+                <div id="kl" class="hide"></div>
+            </form>
+            
+       
+
        <% } %>
       <% }) %>
       <%- include('./components/uialert') -%>
-
-      <script>
-
-              
-const addr = document.querySelector('#addr').innerHTML;
-const lat = document.querySelector('#lat').innerHTML;
-const lng = document.querySelector('#lng').innerHTML;
-
-    
-
-let pageMap = L.map('pagemap').setView([40.91, -96.63], 4);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 18
-      }).addTo(pageMap);
-      pageMap.panTo(new L.LatLng(parseInt(lat), parseInt(lng)));
-      L.marker([parseInt(lat), parseInt(lng)], 5).addTo(pageMap).bindPopup(addr).openPopup();
-
-      </script>
+      <div class="global-overlay hide"></div>
 
 
+      <div class="visitor-queue-upper-overlay hide">
+          <div class="vquo">
+            <h4>Hi <span></span></h4>
+            <p>Thank you for waiting</p>
+            <div class="--dash"></div>
+            <small>Here's your position in the queue</small>
+  
+            <div class="round-holder">
+              <h2 class="uq-number__postion"></h2>
+            </div>
+            <small>We'll text you when we're almost ready to see you</small>
+          </div>
+          <div class="no-vquo hide">
+              <h3>No result found, sorry.</h3>
+          </div>
+      </div>
 
+
+     
 
 
 

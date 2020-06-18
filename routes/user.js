@@ -97,17 +97,18 @@ router.get('/team', ensureAuthenticated, (req, res) => {
     res.render('team', {
         user: req.user,
         teams: req.user.team,
-        data: req.user.location
+        data: req.user.location,
     })
 })
 
 //@Analysis Page
-router.get('/analysis', ensureAuthenticated, (req, res) => {
+router.get('/analytics', ensureAuthenticated, (req, res) => {
     res.render('stat', {
         user: req.user,
         points: req.user.location,
         visitors: req.user.visitors,
-        team: req.user.team
+        team: req.user.team,
+        cd: new Date().getDate()
     })
 })
 

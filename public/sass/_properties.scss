@@ -15,6 +15,9 @@ $heading-color: #363636;
 $green: #3ecf8e;
 $bg-opacity: rgba(0, 0, 0, .7);
 $forge-white: #a4bdc0;
+$front-bg: #2d2338;
+$front-o-color: #e66551;
+$arvo-font: 'Arvo', serif;
 
 
 @mixin cardHover {
@@ -31,6 +34,10 @@ $forge-white: #a4bdc0;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 9999;
+    width: 400px;
+    @media (max-width:550px) {
+        width: 300px;
+    }
 }
 
 @mixin alertSuccess {

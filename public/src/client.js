@@ -150,7 +150,7 @@ let map = L.map('smap').setView([40.91, -96.63], 4);
       if (msg == 'successful') {
         dom.querySelector('.copy-info').textContent = 'Copied!';
         setTimeout(() => {
-          dom.querySelector('.copy-info').textContent = 'Copy access code';
+          dom.querySelector('.copy-info').textContent = 'Copy page link';
         }, 5000);
       }
       } catch (err) { console.log('Oops, unable to copy'); }
@@ -487,6 +487,7 @@ if (dom.querySelector('.left-service-top')) {
         }).then((res) => {
             let queueHolder = dom.querySelector('#queue-holder')
             let servedHolder = document.querySelector('#served-holder')
+            let servingHolder = document.querySelector('#serving-holder')
             res.data.visitors.forEach(found => {
                 if (found.line == res.location._id) {
                     if (found.status == 'Waiting') {
@@ -553,6 +554,24 @@ if (dom.querySelector('.left-service-top')) {
                         servedHolder.innerHTML = ''
                         setTimeout(() => { servedHolder.appendChild(li) }, 1000);
                     }
+                    //@Serving now
+                    if (found.status == 'Serving' && servingHolder) {
+                        let li = document.createElement('li')
+                        li.innerHTML = `
+                        <span class="queue-visitor__fullname">${found.firstname}</span>
+                          <p class="queue-visitor__waiting">
+                            <i class="hide">${found._id}</i>
+                            <small class="hide visitor-label">${found.labels}</small>
+                            <small class="location-id hide">${res.location._id}</small>
+                            <span class="queue-status">${found.status}</span> in <small>${res.location.name}</small>
+                           <div class="queue-time-real">
+                          <small class="waiting-hours tag">${found.timeused}</small>
+                        </div>
+                        </p>
+                        `
+                        servingHolder.innerHTML = ''
+                        setTimeout(() => { servingHolder.appendChild(li) }, 1000);
+                    }
           
                 }
             
@@ -614,7 +633,7 @@ if (dom.querySelector('.left-service-top')) {
             body: JSON.stringify({
                 locid: uVisitorForm['locid'].value,
                 firstname: uVisitorForm['firstname'].value,
-                phone: uVisitorForm['phone'].value,
+                phone: uVisitorForm['phone'].value.replace(/\D/g, ''),
                 labels: uVisitorForm['labels'].value
             })
         }).then(res => {
@@ -735,5 +754,121 @@ if (dom.querySelector('.topper')) {
 
 
 
+
+//@Planner Page - VIRTUL QUEUE
+if (dom.querySelector('#queue-page-vistiors-planner')) {
+                  
+    const addr = dom.querySelector('#addr').innerHTML;
+    const lat = dom.querySelector('#lat').innerHTML;
+    const lng = dom.querySelector('#lng').innerHTML;
+    const queueMsg = dom.querySelector('.queue-msg')
+
+    
+
+let pageMap = L.map('pagemap').setView([40.91, -96.63], 4);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 18
+      }).addTo(pageMap);
+      pageMap.panTo(new L.LatLng(parseInt(lat), parseInt(lng)));
+      L.marker([parseInt(lat), parseInt(lng)], 5).addTo(pageMap).bindPopup(addr).openPopup();
+
+
+      let queuePageCount = dom.querySelectorAll('#queue-page-vistiors-planner li')
+      dom.querySelector('.poqt-counter').innerHTML = queuePageCount.length
+
+      const joinQform = dom.querySelector('.join-queue-vp__form')
+
+
+        joinQform.addEventListener('submit', (e) => {
+            e.preventDefault()
+
+            fetch('/join-queue', {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        locid: joinQform['locid'].value,
+                        labels: joinQform['labels'].value,
+                        firstname: joinQform['firstname'].value,
+                        phone: joinQform['phone'].value.replace(/\D/g, '')
+                    })
+                }).then((res) => {
+                    return res.json()
+                }).then(res => {
+                    setTimeout(() => {
+                        dom.querySelector('.join-queue-via-planner').classList.add('hide')
+                        queueMsg.classList.remove('hide')
+                        queueMsg.innerHTML = joinQform['msg'].value
+                    }, 1000);
+                })
+
+        })
+    
+    //@Check Position
+        const checkPositionForm = dom.querySelector('.check-v-position__form')
+        const postionList = dom.querySelectorAll('#queue-page-vistiors-planner li')
+        const userPoutput = dom.querySelector('#kl')
+        const vqOverlayPostion = dom.querySelector('.visitor-queue-upper-overlay')
+        
+        checkPositionForm.addEventListener('submit', (e) => {
+            e.preventDefault()
+        
+            fetch('/check-position', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    phone: checkPositionForm['phone'].value
+                })
+            }).then((res) => {
+                return res.json()
+            }).then(res => {
+               if(res.userPhone){
+        
+                dom.querySelectorAll('.pwoqlist').forEach((list) => {
+                    if(list.innerHTML == res.userPhone.phone){
+        
+                        let got = Array.from(postionList)
+                        userPoutput.innerHTML = got.indexOf(list)
+                        let finalOutput = parseInt(userPoutput.innerHTML, 10) + 1;
+                        dom.querySelector('.uq-number__postion').innerHTML = finalOutput;
+        
+                        //Reveal
+                        checkPositionForm.classList.add('hide')
+                        vqOverlayPostion.classList.remove('hide')
+                        vqOverlayPostion.querySelector('h4 span').innerHTML = res.userPhone.firstname;
+                    }
+                })
+               } else {
+                checkPositionForm.classList.add('hide')
+                vqOverlayPostion.classList.remove('hide')
+                vqOverlayPostion.querySelector('.vquo').classList.add('hide')
+                 dom.querySelector('.no-vquo').classList.remove('hide')
+               }
+            })
+        })
+        
+    
+        let localOverlay = dom.querySelector('.global-overlay')
+        
+        localOverlay.addEventListener('click', (e) => {
+            if(e.target.classList.contains('global-overlay')){
+                localOverlay.classList.add('hide')
+                checkPositionForm.classList.add('hide')
+                vqOverlayPostion.classList.add('hide')
+            }
+        })
+        
+        dom.querySelectorAll('.call-vp').forEach((callVPbtn) => {
+            callVPbtn.addEventListener('click', (e) => {
+                e.preventDefault()
+                localOverlay.classList.remove('hide')
+                checkPositionForm.classList.remove('hide')
+            })
+        })
+}
 
 

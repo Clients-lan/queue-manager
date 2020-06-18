@@ -13,10 +13,10 @@
               <th>
                 <h5 class="heading">Professional</h5>
                 <div class="info">
-                  <h3 class="amount">$35 <span>/month</span></h3>
-                  <a href="#" class="button ap hide">active plan</a>
-                  <a href="/u/register" class="button btn-fill sp hide">Get started</a>
-                  
+                  <h3 class="amount"><span class="gt">$</span>35</h3>
+                    <span class="gt btn-block">Per month</span>
+                  <a href="#" class="button ap hide-force">active plan</a>
+
                 </div>
               </th>
             </tr>
@@ -24,33 +24,36 @@
           <tbody>
             <tr>
               <td>Cloud Based Queuing Solutions</td>
-              <td>Yes</td>
+              <td style="text-align: center;"><ion-icon name="checkmark-circle-outline"></ion-icon></td>
             </tr>
             <tr>
               <td>Remote & Walk-in Customers</td>
-              <td>Yes</td>
+              <td style="text-align: center;"><ion-icon name="checkmark-circle-outline"></ion-icon></td>
             </tr>
             <tr>
               <td>Locations</td>
-              <td>Unlimited</td>
+              <td style="text-align: center;">Unlimited</td>
             </tr>
             <tr>
               <td>Analytics Reports</td>
-              <td>Yes</td>
+              <td style="text-align: center;"><ion-icon name="checkmark-circle-outline"></ion-icon></td>
             </tr>
             <tr>
               <td>Number of Services</td>
-              <td>Unlimited</td>
+              <td style="text-align: center;">Unlimited</td>
             </tr>
             <tr>
               <td>Number of Users</td>
-              <td>Unlimited</td>
+              <td style="text-align: center;">Unlimited</td>
             </tr>
             <tr>
               <td>SAML-based Single Sign-On</td>
-              <td>Yes</td>
+              <td style="text-align: center;"><ion-icon name="checkmark-circle-outline"></ion-icon></td>
             </tr>
-           
+             <tr>
+               <td></td>
+               <td> <a href="/u/register" class="button btn-block  btn-fill sp hide-force">Get started</a></td>
+             </tr>
           </tbody>
         </table>
       </div>
@@ -65,8 +68,8 @@
 
 
   if(document.querySelector('.price-header')){
-    document.querySelector('.sp').classList.remove('hide')
+    document.querySelector('.sp').classList.remove('hide-force')
   } else {
-    document.querySelector('.ap').classList.remove('hide')
+    document.querySelector('.ap').classList.remove('hide-force')
   }
 </script>

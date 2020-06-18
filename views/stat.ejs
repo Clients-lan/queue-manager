@@ -4,47 +4,82 @@
 
 
 <section class="analytics">
-		<div class="container">
-		  <canvas id="myChart"></canvas>
-		</div>
+	<div class="container">
+		<h3>Daily Data Insights</h3>
+		<canvas id="bar-chart" width="800" height="450"></canvas>
+	</div>
 	 <div class="container mt-5">
 	  <div class="row flat-stat">
-		<div class="one-third column">
-			<h5>Visitors</h5>
+		<div class="one-half column">
+			<h5>Added today</h5>
 			<% if(visitors){ %>
 				<ul class="stat-visitor-line">
 				<% visitors.forEach(visitor => { %>
+					<% if(visitor.date.getDate() == cd){ %>
 					<li><a href="tel:<%= visitor.phone %>"><%= visitor.phone %> <span>/ <%= visitor.firstname %></span> <ion-icon name="call"></ion-icon> </a></li>
+					<% } %>
 				<% }) %>
 				</ul>
 			<% } %>
 		  </div>
-		 <div class="one-third column">
-			<h5>Visitors</h5>
+		 <div class="one-half column">
+			<h5>Seriving now</h5>
 			<% if(visitors){ %>
 				<ul class="stat-visitor-line">
 				<% visitors.forEach(visitor => { %>
-					<li><%= visitor.firstname %></li>
+					<% if(visitor.status == 'Serving'){ %>
+						<% if(visitor.date.getDate() == cd){ %>
+						<li><%= visitor.firstname %></li>
+						<% } %>
+					<% } %>
 				<% }) %>
 				</ul>
 			<% } %>
 		 </div>
-		<div class="one-third column">
-			<h5>Visitors</h5>
-			<% if(visitors){ %>
-				<ul class="stat-visitor-line">
-				<% visitors.forEach(visitor => { %>
-					<li><%= visitor.firstname %></li>
-				<% }) %>
-				</ul>
-			<% } %>
-		</div>
+	
 	</div>
   </div>
 
 
+
+  <ul id="vdk" class="hide">
+	<% visitors.forEach(visitor => { %>
+		<% if(visitor.date.getDate() == cd){ %>
+			<li><%= visitor.date %></li>
+		<% } %>
+	<% }) %>
+  </ul>
+  <ul id="teamdk" class="hide">
+	<% team.forEach(tm => { %>
+		<% if(tm.date.getDate() == cd){ %>
+		 <li><%= tm.role %></li>
+		<% } %>
+	<% }) %>
+  </ul>
+  <ul id="vkpoints" class="hide">
+	<% points.forEach(point => { %>
+		<li><%= point.name %></li>
+	<% }) %>
+  </ul>
+  <ul id="vdk--served" class="hide">
+	<% visitors.forEach(visitor => { %>
+		<% if(visitor.status == 'Served'){ %>
+			<% if(visitor.date.getDate() == cd){ %>
+			  <li><%= visitor.date %></li>
+			<% } %>
+		<% } %>
+	<% }) %>
+  </ul>
+ 
+ 
+
+
 </section>
 <% } %>
+
+
+
+
 
 
 
@@ -64,26 +99,49 @@
 <script>
 
 
-let uli = document.querySelectorAll('.stat-visitor-line li')
-let elements = Array.from(uli)
-
-console.log(uli);
 
 
-var ctx = document.getElementById('myChart').getContext('2d');
-var chart = new Chart(ctx, {
-	type: 'line', 
 
-	data: {
-		labels: ["Jun 2016", "Jul 2016", "Aug 2016", "Sep 2016", "Oct 2016", "Nov 2016", "Dec 2016", "Jan 2017", "Feb 2017", "Mar 2017", "Apr 2017", "May 2017"],
-		// Information about the dataset
-    datasets: [{
-			label: "Rainfall",
-			backgroundColor: 'lightblue',
-			borderColor: 'royalblue',
-			data: [26.4, 39.8, 66.8, 66.4, 40.6, 55.2, 77.4, 69.8, 57.8, 76, 110.8, 142.6],
-		}]
-	}
+//@Get Average Mins and Hours of waiting
+let visitorEl = Array.from(document.querySelectorAll('#vdk li'))
+let servedVisitorsArray = Array.from(document.querySelectorAll('#vdk--served li'))
+let locPoints = Array.from(document.querySelectorAll('#vkpoints li'))
+let tolTeam = Array.from(document.querySelectorAll('#teamdk li'))
+
+
+let sumHours = 0;
+for( let i = 0; i < visitorEl.length; i++ ){
+	let outputs = visitorEl[i].innerHTML
+	let getHours = new Date(outputs).getHours();
+	sumHours += parseInt(getHours, 10);
+}
+
+let avgHours = Math.round(sumHours/visitorEl.length) 
+let convertedHours = avgHours * 60;
+
+
+
+
+new Chart(document.getElementById("bar-chart"), {
+    type: 'bar',
+    data: {
+      labels: ['Avg waiting time(Mins)', 'Queue length', 'Visitors Served', 'Total Locations', 'Team Members'],
+      datasets: [
+        {
+          label: 'Total amount',
+          backgroundColor: ["#1c96aa", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+          data: [convertedHours, visitorEl.length, servedVisitorsArray.length, locPoints.length, tolTeam.length]
+        }
+      ]
+    },
+    options: {
+      legend: { display: false },
+      title: {
+        display: false,
+        text: 'Daily Stats'
+      }
+    }
 });
+
 
 </script>

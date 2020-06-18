@@ -12,9 +12,9 @@
         </div>
 
         <div class="dash-upper-layer mt-3 stat-buttons">
-            <a href="#" class="today-stat btn-playful"><ion-icon name="today-outline"></ion-icon> <span> today</span></a>
-            <a href="#" class="daily-stat btn-playful"><ion-icon name="sunny-outline"></ion-icon> <span> daily reports</span></a>
-            <a href="#" class="weekly-stat btn-playful"><ion-icon name="calendar-outline"></ion-icon> <span> weekly reports</span></a>
+            <!-- <a href="#" class="today-stat btn-playful"><ion-icon name="today-outline"></ion-icon> <span> today</span></a> -->
+            <a href="/u/analytics" class="daily-stat btn-playful"><ion-icon name="sunny-outline"></ion-icon> <span> daily reports</span></a>
+            <a href="#" class="weekly-stat btn-playful card-selected"><ion-icon name="calendar-outline"></ion-icon> <span> All time reports</span></a>
         </div>
 
 
@@ -27,7 +27,9 @@
             </div>
             <div class="col-3 middle">
                 <h5>Clerks Busy</h5>
-               
+                <div class="virtual-queue">
+                    <ul id="serving-holder"></ul>
+                </div>
             </div>
             <div class="col-3">
                 <h5>Visitors served <span class="served-v-number"></span> </h5>

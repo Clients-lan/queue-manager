@@ -30,11 +30,17 @@ router.get('/queue/:vpurl', (req, res) => {
 //@Add Visitors Via Planner Page
 router.post('/join-queue', (req, res) => {
   const { locid, firstname, phone, labels } = req.body;
-  let newVisitor = { "firstname": firstname, "phone": phone, "labels": labels, "line": locid, "status": "Waiting", "timeused": null };
+  if (firstname != '' || phone != '') {
+    let newVisitor = { "firstname": firstname, "phone": phone, "labels": labels, "line": locid, "status": "Waiting", "timeused": null };
 
-  User.findOneAndUpdate({ email: labels }, {$push: { visitors: newVisitor } },
-  ).exec((err, docs) => { if (err) { return }})
-  res.redirect('/u/dashboard')
+    User.findOneAndUpdate({ email: labels }, {$push: { visitors: newVisitor } },
+    ).exec((err, docs) => {
+      if (err) {
+        return
+      }
+      res.send({rt: docs})
+    })
+  }
 })
 
 
@@ -130,6 +136,25 @@ router.post('/savelocation', ensureAuthenticated, (req, res) => {
   User.findOneAndUpdate({ email: req.user.email}, { $push: { location: newLocation }, locisadded: 'true' },  {useFindAndModify: false}).then(log => {})
   res.send()
 });
+
+
+//@Check Position
+router.post('/check-position', (req, res) => {
+  const { phone } = req.body;
+  User.findOne({ 'visitors.phone': phone }).then(data => {
+    if (data) {
+      data.visitors.forEach(visitor => {
+        if (visitor.phone == phone) {
+          res.send({userPhone: visitor})
+        }
+      })
+    }
+    res.send({d: data})
+  })
+})
+
+
+
 
 
 //@ STRIPE =============================== @//
@@ -286,6 +311,8 @@ router.get('/', (req, res) => {
 router.get('/plans', (req, res) => {
   res.render('./frontend/pricepage')
 })
+
+
 
 
 
