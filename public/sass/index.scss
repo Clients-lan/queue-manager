@@ -1450,6 +1450,34 @@ tbody{
 
 }
 
+.show-join-queue__form{
+    float: right;
+    cursor: pointer;
+}
+.queue-msg {
+    margin-top: 2rem;
+}
+.join-queue-via-planner{
+    width: 500px;
+    border: $glob-border;
+    margin-top: 3rem;
+    padding: 1rem;
+    border-radius: 5px;
+    .header-box{
+        font-size: 1.8rem;
+    }
+
+    .label-box{
+        font-size: 1.5rem;
+    }
+    @media (max-width:550px) {
+        width: 300px;
+        .label-box{
+            margin-bottom: 1.5rem;
+        }
+    }
+}
+
 .check-v-postion{
    @include elFixedTC();
    background-color: #fff;
@@ -1464,39 +1492,16 @@ tbody{
    }
 }
 
-.visitor-queue-upper-overlay{
-    @include elFixedTC();
-    background-color: #fff;
-    height: 100%;
-    z-index: 99999;
-    text-align: center;
-    padding-top: 4rem;
-    @media (max-width:550px) {
-        overflow-y: scroll;
-    }
-    small{
-        max-width: 55%;
-        display: block;
-        margin: 5% auto;
-        font-size: 1.6rem;
-        font-weight: 300;
+
+.visitor-postion{
+.reatime-postion{
+      font-weight: 600;
+      font-size: 5rem;
     }
     p{
-        font-size: 2.2rem;
-        font-weight: 300;
-    }
-    .round-holder{
-        background-color: #4a4a4a;
-        width: 200px;
-        height: 200px;
-        margin: 5% auto;
-        border-radius: 50%;
-        padding-top: 11%;
-        h2{
-            color: #fff;
-            font-size: 9rem;
-            font-weight: 500;
-        }
+        color: $faded-gray;
+        max-width: 80%;
+        margin: 1rem auto;
     }
 }
 

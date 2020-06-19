@@ -65,6 +65,7 @@ const UserSchema = new mongoose.Schema({
         msg: String,
         num: String,
         sms: String,
+        avgwt: String,
         fweek:[{ 
             sun: String,
             mon: String,

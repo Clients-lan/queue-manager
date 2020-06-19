@@ -30,7 +30,7 @@ router.get('/queue/:vpurl', (req, res) => {
 //@Add Visitors Via Planner Page
 router.post('/join-queue', (req, res) => {
   const { locid, firstname, phone, labels } = req.body;
-  if (firstname != '' || phone != '') {
+  if (firstname != '' && phone != '') {
     let newVisitor = { "firstname": firstname, "phone": phone, "labels": labels, "line": locid, "status": "Waiting", "timeused": null };
 
     User.findOneAndUpdate({ email: labels }, {$push: { visitors: newVisitor } },
@@ -139,19 +139,18 @@ router.post('/savelocation', ensureAuthenticated, (req, res) => {
 
 
 //@Check Position
-router.post('/check-position', (req, res) => {
-  const { phone } = req.body;
-  User.findOne({ 'visitors.phone': phone }).then(data => {
-    if (data) {
-      data.visitors.forEach(visitor => {
-        if (visitor.phone == phone) {
-          res.send({userPhone: visitor})
-        }
-      })
-    }
-    res.send({d: data})
-  })
-})
+// router.post('/check-position', (req, res) => {
+//   const { phone } = req.body;
+//   if (phone !== '' || phone !== null) {
+//     User.findOne({ 'visitors.phone': phone }).then(data => {
+//       if (data) {
+//         data.location.forEach(loc => {
+//           res.send({ data: data, loc: loc })
+//         })
+//      }
+//     })
+//   }
+// })
 
 
 

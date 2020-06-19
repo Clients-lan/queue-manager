@@ -6,10 +6,12 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
 const env = require('dotenv').config({ path: './.env' });
-
+const socketio = require('socket.io')
+const http = require('http')
 
 const app = express();
-
+const server = http.createServer(app)
+const io = socketio(server)
 //Passport config
 require('./config/passport')(passport);
 
@@ -18,6 +20,29 @@ const User = require('./modules/User');
 const { ensureAuthenticated } = require('./config/auth');
 
 
+//@Run When clients connects
+io.on('connection', socket => {
+ // console.log('New Connection...');
+  
+
+  socket.emit('message', 'Welcome')
+  //@Broadcast
+  socket.broadcast.emit('message', 'A user was add')
+
+  socket.on('disconnect', () => {
+    io.emit('message', 'A user has left the chat')
+  })
+  socket.emit('added', isadded => {
+    console.log(isadded);
+  })
+
+  //io.emit()
+
+  //@Lister for Queue Joined
+  socket.on('userAdded', (added) => {
+    io.emit('added', added)
+  })
+})
 
 //@EJS Template Engine
 app.use(expressLayouts);
@@ -68,6 +93,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://allioxsh:AL2020@ds143614.
 
 //@SMS NEXMO
 const Nexmo = require('nexmo');
+const { log } = require('console');
 const nexmo = new Nexmo({
   apiKey: '229aae5a',
   apiSecret: process.env.NEX_KEY,
@@ -185,6 +211,6 @@ app.post('/text-user', (req, res) => {
 
 const PORT = process.env.PORT || 9002;
 // listener
-app.listen(PORT, function () {
+server.listen(PORT, function () {
     console.log(`listening on ${PORT}`);
 });

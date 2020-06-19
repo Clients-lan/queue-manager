@@ -19,14 +19,22 @@
               </div>
               <div class="one-third column">
                   <div class="people-on-queue__total">
-                      <h3 class="poqt-counter"></h3>
+                      <h3 class="poqt-counter">0</h3>
                       <p class="q-waiting">Waiting Visitors at</p>
                       <p class="tag"><%= loc.address %></p>
                   </div>
                   <div class="queue-action-buttons">
-                      <div class="card-queue">
-                          <h4>Already signed in?</h4>
+                      <div class="card-queue already-ck">
+                          <h4>Already checked in?</h4>
                           <a href="#" class="button call-vp btn-danger">see your position <span>🙂</span></a>
+                      </div>
+                      <div class="visitor-postion card-queue hide">
+                          <h5>Hi <span class="visitor-n-on-v"></span> </h5>
+                          <div class="--dash"></div>
+                          <p>Here's your position in the queue</p>
+                          <h2 class="reatime-postion">0</h2>
+                          <div class="--dash"></div>
+                          <p>We'll text you when we're almost ready to see you</p>
                       </div>
                   </div>
               </div>
@@ -43,6 +51,37 @@
                    <div class="header-box">Remote Sign-in: 
                        <% if(loc.allowqueue == 'yes'){ %>
                            <span class="green-tag">Available</span>
+                           <ion-icon name="chevron-down-outline" class="show-join-queue__form"></ion-icon>
+
+                           
+                            <div class="queue-msg notify-success hide"></div>
+                            <div class="join-queue-via-planner hide">
+                                <div class="row">
+                                    <div class="header-box">Not checked in already?</div>
+                                </div>
+                                <form class="join-queue-vp__form">
+                                    <div class="row">
+                                        <div class="one-half column"><label class="label-box">Fullname</label></div>
+                                        <div class="one-half column">
+                                            <input type="text" name="firstname" class="u-full-width" placeholder="Your Fullname" required>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="one-half column"><label class="label-box">Phone</label></div>
+                                        <div class="one-half column">
+                                            <input type="text" name="phone" class="u-full-width" placeholder="Enter phone number" required>
+                                        </div>
+                                    </div>
+
+                                    <input type="hidden" name="locid" value="<%= loc._id %>">
+                                    <input type="hidden" name="labels" value="<%= data.email %>">
+                                    <input type="hidden" name="msg" value="<%= loc.msg %>">
+                                    <div class="row">
+                                        <button type="submit" class="btn-outline btn-block">sign in to join</button>
+                                    </div>
+                                </form>
+                            </div>
+    
                       <% } else { %>
                            <span class="red-tag">Unavailable</span>
                       <% } %>
@@ -55,28 +94,9 @@
                        <div class="--dash"></div>
                    </div>
                    <div class="col-3 card">
-                    <% if(loc.allowqueue == 'yes'){ %>
-                        <div class="queue-msg notify-success hide"></div>
-                        <div class="join-queue-via-planner">
-                            <div class="header-box">Not signed in already?</div>
-                            <form class="join-queue-vp__form">
-                                <input type="text" name="firstname" class="u-full-width" placeholder="Your Fullname" required>
-                                <input type="text" name="phone" class="u-full-width" placeholder="Enter phone number" required>
-                                <input type="hidden" name="locid" value="<%= loc._id %>">
-                                <input type="hidden" name="labels" value="<%= data.email %>">
-                                <input type="hidden" name="msg" value="<%= loc.msg %>">
-                                <button type="submit" class="btn-outline btn-block">sign in to join</button>
-                            </form>
-                        </div>
-                   <% } %>
+               
                 
-                      <div class="header-box">Already signed in?</div>
-                     <div class="--dash mt-5 mb-5"></div>
-                    <a href="#" class="button call-vp btn-danger">see your position <span>🙂</span></a>
-                    <div class="q-planner-info">
-                        <a href="tel:<%= loc.adminphone %>"><%= loc.adminphone %></a>
-                        <a href="mailto:<%= loc.adminmail %>"><%= loc.adminmail %></a>
-                    </div>
+                    
                     
                    </div>
                    <div class="col-3 card">
@@ -109,13 +129,7 @@
             </div>
         </div>
 
-         <% data.visitors.forEach(people => { %>
-            <ul id="queue-page-vistiors-planner" class="hide">
-            <% if(people.status == 'Waiting' && people.line == loc._id){ %>
-                <li class="pwoqlist"><%= people.phone %></li>
-           <% } %>
-            </ul>
-         <% }) %>
+     
 
         <div class="leaf-attr hide">
             <p id="addr"><%= loc.address %></p>
@@ -152,83 +166,36 @@
       <div class="global-overlay hide"></div>
 
 
-      <div class="visitor-queue-upper-overlay hide">
-          <div class="vquo">
-            <h4>Hi <span></span></h4>
-            <p>Thank you for waiting</p>
-            <div class="--dash"></div>
-            <small>Here's your position in the queue</small>
-  
-            <div class="round-holder">
-              <h2 class="uq-number__postion"></h2>
-            </div>
-            <small>We'll text you when we're almost ready to see you</small>
-          </div>
-          <div class="no-vquo hide">
-              <h3>No result found, sorry.</h3>
-          </div>
-      </div>
 
 
-     
+<script>
+//@Map
+const addr = document.querySelector('#addr').innerHTML;
+const lat = document.querySelector('#lat').innerHTML;
+const lng = document.querySelector('#lng').innerHTML;
+const pageMap = L.map('pagemap').setView([parseInt(lat), parseInt(lng)], 4);
 
 
-      <script>
-
-          
-  const addr = document.querySelector('#addr').innerHTML;
-    const lat = document.querySelector('#lat').innerHTML;
-    const lng = document.querySelector('#lng').innerHTML;
-    
-
-let pageMap = L.map('pagemap').setView([parseInt(lat), parseInt(lng)], 4);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 18
-      }).addTo(pageMap);
-      pageMap.panTo(new L.LatLng(parseInt(lat), parseInt(lng)));
-      L.marker([parseInt(lat), parseInt(lng)], 5).addTo(pageMap).bindPopup(addr).openPopup();
-
-
-      let queuePageCount = document.querySelectorAll('#queue-page-vistiors-planner li')
-      document.querySelector('.poqt-counter').innerHTML = queuePageCount.length
-     
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
+  maxZoom: 18
+}).addTo(pageMap);
+pageMap.panTo(new L.LatLng(parseInt(lat), parseInt(lng)));
+L.marker([parseInt(lat), parseInt(lng)], 5).addTo(pageMap).bindPopup(addr).openPopup();
 
 
 
-      //@Join Queue
-      const queueMsg = document.querySelector('.queue-msg')
-      const joinQform = document.querySelector('.join-queue-vp__form')
+document.querySelector('.show-join-queue__form').addEventListener('click', () => {
+    const sjqf = document.querySelector('.join-queue-via-planner')
 
-
-        joinQform.addEventListener('submit', (e) => {
-            e.preventDefault()
-
-            fetch('/join-queue', {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        locid: joinQform['locid'].value,
-                        labels: joinQform['labels'].value,
-                        firstname: joinQform['firstname'].value,
-                        phone: joinQform['phone'].value.replace(/\D/g, '')
-                    })
-                }).then((res) => {
-                    return res.json()
-                }).then(res => {
-                    setTimeout(() => {
-                        document.querySelector('.join-queue-via-planner').classList.add('hide')
-                        queueMsg.classList.remove('hide')
-                        queueMsg.innerHTML = joinQform['msg'].value;
-                        location.reload()
-                    }, 1000);
-                })
-
-        })
-     
-     </script>
+    if(sjqf.classList.contains('hide')){
+        sjqf.classList.remove('hide')
+    } else {
+        sjqf.classList.add('hide')
+    }
+})
+ 
+</script>
 
 
 

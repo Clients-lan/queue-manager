@@ -1,4 +1,5 @@
 <title>Serve visitors</title>
+<script src="/socket.io/socket.io.js"></script>
 
 <%- include('./components/sidebar') -%>
 <% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
@@ -127,8 +128,27 @@
 <div class="--serving-page"></div>
 <div class="global-overlay hide"></div>
 
+
 <% } %>
 <%- include('./components/uialert') -%>
 
 
+<script>
+    // const socket = io()
+    // socket.emit('userAdded', 'Hello') //Emit
+
+    //  const ul = document.querySelector('#queue-holder')
+    //  socket.on('added', isadded => {
+    //     console.log(isadded);
+    //     outPutMessage(isadded)
+    // })
+
+    // const outPutMessage = (isadded) => {
+    //     let fakeLi = document.createElement('li')
+    //     fakeLi.innerHTML = `${isadded.plan}`
+    //     ul.appendChild(fakeLi)
+    // }
+
+
+</script>
 
