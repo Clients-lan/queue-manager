@@ -1457,6 +1457,87 @@ tbody{
 .queue-msg {
     margin-top: 2rem;
 }
+.clock-el{
+    text-align: center;
+    margin: 2rem 0;
+    h3{
+        
+    }
+
+    
+.clock {
+	width: 150px;
+    height: 150px;
+    margin: 2rem auto;
+	background: radial-gradient(
+		circle,
+		rgba(242, 244, 246, 1) 0%,
+		rgba(221, 221, 221, 1) 100%
+	);
+	border: 8px solid #4a4a4a;
+	border-radius: 50%;
+	position: relative;
+    box-shadow: 3px 7px 15px 0px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+.center {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-50%);
+	border-radius: 50%;
+	background-color: #444;
+	z-index: 9999;
+	box-shadow: 3px 4px 3px 0px rgba(0, 0, 0, 0.15);
+}
+
+.pointer {
+	position: absolute;
+    transform-origin: bottom;
+	transition: transform .25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	z-index: 100;
+}
+
+.pointer__seconds {
+	height: 50%;
+	background-color: red;
+	width: 2px;
+	left: calc(50% - 1px);
+}
+
+.pointer__minutes {
+	height: 45%;
+	top: 5%;
+	left: calc(50% - 2px);
+	background-color: #4a4a4a;
+	width: 4px;
+}
+
+.pointer__hours {
+	height: 35%;
+	top: 15%;
+	left: calc(50% - 2px);
+	background-color: #4a4a4a;
+	width: 4px;
+}
+
+.indicator {
+	position: absolute;
+	top: 0;
+	left: calc(50% - 1px);
+	width: 2px;
+    height: 100%;
+	background-color: transparent;
+	border-top: 7px solid grey;
+}
+
+.indicator--fifth {
+	border-top: 13px solid #4a4a4a;
+}
+}
 .join-queue-via-planner{
     width: 500px;
     border: $glob-border;

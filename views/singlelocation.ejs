@@ -55,6 +55,11 @@
                 <div class="--dash mt-5"></div>
                 <p>Manage Team</p>
             </a>
+            <a href="#" class="more-option card">
+                <img src="/assets/Guacamole Illustrations/svg/19_404_general.svg">
+                <div class="--dash mt-5"></div>
+                <p>More Option</p>
+            </a>
         </section>
 
         <!-- END OF CARDS -->
@@ -441,6 +446,50 @@
             </div>
         </div>
 
+
+        <!-- Estimated time -->
+        <div class="global-page --more-opt">
+            <div class="close-page btn-playful"><ion-icon name="arrow-back-outline"></ion-icon> <span>back</span></div>
+            <div class="globe-box wrapper-small">
+                
+                
+                <form class="save-est-time">
+                    <div class="header-box">Set Waiting time</div>
+                    <div class="--dash"></div>
+                    <div class="row has-child-paragraph">
+                        <div class="one-half column">
+                            <label class="label-box">Estimated waiting time</label>
+                            <p>This will be visible on your planner page</p>
+                        </div>
+                        <div class="one-half column">
+                            <input type="text" name="avgwt" class="u-full-width" placeholder="Enter value eg. 50 mins" value="<%= location.avgwt %>">
+                        </div>
+                    </div>
+                    <div class="--dash mb-5"></div>
+                  <div class="row">
+                   <div class="one-half column"></div>
+                    <div class="one-half column u-pull-right">
+                      <input type="hidden" name="locid" value="<%= location._id %>">  
+                      <button type="submit" class="btn-block btn-outline">save time</button>
+                    </div>
+                </div>
+                </form>
+                <div class="--dash"></div>
+
+               
+                <form action="/delete-location" method="POST">
+                    <div class="header-box">Danger Zone</div>
+                    <div class="--dash"></div>
+                    <div class="row">
+                        <div class="twelve column mt-3">
+                            <button type="submit" class="btn-danger u-pull-left">Delete location <span>🥺</span></button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="locid" value="<%= location._id %>">  
+                </form>
+           
+            </div>
+        </div>
 
             <div class="leaf-attr hide">
                 <p id="addr"><%= location.address %></p>

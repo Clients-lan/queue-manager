@@ -115,6 +115,10 @@ let map = L.map('smap').setView([40.91, -96.63], 4);
       dom.querySelector('.team-members').addEventListener('click', () => {
           dom.querySelector('.--team').style.transform = 'translateY(0%)'
       })
+    
+      dom.querySelector('.more-option').addEventListener('click', () => {
+        dom.querySelector('.--more-opt').style.transform = 'translateY(0%)'
+    })
 
 
       //# Close Tab Trigger
@@ -370,6 +374,29 @@ updatemapForm.addEventListener('submit', (e) => {
     })
 
 
+
+    //@Update Est Time
+const saveEsttime = dom.querySelector('.save-est-time')
+  saveEsttime.addEventListener('submit', (e) => {
+    e.preventDefault()
+
+    fetch('/update-est-time', {
+      method: 'post',
+      headers: {
+         'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        locid: saveEsttime['locid'].value,
+        avgwt: saveEsttime['avgwt'].value,
+     })
+    }).then(res => {
+        if(res.status === 200){
+            uialertText.innerHTML = 'Est. time has been updated!'
+            callUIalert()
+            setTimeout(() => { location.reload() }, 3000)
+        }
+    })
+})
 }
 //@End of Single Location===========================
 
@@ -437,9 +464,8 @@ if (dom.querySelector('.setup')) {
         locationForm.classList.add('hide')
         virtualMethod.classList.remove('hide-force')
           dom.querySelector('.setup .header-box').innerHTML = `How would you like to greet and sign in visitors? (This won't affect anything)`;
-          dom.querySelector('.lession-one').classList.add('hide')
       }
-
+      dom.querySelector('.lession').classList.add('hide-force')
     })
 
 
@@ -862,7 +888,7 @@ if (dom.querySelector('.check-v-position__form')) {
 
 //@Socket
 
-if (dom.querySelector('.leaf-attr')) {
+if (dom.querySelector('.queue-msg')) {
    
 const checkPositionForm = document.querySelector('.check-v-position__form')
 

@@ -8,7 +8,7 @@
   <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.css" />
 
 
-
+  <% if(data){ %>
     <% data.location.forEach(loc => { %>
         <% if (loc.vpurl === url) { %>
           <title><%= loc.header %></title>
@@ -77,7 +77,7 @@
                                     <input type="hidden" name="labels" value="<%= data.email %>">
                                     <input type="hidden" name="msg" value="<%= loc.msg %>">
                                     <div class="row">
-                                        <button type="submit" class="btn-outline btn-block">sign in to join</button>
+                                        <button type="submit" class="btn-outline btn-block">check in</button>
                                     </div>
                                 </form>
                             </div>
@@ -94,10 +94,17 @@
                        <div class="--dash"></div>
                    </div>
                    <div class="col-3 card">
-               
-                
-                    
-                    
+                       <div class="header-box">Average waiting time</div>
+                       <div class="--dash"></div>  
+                       <div class="clock-el">
+                           <h3> <%= loc.avgwt %></h3>
+                           <div class="clock">
+                            <div class="center"></div>
+                            <div class="pointer pointer__seconds"></div>
+                            <div class="pointer pointer__minutes"></div>
+                            <div class="pointer pointer__hours"></div>
+                          </div>
+                       </div>                  
                    </div>
                    <div class="col-3 card">
                     <label class="header-box">availabilty (this week)</label>
@@ -166,7 +173,7 @@
       <div class="global-overlay hide"></div>
 
 
-
+      <% } %>
 
 <script>
 //@Map
@@ -195,6 +202,64 @@ document.querySelector('.show-join-queue__form').addEventListener('click', () =>
     }
 })
  
+
+// DOM Elements
+const clock = document.querySelector('.clock');
+const pointerSec = document.querySelector('.pointer__seconds');
+const pointerMin = document.querySelector('.pointer__minutes');
+const pointerHours = document.querySelector('.pointer__hours');
+
+// Globals
+const date = new Date();
+let degSeconds = date.getSeconds() * 6;
+let degMinutes = date.getMinutes() * 6;
+let degHours = date.getHours() * 30;
+
+const init = () => {
+	placeIndicators();
+	setInterval(runClock, 1000);
+};
+
+const runClock = () => {
+	degSeconds += 6;
+	degMinutes += degSeconds === 360 ? 6 : 0;
+	degHours += degMinutes === 360 ? 30 : 0;
+
+	pointerSec.style.transform = `rotate(${degSeconds}deg)`;
+	pointerMin.style.transform = `rotate(${degMinutes}deg)`;
+	pointerHours.style.transform = `rotate(${degHours}deg)`;
+
+
+	pointerSec.addEventListener('transitionend', (e) => {
+		if(degSeconds === 360) {
+			e.target.style.transition = 'none';
+			degSeconds = 0;
+			e.target.style.transform = `rotate(${degSeconds})`;
+
+			setTimeout(() => {
+				e.target.style.transition = 'transform .25s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+			}, 200);
+		}
+	});
+}
+
+const placeIndicators = () => {
+    for(let i = 0; i < 360; i+=6) {
+        const indicator = document.createElement('div');
+		indicator.classList.add('indicator');
+
+		if(i % 5 === 0) {
+			indicator.classList.add('indicator--fifth');
+		}
+
+		indicator.style.transform = `rotate(${i}deg)`;
+		clock.appendChild(indicator);
+    }
+}
+
+init();
+
+
 </script>
 
 

@@ -112,6 +112,15 @@ router.post('/update-sms', ensureAuthenticated, (req, res) => {
    res.send()
 })
 
+//@Update Estimated Time
+router.post('/update-est-time', ensureAuthenticated, (req, res) => {
+  const { locid, avgwt } = req.body;
+  User.findOneAndUpdate({ email: req.user.email }, { $set: { "location.$[elem].avgwt": avgwt } }, { arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(locid) }], new: true }).exec((err, docs) => {
+    if (err) { return }
+  })
+   res.send()
+})
+
 
 //@Add Team
 router.post('/add-teams', ensureAuthenticated, (req, res) => {
@@ -122,9 +131,6 @@ router.post('/add-teams', ensureAuthenticated, (req, res) => {
   })
   res.send()
 });
-
-
-
 
 
 //@Save Location
@@ -138,25 +144,31 @@ router.post('/savelocation', ensureAuthenticated, (req, res) => {
 });
 
 
-//@Check Position
-// router.post('/check-position', (req, res) => {
-//   const { phone } = req.body;
-//   if (phone !== '' || phone !== null) {
-//     User.findOne({ 'visitors.phone': phone }).then(data => {
-//       if (data) {
-//         data.location.forEach(loc => {
-//           res.send({ data: data, loc: loc })
-//         })
-//      }
-//     })
-//   }
-// })
+//@Delete Location
+router.post('/delete-location', ensureAuthenticated, (req, res) => {
+  const { locid } = req.body;
+  User.findOne({ email: req.user.email }, { 'location': { $elemMatch: { _id: locid } } }, (err, data) => {
+    if (err) {
+      return;
+    } else {
+      //@Remove from Location
+       User.updateOne({ email: req.user.email }, { $pull: { location: { _id : locid } } },{ safe: true }, (err, obj) => {
+           if (err) { return } 
+       });
+       res.redirect('/u/places')
+    }
+  })
+})
 
 
 
 
 
-//@ STRIPE =============================== @//
+
+//@ ===========================================================================
+//========================================================================
+
+//STRIPE =============================== @//
 router.get('/public-key', (req, res) => {
   res.send({ publicKey: process.env.STRIPE_PUBLISHABLE_KEY });
 });
