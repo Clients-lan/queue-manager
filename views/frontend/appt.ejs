@@ -60,7 +60,7 @@
                  <button type="submit" class="btn-outline my-3">book now</button>
              </form>
              <form action="/check-appt-client" method="post" class="inner-page globe-box">
-                <div class="header-box">Already Booked an appointment?</div> <ion-icon name="reorder-two-outline" class="open-checker"></ion-icon>
+                <div class="header-box mks">Already Booked an appointment?</div> <ion-icon name="reorder-two-outline" class="open-checker"></ion-icon>
                 
                 <div class="appt-checker-inner hide">
                     <p class="ml-3">Let owner know that you're currently at their location</p>
@@ -146,31 +146,3 @@
 
 
 
-
-<script>
-
-
-    document.querySelectorAll('.slots-time-db').forEach((time) => {
-     let timeholder = document.querySelector('#timehd')
-     let timeReveal = document.querySelector('.time-reveal-bp')
-        time.addEventListener('click', () => {
-            timeholder.value = `${time.id} ${time.innerHTML}`
-            document.querySelector('.time-reveal-bp').innerHTML = timeholder.value
-        })
-    })
-
-
-    const apptCheckerForm =  document.querySelector('.appt-checker-inner')
-
-    document.querySelector('.open-checker').addEventListener('click', (e) => {
-
-        e.preventDefault()
-
-        
-        if(apptCheckerForm.classList.contains('hide')){
-            apptCheckerForm.classList.remove('hide')
-        } else {
-            apptCheckerForm.classList.add('hide')
-        }
-    })
-</script>

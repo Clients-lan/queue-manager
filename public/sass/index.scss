@@ -2417,9 +2417,16 @@ tbody{
         right: 1rem;
         font-size: 2.5rem;
         cursor: pointer;
+        @media (max-width:550px) {
+            right: 0;
+        }
     }
 }
 
+.mks{
+    font-size: 1.8rem;
+    margin-left: .7rem;
+}
 
 
 .comfirm{

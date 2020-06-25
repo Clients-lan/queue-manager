@@ -248,12 +248,22 @@ router.post('/save-slot', ensureAuthenticated, (req, res) => {
     let newSlot = { "time": `${slotone} - ${slottwo}`, "day": week };
     User.findOneAndUpdate({ email: user.email }, { $push: { slot: newSlot }}, {useFindAndModify: false}).exec((err, docs) => {
       if (!err) {
-        req.flash('success_msg', 'SMS sent!');
+        req.flash('success_msg', 'Slot saved!');
         res.redirect('/u/slots')
       }
     })
   }
 
+})
+
+//@Delete Slot
+router.post('/delete-slot', ensureAuthenticated, (req, res) => {
+  const { id } = req.body
+  User.updateOne({ email: req.user.email }, { $pull: { slot: { _id : id } } },{ safe: true }, (err, obj) => {
+    if (err) { return } 
+  });
+  req.flash('success_msg', 'Slot deleted!');
+  res.redirect('/u/slot')
 })
 
 //@Update Booking page Link

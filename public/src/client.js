@@ -1054,3 +1054,132 @@ window.addEventListener('DOMContentLoaded', () => {
         queryQueue()
     }
 })
+
+
+
+
+
+//@For Appointment booking page on Frontend
+
+if (dom.querySelector('.time-reveal-bp')) {
+    dom.querySelectorAll('.slots-time-db').forEach((time) => {
+        let timeholder = dom.querySelector('#timehd')
+        let timeReveal = dom.querySelector('.time-reveal-bp')
+           time.addEventListener('click', () => {
+               timeholder.value = `${time.id} ${time.innerHTML}`
+               timeReveal.innerHTML = timeholder.value
+           })
+       })
+   
+       const apptCheckerForm =  dom.querySelector('.appt-checker-inner')
+       dom.querySelector('.open-checker').addEventListener('click', (e) => {
+   
+           e.preventDefault()
+           if(apptCheckerForm.classList.contains('hide')){
+               apptCheckerForm.classList.remove('hide')
+           } else {
+               apptCheckerForm.classList.add('hide')
+           }
+       })
+}
+
+
+
+
+//@On Admin side // Appointement
+
+if (dom.querySelector('.add-b-url')) {
+    const bookingURL = dom.querySelector('.booking-url-form #link');
+    const bookingUrlForm = dom.querySelector('.booking-url-form')
+    let overlayOnAppt = dom.querySelector('.global-overlay')
+    
+
+    //@ Booking page URL Add '-' on every space
+    bookingURL.addEventListener('keyup', () => {
+    bookingURL.value = bookingURL.value.replace(/\s+/g, '-').toLowerCase(); 
+})
+
+
+overlayOnAppt.addEventListener('click', () => {
+    bookingUrlForm.classList.add('hide')
+    overlayOnAppt.classList.add('hide')
+    document.querySelectorAll('.booking-actions').forEach(uaf => {
+        uaf.classList.add('hide')
+    })
+})
+
+dom.querySelector('.add-b-url').addEventListener('click', (e) => {
+    e.preventDefault()
+    bookingUrlForm.classList.remove('hide')
+    overlayOnAppt.classList.remove('hide')
+})
+
+dom.querySelectorAll('.u-booking-actions').forEach(uactions => {
+    uactions.addEventListener('click', (e) => {
+        e.preventDefault()
+
+        overlayOnAppt.classList.remove('hide')
+        uactions.nextElementSibling.classList.remove('hide')
+    })
+})
+}
+
+
+
+//@Slot page
+
+if(dom.querySelector('.add-time-slot')){
+
+    new tui.TimePicker('#timepicker-start-mer', {
+        initialHour: 12,
+        initialMinute: 13,
+        inputType: 'selectbox',
+        showMeridiem: true
+     });
+
+     new tui.TimePicker('#timepicker-end-mer', {
+        initialHour: 12,
+        initialMinute: 13,
+        inputType: 'selectbox',
+        showMeridiem: true
+     });
+
+
+
+
+    let el =  dom.querySelectorAll('.start-b-time select')
+    let el2 =  dom.querySelectorAll('.end-b-time select')
+    const slotone = dom.querySelector('input[name=slotone]')
+    const slottwo = dom.querySelector('input[name=slottwo]')
+
+
+         for(let i = 0; i < el.length; i++){
+             el[2].disabled = true;
+             el[i].addEventListener('change', () => {
+                let timeVal = `${el[0].value}:${el[1].value} ${el[3].value}`
+                slotone.value = timeVal
+             })
+         }
+
+         for(let i = 0; i < el2.length; i++){
+             el2[2].disabled = true;
+             el2[i].addEventListener('change', () => {
+                let timeVal = `${el2[0].value}:${el2[1].value} ${el2[3].value}`
+                slottwo.value = timeVal
+             })
+         }
+            
+
+         const timeSlotTab = dom.querySelector('.time-booking')
+
+         dom.querySelector('.add-time-slot').addEventListener('click', (e) => {
+             e.preventDefault()
+             timeSlotTab.classList.remove('hide')
+             dom.querySelector('.global-overlay').classList.remove('hide')
+         })
+         dom.querySelector('.close-time-slot').addEventListener('click', (e) => {
+             e.preventDefault()
+             timeSlotTab.classList.add('hide')
+             dom.querySelector('.global-overlay').classList.add('hide')
+         })
+}

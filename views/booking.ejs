@@ -116,44 +116,4 @@
 
 
 
-    <script>
-
-//@ Booking page URL Add '-' on every space
-const bookingURL = document.querySelector('.booking-url-form #link');
-bookingURL.addEventListener('keyup', () => {
-    bookingURL.value = bookingURL.value.replace(/\s+/g, '-').toLowerCase(); 
-})
-
-
-
-const bookingUrlForm = document.querySelector('.booking-url-form')
-let overlayOnAppt = document.querySelector('.global-overlay')
-
-
-
-overlayOnAppt.addEventListener('click', () => {
-    bookingUrlForm.classList.add('hide')
-    overlayOnAppt.classList.add('hide')
-    document.querySelectorAll('.booking-actions').forEach(uaf => {
-        uaf.classList.add('hide')
-    })
-})
-
-
-document.querySelector('.add-b-url').addEventListener('click', (e) => {
-    e.preventDefault()
-    bookingUrlForm.classList.remove('hide')
-    overlayOnAppt.classList.remove('hide')
-})
-
-
-
-document.querySelectorAll('.u-booking-actions').forEach(uactions => {
-    uactions.addEventListener('click', (e) => {
-        e.preventDefault()
-
-        overlayOnAppt.classList.remove('hide')
-        uactions.nextElementSibling.classList.remove('hide')
-    })
-})
-    </script>
+   
