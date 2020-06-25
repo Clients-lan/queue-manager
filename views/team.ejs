@@ -2,7 +2,7 @@
 
 <% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
 
-<div class="global-upper-section main-layout">
+<div class="global-upper-section main-layout vev-page hide-force">
     <div class="row">
         <div class="one-half column"><h3>Team</h3></div>
         <div class="one-half column">
@@ -10,7 +10,7 @@
         </div>
     </div>
     
-<section class="team-panel globe-box">
+<section class="team-panel globe-box vev-page hide-force">
     <% if(teams){ %>
         <%  teams.forEach(team => { %>
              <div class="row team-list">
@@ -26,7 +26,7 @@
         <% }) %>
      <% } %>
 
-     <form class="hide add-teams">
+     <form class="hide add-teams vev-page hide-force">
         <div class="header-box">Invite Team</div>
       <div class="--dash"></div>
           <div class="row">
@@ -87,6 +87,7 @@
 <% } %>
 
 <%- include('./components/uialert') -%>
+<%- include('./aouth') -%>
 
 
 

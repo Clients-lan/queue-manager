@@ -2,7 +2,8 @@
 
 <div class="topnav-bar">
     <a href="/" class="brand-f-logo">
-      <img src="/assets/logo_white.svg" class="wh-logo">
+      <img src="/assets/flex-02.png" class="wh-logo">
+      <img src="/assets/flex-01.png" class="dak-logo hide">
     </a>
     <div class="tn-items">
         <a href="/">Home</a>
@@ -30,3 +31,21 @@
     <a href="/u/register">Register</a>
 </div>
 
+
+
+<script>
+
+const mobileNav = document.querySelector('.mobile-menu')
+document.querySelector('.menu-trigger').addEventListener('click', (e) => {
+    e.preventDefault()
+
+    if(mobileNav.classList.contains('not-active')){
+        mobileNav.style.transform = 'translateY(0%)'
+        mobileNav.classList.remove('not-active')
+    } else {
+        mobileNav.style.transform = 'translateY(-200%)'
+        mobileNav.classList.add('not-active')
+    }
+
+})
+</script>

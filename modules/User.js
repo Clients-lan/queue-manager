@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const  passportLocalMongoose = require('passport-local-mongoose')
 
 
 const UserSchema = new mongoose.Schema({
@@ -21,6 +22,14 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    onepass: {
+        type: String,
+        required: false
+    },
+    password2: {
+        type: String,
+        required: false
     },
     subscribed: {
         type: String,
@@ -106,6 +115,7 @@ const UserSchema = new mongoose.Schema({
         location: String,
         status: String,
         timeused: String,
+        place: String,
         date: {
             type: Date,
             default: Date.now
@@ -114,11 +124,29 @@ const UserSchema = new mongoose.Schema({
     date: {
         type: Date,
         default: Date.now
-    }
+    },
+    slot: [{
+        time: String,
+        day: String
+    }],
+    book: [{
+        name: String,
+        email: String,
+        phone: String,
+        time: String,
+        status: String,
+        location: String
+    }],
+    bookinglink: {
+        type: String,
+        required: false
+    },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date
 })
 
 
-
+UserSchema.plugin(passportLocalMongoose)
 const User = mongoose.model('User', UserSchema);
 
 module.exports = User;

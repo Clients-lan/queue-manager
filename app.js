@@ -8,7 +8,8 @@ const passport = require('passport');
 const env = require('dotenv').config({ path: './.env' });
 const socketio = require('socket.io')
 const http = require('http')
-
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const app = express();
 const server = http.createServer(app)
 const io = socketio(server)
@@ -22,25 +23,9 @@ const { ensureAuthenticated } = require('./config/auth');
 
 //@Run When clients connects
 io.on('connection', socket => {
- // console.log('New Connection...');
-  
-
-  socket.emit('message', 'Welcome')
-  //@Broadcast
-  socket.broadcast.emit('message', 'A user was add')
-
-  socket.on('disconnect', () => {
-    io.emit('message', 'A user has left the chat')
-  })
-  socket.emit('added', isadded => {
-    console.log(isadded);
-  })
-
-  //io.emit()
-
-  //@Lister for Queue Joined
-  socket.on('userAdded', (added) => {
-    io.emit('added', added)
+  socket.on('emiting', (data) => {
+    socket.emit('emiting', data)
+    socket.broadcast.emit('emiting', data)
   })
 })
 
@@ -90,16 +75,12 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://allioxsh:AL2020@ds143614.
 
 
 
-
 //@SMS NEXMO
 const Nexmo = require('nexmo');
-const { log } = require('console');
 const nexmo = new Nexmo({
   apiKey: '229aae5a',
   apiSecret: process.env.NEX_KEY,
 });
-
-
 
 
 //@Query Visitors and check
@@ -108,8 +89,6 @@ app.post('/query-visitors', (req, res) => {
     if (!err) {
       data.location.forEach(real => {
         if (real._id == req.body.locid) {
-          console.log('Queried!');
-          
           res.send({location: real, data: data})
         }
       })
@@ -118,83 +97,43 @@ app.post('/query-visitors', (req, res) => {
 })
 
 
-// app.get('/send', (req, res) => {
-
-// const from = 'NexmO'
-// const to = '393510378070'
-// const text = 'A text message sent using the Nexmo SMS API'
-
-// nexmo.message.sendSms(from, to, text, (err, responseData) => {
-//     if (err) {
-//         console.log(err);
-//     } else {
-//         if(responseData.messages[0]['status'] === "0") {
-//             console.log("Message sent successfully.");
-//         } else {
-//             console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
-//         }
-//     }
-// })
-//   res.send()
-// })
-
 //@Update Visitor
 app.post('/serve-visitor', (req, res) => {
-  const { locationId, visitorId, visitorLabel } = req.body;
-  User.findOneAndUpdate({ email: visitorLabel, "visitors._id": visitorId },
+  const { vsid, phone, email } = req.body;
+  User.findOneAndUpdate({ email: email, "visitors._id": vsid },
     { $set: { "visitors.$.status": "Serving" } }).exec((err, docs) => {
-      if (err) {
-        console.log(err);
-      } else {
-        docs.visitors.forEach((doc) => {
-          if (doc.line == locationId && doc._id == visitorId) {
-            docs.location.forEach(smsText => {
-              if (smsText._id == locationId) {
-            
-                const to = doc.phone;
-                const from = `Flex-Q from ${smsText.name}`;
-                const text = `Hello ${doc.firstname}, ${smsText.sms}`//smsText.sms;
-                //@Send SMS
-                 nexmo.message.sendSms(from, to, text, {type: 'unicode'}, (err, responseData) => {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        if(responseData.messages[0]['status'] === "0") {
-                            console.log('Message sent successfully. ');
-                        } else {
-                            console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
-                      }
-                    }
-                })
-              }
-            })
-            res.send({ data: doc })
-          }
+      if (!err) {
+        const from = 'Flexi-Q'
+        const to = phone
+        const text = 'A text message sent using the Nexmo SMS API'
+
+        nexmo.message.sendSms(from, to, text, (err, responseData) => {
+            if (err) {
+                console.log(err);
+            } else {
+                if(responseData.messages[0]['status'] === "0") {
+                    console.log("Message sent successfully.");
+                } else {
+                    console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
+                }
+            }
         })
+        res.status(200)
+        res.send()
      }
   })
 })
 
-//@Update Visitor to Served
-app.post('/finish-visitor', (req, res) => {
-  const { id, label, timeused } = req.body;
-  User.findOneAndUpdate({ email: label, "visitors._id": id },
-    { $set: { "visitors.$.status": "Served", "visitors.$.timeused": timeused } }).exec((err, docs) => {
-      if (!err) {
-         res.send()
-      } 
-  })
-})
 
-
+//@Text user // Using custom form/msg
 app.post('/text-user', (req, res) => {
   const { phone, text } = req.body;
-
   const from = `Flex-Q`;
   //@Send SMS
    nexmo.message.sendSms(from, phone, text, {type: 'unicode'}, (err, responseData) => {
       if (err) {
-          console.log(err);
+        console.log(err);
+        return
       } else {
           if(responseData.messages[0]['status'] === "0") {
             console.log('Message sent successfully. ');
@@ -206,6 +145,80 @@ app.post('/text-user', (req, res) => {
   })
   res.send()
 })
+
+
+//@Call in User for the Appointment they booked
+app.post('/call-appt', ensureAuthenticated, (req, res) => {
+  const { phone, name } = req.body;
+  const from = `Flexi-Q`;
+  const text = `Hello ${name}, you're next! You can come in now.`
+  //@Send SMS
+   nexmo.message.sendSms(from, phone, text, {type: 'unicode'}, (err, responseData) => {
+     if (err) {
+       console.log(err);
+       return
+      } else {
+          if(responseData.messages[0]['status'] === "0") {
+            console.log('Message sent successfully. ');
+           //@Change Status
+           User.findOneAndUpdate({ email: req.user.email }, { $set: { "book.$[elem].status": 'called' } }, { arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(id) }], new: true }).exec((err, docs) => {
+            if (err) { return }
+          })
+            req.flash('success_msg', 'Slot saved!');
+          } else {
+              console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
+        }
+      }
+   })
+  res.redirect('/u/appointment')
+})
+
+
+//@Check for user appointment
+app.post('/check-appt-client', (req, res) => {
+  const { emailid, phone, email } = req.body;
+  User.findOne({ email: emailid, 'book.phone': phone, 'book.email': email }).then(user => {
+    if (user) {
+      res.render('confirm', {
+        msg: 'Location owner has been alerted' 
+      })
+      user.book.forEach(bo => {
+        if (bo.phone === phone && bo.email === email) {
+          User.findOneAndUpdate({ email: emailid }, { $set: { "book.$[elem].status": 'online' } }, { arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(bo._id) }], new: true }).exec((err, docs) => {
+            if (err) { return }
+          })
+          const from = `Flexi-Q Appointment`;
+          const text = `Hey ${user.first}, ${bo.name} is already at your location, please check your schedule to see if they're at the right time`;
+          //@Send SMS
+           nexmo.message.sendSms(from, phone, text, {type: 'unicode'}, (err, responseData) => {
+             if (err) {
+               console.log(err);
+               return
+              } else {
+                  if(responseData.messages[0]['status'] === "0") {
+                    console.log('Message sent successfully. ');
+                   //@Change Status
+                   User.findOneAndUpdate({ email: req.user.email }, { $set: { "book.$[elem].status": 'called' } }, { arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(id) }], new: true }).exec((err, docs) => {
+                    if (err) { return }
+                  })
+                    req.flash('success_msg', 'Slot saved!');
+                  } else {
+                      console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
+                }
+              }
+           })
+        }
+      })
+    } else {
+      res.render('confirm', {
+        msg: 'We cound not process your enquiries, sorry.'
+      })
+    }
+  })
+})
+
+
+
 
 
 

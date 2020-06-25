@@ -1,6 +1,6 @@
 <title>Serve visitors</title>
 <script src="/socket.io/socket.io.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js" integrity="sha256-ZsWP0vT+akWmvEMkNYgZrPHKU9Ke8nYBPC3dqONp1mY=" crossorigin="anonymous"></script>
 <%- include('./components/sidebar') -%>
 <% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
 
@@ -22,7 +22,12 @@
                             <p>Serving now</p>
                         </div>
                         <div class="virtual-queue">
-                            <ul id="queue-holder"></ul>
+                         
+                            <ul id="queue-holder">
+                     
+                            
+
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -116,6 +121,7 @@
                 <div class="--dash mt-5"></div>
                 <br>
                  <input type="hidden" name="locid">
+                 <input type="hidden" name="place">
                  <input type="hidden" name="labels" value="<%= user.email %>">
                 <div class="wrapper-ninety">
                   <button class="btn-outline btn-block">add visitor</button>
@@ -133,22 +139,23 @@
 <%- include('./components/uialert') -%>
 
 
-<script>
-    // const socket = io()
-    // socket.emit('userAdded', 'Hello') //Emit
 
-    //  const ul = document.querySelector('#queue-holder')
-    //  socket.on('added', isadded => {
-    //     console.log(isadded);
-    //     outPutMessage(isadded)
+<script>
+
+
+    //@Send Visitor Customer Message FEATURE =======
+    // document.querySelectorAll('#queue-holder li').forEach((li) => {
+    //     let uProgressSmS = li.querySelector('.update-user-progress')
+    //     uProgressSmS.addEventListener('click', (e) => {
+    //         let gotPhone = e.target.nextElementSibling
+    //         if (document.querySelector('#uus')) {
+    //             document.querySelector('#uus').value = gotPhone.innerHTML;
+    //             document.querySelector('.update-u-sms').classList.remove('hide')
+    //         }
+    //         console.log(true);
+            
+    //     })
+        
     // })
 
-    // const outPutMessage = (isadded) => {
-    //     let fakeLi = document.createElement('li')
-    //     fakeLi.innerHTML = `${isadded.plan}`
-    //     ul.appendChild(fakeLi)
-    // }
-
-
 </script>
-

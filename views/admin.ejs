@@ -1,3 +1,4 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js" integrity="sha256-ZsWP0vT+akWmvEMkNYgZrPHKU9Ke8nYBPC3dqONp1mY=" crossorigin="anonymous"></script>
 
 <%- include('./components/sidebar') -%>
 <% if(data){ %>
@@ -28,7 +29,27 @@
             <div class="col-3 middle">
                 <h5>Clerks Busy</h5>
                 <div class="virtual-queue">
-                    <ul id="serving-holder"></ul>
+                   <% if(vil){ %>
+                        <ul>
+                       <% vil.forEach(v => { %>
+                        <% if(v.status == 'Serving'){ %>
+                            <li>
+                                <span class="queue-visitor__fullname"><%= v.firstname %></span>
+                                <p class="queue-visitor__waiting">
+                                  <i class="hide vs-id"><%= v._id %></i>
+                                  <small class="hide visitor-label"><%= v.labels %></small>
+                                  <small class="location-id hide"><%= v.line %></small>
+                                  <span class="queue-status"><%= v.status %></span> in <small><%= v.place %></small>
+                                 <!-- <div class="queue-time-real tag">
+                                  <small class="waiting-hours"></small> hrs
+                                  <small class="waiting-minutes"></small> mins
+                                 </div> -->
+                               </p>
+                            </li>
+                            <%  } %>
+                       <% }) %>
+                    </ul>
+                  <%  } %>
                 </div>
             </div>
             <div class="col-3">
@@ -43,6 +64,7 @@
 
     <div class="out"></div>
 <% } %>
+<input type="hidden" name="place">
 <div class="global-overlay add-visitor-v-admin add-v-via-admin__form hide"></div>
 <input type="hidden" name="locid">
 <input type="hidden" name="labels" value="<%= user.email %>">

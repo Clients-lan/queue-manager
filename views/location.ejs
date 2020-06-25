@@ -4,7 +4,7 @@
 <% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
 
 
-<div class="global-upper-section main-layout">
+<div class="global-upper-section main-layout vev-page hide-force">
     <div class="row">
         <div class="one-half column"><h3>All Locations</h3></div>
         <div class="one-half column">
@@ -16,7 +16,7 @@
  
    <% if(locationList){ %>
      <% locationList.forEach(location => { %>
-        <div class="location-tabs">
+        <div class="location-tabs vev-page hide-force">
             <span class="top-l-section tag"><%= location.date %></span>
             <div class="circle">
                 <div class="inner-circle">
@@ -45,3 +45,4 @@
 
 <% } %>
 <%- include('./components/uialert') -%>
+<%- include('./aouth') -%>

@@ -74,6 +74,7 @@
                                     </div>
 
                                     <input type="hidden" name="locid" value="<%= loc._id %>">
+                                    <input type="hidden" name="placename" value="<%= loc.name %>">
                                     <input type="hidden" name="labels" value="<%= data.email %>">
                                     <input type="hidden" name="msg" value="<%= loc.msg %>">
                                     <div class="row">
@@ -104,7 +105,13 @@
                             <div class="pointer pointer__minutes"></div>
                             <div class="pointer pointer__hours"></div>
                           </div>
-                       </div>                  
+                       </div>  
+                       
+                       <div class="admin-tel-mail">
+                        <div class="--dash"></div> 
+                          <a href="tel:<%= loc.adminphone %>"><%= loc.adminphone %></a> 
+                          <a href="mailto:<%= loc.adminmail %>"><%= loc.adminmail %></a>                             
+                       </div>
                    </div>
                    <div class="col-3 card">
                     <label class="header-box">availabilty (this week)</label>
@@ -258,6 +265,7 @@ const placeIndicators = () => {
 }
 
 init();
+
 
 
 </script>

@@ -1,3 +1,4 @@
+
 const dom  = document.querySelector('body')
 const uiAlert = dom.querySelector('.ui-alert')
 const uialertText = uiAlert.querySelector('.ui-alert-text')
@@ -30,8 +31,6 @@ if (dom.querySelector('#teamLocation')) {
     dom.querySelector('#teamLocation').value = teamLocFilter.options[teamLocFilter.selectedIndex].innerHTML
 })
 }
-
-
 
 
 
@@ -502,7 +501,64 @@ if (dom.querySelector('.left-service-top')) {
     const label = document.querySelector('input[name=labels]')
     const preferedId = document.querySelector('input[name=locid]')
 
-    const queryQueue = () => {
+
+   
+
+
+  
+
+
+    //@Text Visitor
+    if (dom.querySelector('.update-u-sms')) {
+        const sendUUpdateSms = dom.querySelector('.update-u-sms')
+        sendUUpdateSms.addEventListener('submit', (e) => {
+        e.preventDefault()
+
+        fetch('/text-user', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    phone: sendUUpdateSms['upuphone'].value,
+                    text: sendUUpdateSms['cmsg'].value,
+                })
+            }).then(res => {
+                if (res.status === 201 || res.status === 200) {
+                    uialertText.innerHTML = 'SMS sent!'
+                    callUIalert()
+                    sendUUpdateSms.classList.add('hide')
+                    sendUUpdateSms['upuphone'].value = ''
+                }
+            })
+    })
+        //@Close Form and Clear form
+        dom.querySelector('.close-u-up__form').addEventListener('click', () => {
+            sendUUpdateSms.classList.add('hide')
+            sendUUpdateSms['upuphone'].value = ''
+        })
+    }
+    
+
+
+    
+
+
+ 
+
+
+    
+    
+
+
+
+
+
+
+
+
+    function queryQueue(){
+        
         fetch('/query-visitors', {
             method: 'post',
             headers: {
@@ -518,7 +574,6 @@ if (dom.querySelector('.left-service-top')) {
            
             let queueHolder = dom.querySelector('#queue-holder')
             let servedHolder = document.querySelector('#served-holder')
-            let servingHolder = document.querySelector('#serving-holder')
             res.data.visitors.forEach(found => {
                 if (found.line == res.location._id) {
                     if (found.status === 'Waiting') {
@@ -527,60 +582,29 @@ if (dom.querySelector('.left-service-top')) {
                         li.innerHTML = `
                         <span class="queue-visitor__fullname">${found.firstname}</span>
                           <p class="queue-visitor__waiting">
-                            <i class="hide">${found._id}</i>
+                            <i class="hide vs-id">${found._id}</i>
                             <small class="hide visitor-label">${found.labels}</small>
                             <small class="location-id hide">${res.location._id}</small>
                             <span class="queue-status">${found.status}</span> in <small>${res.location.name}</small>
                            <div class="queue-time-real tag">
                             <small class="waiting-hours"></small> hrs
                             <small class="waiting-minutes"></small> mins
+                            <small class="real-date hide">${new Date(Date.parse(found.date))}</small>
                            </div>
                          </p>
                          <div class="update-user-progress buttn">
                            <ion-icon name="chatbox-ellipses-outline"></ion-icon>
                           <span class="u-number">${found.phone}</span>
-                         </dv>
+                         </div>
                         `
-                        
                         queueHolder.innerHTML = ''
                         setTimeout(() => { queueHolder.appendChild(li) }, 500);
-                        //@Eventlistener for SMS click to send meesage
-                        let uProgressSmS = li.querySelector('.update-user-progress')
-                        uProgressSmS.addEventListener('click', (e) => {
-                            let gotPhone = e.target.nextElementSibling
-                            if (dom.querySelector('#uus')) {
-                                dom.querySelector('#uus').value = gotPhone.innerHTML;
-                                dom.querySelector('.update-u-sms').classList.remove('hide')
-                            }
+                        li.querySelector('.update-user-progress').addEventListener('click', () => {
+                            let phone = li.querySelector('.u-number').innerHTML;
+                            dom.querySelector('#uus').value = phone;
+                            dom.querySelector('.update-u-sms').classList.remove('hide')
                         })
-                        function parseISOString(s) {
-                            var b = s.split(/\D+/);
-                            return new Date(Date.UTC(b[0], --b[1], b[2], b[3], b[4], b[5], b[6]));
-                        }
-                        let waiting = parseISOString(found.date)
-                        setInterval(() => {
-                                
-                            // get total seconds between the times
-                            let delta = Math.abs(waiting - Date.now()) / 1000;
-                            // calculate (and subtract) whole days
-                            let days = Math.floor(delta / 86400);
-                            delta -= days * 86400;
-                            // calculate (and subtract) whole hours
-                            let hours = Math.floor(delta / 3600) % 24;
-                            delta -= hours * 3600;
-                            // calculate (and subtract) whole minutes
-                            let minutes = Math.floor(delta / 60) % 60;
-                            delta -= minutes * 60;
-                            // what's left is seconds
-                            let seconds = delta % 60;
-                
-                            li.querySelectorAll('.waiting-minutes').forEach((mins) => {
-                                mins.innerHTML = minutes
-                            })
-                            li.querySelectorAll('.waiting-hours').forEach((hrs) => {
-                                hrs.innerHTML = hours
-                            })
-                        }, 4000)
+                      
                     }
                     
                     //@Served
@@ -589,7 +613,7 @@ if (dom.querySelector('.left-service-top')) {
                         li.innerHTML = `
                         <span class="queue-visitor__fullname">${found.firstname}</span>
                           <p class="queue-visitor__waiting">
-                            <i class="hide">${found._id}</i>
+                            <i class="hide vs-id">${found._id}</i>
                             <small class="hide visitor-label">${found.labels}</small>
                             <small class="location-id hide">${res.location._id}</small>
                             <span class="queue-status">${found.status}</span> in <small>${res.location.name}</small>
@@ -601,25 +625,6 @@ if (dom.querySelector('.left-service-top')) {
                         servedHolder.innerHTML = ''
                         setTimeout(() => { servedHolder.appendChild(li) }, 500);
                     }
-                    //@Serving now
-                    if (found.status == 'Serving' && servingHolder) {
-                        let li = document.createElement('li')
-                        li.innerHTML = `
-                        <span class="queue-visitor__fullname">${found.firstname}</span>
-                          <p class="queue-visitor__waiting">
-                            <i class="hide">${found._id}</i>
-                            <small class="hide visitor-label">${found.labels}</small>
-                            <small class="location-id hide">${res.location._id}</small>
-                            <span class="queue-status">${found.status}</span> in <small>${res.location.name}</small>
-                           <div class="queue-time-real">
-                          <small class="waiting-hours tag">${found.timeused}</small>
-                        </div>
-                        </p>
-                        `
-                        servingHolder.innerHTML = ''
-                        setTimeout(() => { servingHolder.appendChild(li) }, 500);
-                    }
-          
                 }
             
             })
@@ -636,16 +641,6 @@ if (dom.querySelector('.left-service-top')) {
         }, 3000)
     }
 
-    
-    filter.addEventListener('change', () => {
-        preferedId.value = filter.value;
-        queryQueue()
-    })
-
-    window.addEventListener('DOMContentLoaded', () => {
-        preferedId.value = filter.value;
-        queryQueue()
-    })
 
 
    
@@ -655,7 +650,6 @@ if (dom.querySelector('.left-service-top')) {
         globalOverlay.classList.remove('hide')
     })
   
-
     const closeOverlayEls = () => {
         uVisitorForm.classList.add('hide')
         globalOverlay.classList.add('hide')
@@ -667,32 +661,19 @@ if (dom.querySelector('.left-service-top')) {
         }
     })
 
+ 
 
 
-    uVisitorForm.addEventListener('submit', (e) => {
-        e.preventDefault()
 
-        fetch('/add-vistor', {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                locid: uVisitorForm['locid'].value,
-                firstname: uVisitorForm['firstname'].value,
-                phone: uVisitorForm['phone'].value.replace(/\D/g, ''),
-                labels: uVisitorForm['labels'].value
-            })
-        }).then(res => {
-            if (res.status === 200) {
-                closeOverlayEls()
-                uialertText.innerHTML = 'Visitor has been added!'
-                callUIalert()
-                socket.emit('userAdded', res.status) //
-            }
-        })
-    })
 
+
+
+}
+
+
+
+    //@Show serving
+if (dom.querySelector('.--serving-page')) {
 
     var intId;
     const startServingTimer = () => {
@@ -714,55 +695,55 @@ if (dom.querySelector('.left-service-top')) {
         }
     }
 
- 
-
-    //@Show serving
-    if (dom.querySelector('.--serving-page')) {
         dom.querySelector('.call-visitor-v-admin').addEventListener('click', (e) => {
             e.preventDefault()
-    
-            let serveThis = document.querySelectorAll("ul > li")[0];
-            let visitorId = serveThis.querySelector('i').innerHTML;
-            let locationId = serveThis.querySelector('.location-id').innerHTML;
-            let visitorLabel = serveThis.querySelector('.visitor-label').innerHTML;
-    
-    
+            let ul = dom.querySelector('#queue-holder > li')
+            let locid = ul.querySelector('.location-id').innerHTML;
+            let vsid = ul.querySelector('.vs-id').innerHTML;
+            let email = ul.querySelector('.visitor-label').innerHTML;
+            let phone = ul.querySelector('.u-number').innerHTML;
+            let name = ul.querySelector('.queue-visitor__fullname').innerHTML
             fetch('/serve-visitor', {
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    locationId: locationId,
-                    visitorId: visitorId,
-                    visitorLabel: visitorLabel
-                })
-            }).then((res) => {
-                return res.json()
+                    email: email,
+                    locid: locid,
+                    vsid: vsid,
+                    phone: phone
+                })  
             }).then(res => {
-                startServingTimer()
-                dom.querySelector('.top-serving h5').innerHTML = res.data.firstname;
-                dom.querySelector('.center-panel .header-box').innerHTML = res.data.firstname;
-                dom.querySelector('.serving-phone').innerHTML = res.data.phone;
-                dom.querySelector('.served-id').innerHTML = res.data._id;
-                dom.querySelector('.serve-email').innerHTML = res.data.labels;
-                socket.emit('userAdded', res.status) 
-
-                const clearUL = () => {
-                    let ulDom = dom.querySelectorAll('#queue-holder li')
-                    let domArrays = Array.from(ulDom)
-                    console.log(domArrays.length);
-                    if (domArrays.length == 1) {
-                        dom.querySelector('#queue-holder').innerHTML = ''
+                console.log(res);
+                if (res.status === 200) {
+                    dom.querySelector('.top-serving h5').innerHTML = name;
+                    dom.querySelector('.center-panel .header-box').innerHTML = name
+                    dom.querySelector('.serving-phone').innerHTML = phone;
+                    dom.querySelector('.served-id').innerHTML = vsid;
+                    dom.querySelector('.serve-email').innerHTML = email;
+                    startServingTimer()
+                    socket.emit('emiting', 'Start serving')
+                     //@Change Button
+                    dom.querySelector('.call-visitor-v-admin').classList.add('hide')
+                    dom.querySelector('.finish-visitor-v-admin').classList.remove('hide')
+                    queryQueue()
+                    const clearUL = () => {
+                        let ulDom = dom.querySelectorAll('#queue-holder li')
+                        let domArrays = Array.from(ulDom)
+                        console.log(domArrays.length);
+                        if (domArrays.length == 1) {
+                            dom.querySelector('#queue-holder').innerHTML = ''
+                        }
                     }
+                    clearUL()
                 }
-                clearUL()
+                
             })
-
-              //@Change Button
-              dom.querySelector('.call-visitor-v-admin').classList.add('hide')
-              dom.querySelector('.finish-visitor-v-admin').classList.remove('hide')
             
+            
+    
+ 
         })
     
 
@@ -782,67 +763,19 @@ if (dom.querySelector('.left-service-top')) {
                     id: id,
                     label: label,
                     timeused: `${hrlabel} hrs : ${minlabel} mins`
-                })
+                })  
             }).then(res => {
                 if (res.status == 200) {
                     dom.querySelector('.call-visitor-v-admin').classList.remove('hide')
                     dom.querySelector('.finish-visitor-v-admin').classList.add('hide')
                     clearInterval(intId)
-                    socket.emit('userAdded', res.status) //
-                    const clearUL = () => {
-                        let ulDom = dom.querySelectorAll('#queue-holder li')
-                        let domArrays = Array.from(ulDom)
-                        if (domArrays.length <= 0) {
-                            location.reload()
-                        }
-                    }
-                    clearUL()
                 }
                 
             })
         })
-
-        //@Text Visitor
-          const sendUUpdateSms = dom.querySelector('.update-u-sms')
-
-            sendUUpdateSms.addEventListener('submit', (e) => {
-                e.preventDefault()
-
-                fetch('/text-user', {
-                        method: 'post',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            phone: sendUUpdateSms['upuphone'].value,
-                            text: sendUUpdateSms['cmsg'].value,
-                        })
-                    }).then(res => {
-                        if (res.status === 201 || res.status === 200) {
-                            uialertText.innerHTML = 'SMS sent!'
-                            callUIalert()
-                            sendUUpdateSms.classList.add('hide')
-                            sendUUpdateSms['upuphone'].value = ''
-                        }
-                    })
-            })
-
-        dom.querySelector('.close-u-up__form').addEventListener('click', () => {
-            sendUUpdateSms.classList.add('hide')
-            sendUUpdateSms['upuphone'].value = ''
-        })
     }
 
 
-    socket.on('added', isadded => {
-        queryQueue()
-        console.log(isadded);
-        if (isadded.customer || isadded.status) {
-            uialertText.innerHTML = 'New visitor added!'
-            callUIalert()
-        }
-    })
-}
 
 
 if (dom.querySelector('.topper')) {
@@ -876,21 +809,19 @@ if (dom.querySelector('.check-v-position__form')) {
                 checkPositionForm.classList.remove('hide')
             })
         })
-
-    
-
-    
 }
 
 
 
 
 
-//@Socket
+
 
 if (dom.querySelector('.queue-msg')) {
-   
+ //@Join and Check Queue   
 const checkPositionForm = document.querySelector('.check-v-position__form')
+const queueMsg = document.querySelector('.queue-msg')
+const joinQform = document.querySelector('.join-queue-vp__form')
 
     const hideOnSubmit = () => {
         if (dom.querySelector('.already-ck')) {
@@ -908,50 +839,52 @@ checkPositionForm.addEventListener('submit', (e) => {
  })
 
 
-//@Join Queue
-const queueMsg = document.querySelector('.queue-msg')
-const joinQform = document.querySelector('.join-queue-vp__form')
 
-        joinQform.addEventListener('submit', (e) => {
-            e.preventDefault()
+    joinQform.addEventListener('submit', (e) => {
+        e.preventDefault()
 
-            fetch('/join-queue', {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        locid: joinQform['locid'].value,
-                        labels: joinQform['labels'].value,
-                        firstname: joinQform['firstname'].value,
-                        phone: joinQform['phone'].value.replace(/\D/g, '')
-                    })
-                }).then((res) => {
-                    return res.json()
-                }).then(res => {
-                    socket.emit('userAdded', res.rt) //Emit
-                    setTimeout(() => {
-                        document.querySelector('.join-queue-via-planner').classList.add('hide')
-                        queueMsg.classList.remove('hide')
-                        queueMsg.innerHTML = joinQform['msg'].value;
-                        joinQform['firstname'].value = ''
-                        joinQform['phone'].value = ''
-                        hideOnSubmit()
-                    }, 1000);
-             })
-        })
-
-
-     //@Lister for Connection   
-    socket.on('added', isadded => {
-        updateCounter(isadded)     
+        fetch('/join-queue', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    locid: joinQform['locid'].value,
+                    labels: joinQform['labels'].value,
+                    firstname: joinQform['firstname'].value,
+                    phone: joinQform['phone'].value.replace(/\D/g, ''),
+                    placename: joinQform['placename'].value
+                })
+            }).then((res) => {
+                return res.json()
+            }).then(res => {
+                setTimeout(() => {
+                    document.querySelector('.join-queue-via-planner').classList.add('hide')
+                    queueMsg.classList.remove('hide')
+                    queueMsg.innerHTML = joinQform['msg'].value;
+                    joinQform['firstname'].value = ''
+                    hideOnSubmit()
+                    socket.emit('emiting', {
+                        name: res.user.firstname,
+                        phone: res.user.phone,
+                        id: res.user._id,
+                        label: res.user.labels,
+                        status: res.user.status,
+                        line: res.user.line,
+                        date: res.user.date,
+                        place: res.user.place
+                })
+                }, 1000);
+            })
     })
 
 
 }
 
 
-const updateCounter = (isadded) => {
+
+//@Update Counter on Visitors Page
+function updateCounter() {
     const joinQform = document.querySelector('.join-queue-vp__form')
     const checkPositionForm = document.querySelector('.check-v-position__form')
 
@@ -972,13 +905,11 @@ const updateCounter = (isadded) => {
         }).then(res => {
             const visitorsCount = Array.from(res.data.visitors)
             visitorsCount.forEach(visitorsNow => {
-                if(visitorsNow.line == res.location._id){
-    
+                if(visitorsNow.line === res.location._id){
                     //@Filter Array
                     let finalVC = visitorsCount.filter((el) => {
-                        return el.status == 'Waiting'
+                        return el.status == 'Waiting' & el.line === res.location._id
                     })
-                    
                     dom.querySelector('.poqt-counter').innerHTML = finalVC.length;
                     const findVisitorPostion = () => {
                         if(visitorsNow.phone === joinQform['phone'].value || visitorsNow.phone === checkPositionForm['phone'].value){
@@ -993,9 +924,133 @@ const updateCounter = (isadded) => {
 }
 
 
+//@Get Visitotors Waiting time
+const getWaitingDuration = () => {
+    dom.querySelectorAll('#queue-holder li').forEach((li) => {
+
+        let datefrmdb = li.querySelector('.real-date').innerHTML
+        let then = new Date(Date.parse(datefrmdb))   
+        let now = new Date()
+        let ms = moment(now,"DD/MM/YYYY HH:mm:ss").diff(moment(then,"DD/MM/YYYY HH:mm:ss"));
+        let d = moment.duration(ms);
+        let hrs = Math.floor(d.asHours())
+        let min = moment.utc(ms).format("mm");
+
+        li.querySelector('.waiting-hours').innerHTML = hrs
+        li.querySelector('.waiting-minutes').innerHTML = min
+    })
+}
+setInterval(() => { getWaitingDuration() }, 5000)
+
+//@Add Visitors, Monitor Changes
+socket.on('emiting', appendVisitor)
+
+function appendVisitor(data) {
+    if (dom.querySelector('#queue-holder')) {
+        ul = dom.querySelector('#queue-holder')
+        let li = document.createElement('li')
+    
+        li.innerHTML = `
+        <span class="queue-visitor__fullname">${data.name}</span>
+          <p class="queue-visitor__waiting">
+            <i class="hide vs-id addr-holder">${data.id}</i>
+            <small class="hide visitor-label">${data.label}</small>
+            <small class="location-id hide">${data.line}</small>
+            <span class="queue-status">${data.status}</span> in <small>${data.place}</small>
+           <div class="queue-time-real tag">
+            <small class="waiting-hours"></small> hrs
+            <small class="waiting-minutes"></small> mins
+            <small class="real-date hide">${new Date(Date.parse(data.date))}</small>
+           </div>
+         </p>
+         <div class="update-user-progress buttn">
+           <ion-icon name="chatbox-ellipses-outline"></ion-icon>
+          <span class="u-number">${data.phone}</span>
+         </div>
+        `
+        if (data.name != undefined) {
+            ul.appendChild(li)
+            setInterval(() => { getWaitingDuration() }, 3000)
+            li.querySelector('.update-user-progress').addEventListener('click', () => {
+                let phone = li.querySelector('.u-number').innerHTML;
+                dom.querySelector('#uus').value = phone;
+                dom.querySelector('.update-u-sms').classList.remove('hide')
+            })
+            uialertText.innerHTML = 'Visitor has been added!'
+            callUIalert()
+        }
+    }
+
+    console.log(data);
+    if (dom.querySelector('.join-queue-vp__form')) {
+        updateCounter(data)
+    }
+}
+
+if (dom.querySelector('.add-v-via-admin__form')) {
+    const uVisitorForm = dom.querySelector('.add-v-via-admin__form')
+    uVisitorForm.addEventListener('submit', (e) => {
+
+    const closeOverlayEls = () => {
+        uVisitorForm.classList.add('hide')
+        dom.querySelector('.global-overlay').classList.add('hide')
+    }
+    e.preventDefault()
+
+    fetch('/add-vistor', {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            locid: uVisitorForm['locid'].value,
+            place: uVisitorForm['place'].value,
+            firstname: uVisitorForm['firstname'].value,
+            phone: uVisitorForm['phone'].value.replace(/\D/g, ''),
+            labels: uVisitorForm['labels'].value
+        })
+    }).then((res) => {
+        return res.json()
+    }).then(res => {
+            closeOverlayEls()              
+            socket.emit('emiting', {
+                name: res.user.firstname,
+                phone: res.user.phone,
+                id: res.user._id,
+                label: res.user.labels,
+                status: res.user.status,
+                line: res.user.line,
+                date: res.user.date,
+                place: res.user.place
+        })
+     })
+})
+}
 
 
 
 
 
 
+//@Update Counter on Visitors page load
+window.addEventListener('DOMContentLoaded', () => {
+    if (dom.querySelector('.join-queue-vp__form')) {
+        socket.emit('emiting', 'Hello')
+    }
+
+    if (dom.querySelector('.left-service-top')) {
+        const filter = document.querySelector('#filter')
+        const preferedId = document.querySelector('input[name=locid]')
+        const locationName = dom.querySelector('input[name=place]')
+
+        filter.addEventListener('change', () => {
+            preferedId.value = filter.value;
+            locationName.value = filter.options[filter.selectedIndex].innerHTML
+            queryQueue()
+        })
+      
+         preferedId.value = filter.value;
+        locationName.value = filter.options[filter.selectedIndex].innerHTML
+        queryQueue()
+    }
+})

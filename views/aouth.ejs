@@ -1,0 +1,98 @@
+<title>Flexi-Q  Onepass</title>
+
+<section class="auth" id="onepass-auth">
+    <div class="auth-wrapper">
+       <% if(user.onepass == "null"){ %>
+            <form action="/u/aouth" method="post">
+                <h3>You're covered! 🔒</h3>
+                <p>Protect your account settings</p>
+                  <% if(error_msg != '') { %>
+                    <div class="alert-errors">
+                      <div class="notify-warning">
+                        <%= error_msg %>
+                    </div>
+                  <% } %>
+              
+                  <% if(error != '') { %>
+                    <div class="alert-errors">
+                        <div class="notify-warning">
+                        <%= error %>
+                        </div>
+                    </div>
+                  <% } %>
+              
+                  <% if(success_msg != '') { %>
+                      <div class="alert-success">
+                        <div class="notify-success">
+                        <%= success_msg %>
+                        </div>
+                      </div>
+                  <% } %>
+                  
+                  <input type="text" class="u-full-width" placeholder="Enter Access code" name="onepass">
+                  <button type="submit" class="btn-fill btn-block">set access code</button>
+                </form>
+      <%  } %>
+
+      <% if(user.onepass != "null"){ %>
+        <form class="aouth-admin__form">
+            <h3>Admin Access 🔒</h3>
+            <p>Just a test to know if you're the admin</p>
+              <input type="text" class="u-full-width" placeholder="Enter Access code" name="onepasser" required>
+              <button type="submit" id="auth-btn" class="btn-fill btn-block">verify code</button>
+              <p><a href="/u/dashboard">Take me back</a></p>
+            </form>
+      <% } %>
+
+
+    </div>
+<!-- 
+    <div class="about-onepass">
+        <p>Flexi-Q uses the same login credentials for both account owners(aka admins) and team members. So to protect the admin account we implement the Onepass feature.</p>
+        <h4>What is Onepass?</h4>
+        <p>Onepass is a AOR(Ask on request) method, which denies or grant users access to account info, grants access if the access code is corrent and denies access if wrong code is entered.</p>
+        <h4>Who has access code?</h4>
+        <p>The access code is setup by the admin during account creation, which can only be modified by the admin</p>
+    </div> -->
+</section>
+
+
+
+<script>
+
+
+
+    const authadmin = document.querySelector('.aouth-admin__form')
+    const authBnt = document.querySelector('#auth-btn')
+    const authPage = document.querySelector('#onepass-auth')
+    
+    authadmin.addEventListener('submit', (e) => {
+        e.preventDefault()
+    
+    fetch('/aouth-admin', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                onepasser: authadmin['onepasser'].value,
+            })
+        }).then(res => {
+            authBnt.innerHTML = 'Authenticating....'
+            setTimeout(() => {
+                if(res.redirected === true){
+                  authBnt.innerHTML = 'Opps! Wrong code'
+               } else {
+                authBnt.innerHTML = `Oh, you're the admin`
+                   document.querySelectorAll('.vev-page').forEach((hf) => {
+                       hf.classList.remove('hide-force')
+                   })
+                   authPage.style.display = 'none'
+               }
+            }, 1000);
+         }) 
+    })
+    
+    
+    
+    </script>

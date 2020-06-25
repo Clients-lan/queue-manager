@@ -1,0 +1,215 @@
+<%- include('./components/sidebar') -%>
+<% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
+
+    <title>Flexi-Q Time Slots</title>
+
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
+    <script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+
+    <section class="main-layout booking">
+
+        <div class="row">
+            <div class="one-half column">
+                <a href="/u/appointment" class="btn-playful"><ion-icon name="people-circle"></ion-icon> <span>people</span></a>
+                <a href="/u/slots" class="btn-playful card-selected"><ion-icon name="stopwatch-outline"></ion-icon> <span>time slots</span></a>
+                <a href="#" class="btn-playful add-time-slot"><ion-icon name="timer-outline"></ion-icon> <span>add slot</span></a>
+            </div>
+        </div>
+        <br><br>
+
+
+
+        <div class="booking-inner">
+            <div class="alert-slot">
+                <% if(typeof errors != 'undefined') { %>
+                    <div class="alert-errors">
+                        <% errors.forEach(function(error) { %>
+                        <ul class="notify-warning">
+                            <li><%= error.msg %></li>
+                        </ul>
+                        <% }); %>
+                    </div>
+                    <% } %>
+                <% if(success_msg != '') { %>
+                    <div class="alert-success">
+                        <div class="notify-success">
+                        <%= success_msg %>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+      
+            <div class="booking-tab">
+                <div class="custom-row">
+                        <% if(slots){ %>
+                            <div class="col-5">
+                                <div class="header-box">Monday</div>
+                                <% slots.forEach(slot => { %>
+                               <% if(slot.day == 'Monday'){ %>
+                                 <div class="slots-time-db"><%= slot.time %></div>
+                               <% } %>
+                               <% }) %>
+                            </div>
+                            <div class="col-5">
+                                <div class="header-box">Tuesday</div>
+                                <% slots.forEach(slot => { %>
+                               <% if(slot.day == 'Tuesday'){ %>
+                                 <div class="slots-time-db"><%= slot.time %></div>
+                               <% } %>
+                               <% }) %>
+                            </div>
+                            <div class="col-5">
+                                <div class="header-box">Wednesday</div>
+                                <% slots.forEach(slot => { %>
+                               <% if(slot.day == 'Wednesday'){ %>
+                                 <div class="slots-time-db"><%= slot.time %></div>
+                               <% } %>
+                               <% }) %>
+                            </div>
+                            <div class="col-5">
+                                <div class="header-box">Thursday</div>
+                                <% slots.forEach(slot => { %>
+                               <% if(slot.day == 'Thursday'){ %>
+                                 <div class="slots-time-db"><%= slot.time %></div>
+                               <% } %>
+                               <% }) %>
+                            </div>
+                            <div class="col-5">
+                                <div class="header-box">Friday</div>
+                                <% slots.forEach(slot => { %>
+                               <% if(slot.day == 'Friday'){ %>
+                                 <div class="slots-time-db"><%= slot.time %></div>
+                               <% } %>
+                               <% }) %>
+                            </div>
+                         <%  } %>
+                </div>
+            </div>
+        </div>
+
+
+        <form action="/save-slot" method="POST" class="time-booking hide">
+            <ion-icon name="close-outline" class="close-time-slot"></ion-icon>
+            <label class="label-box">Day of week</label>
+            <select name="week" class="week">
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+            </select>
+            <label class="label-box">Start time</label>
+            <div class="start-b-time custom-time-med">
+                <div id="timepicker-start-mer"></div>
+                <div class="custom-pm-am">
+                    <select name="meridian">
+                        <option value="AM">AM</option>
+                        <option value="PM">PM</option>
+                    </select>
+                </div>
+            </div>
+            <label class="label-box">End time</label>
+             <div class="end-b-time custom-time-med">
+                <div id="timepicker-end-mer"></div>
+                <div class="custom-pm-am">
+                    <select name="meridian">
+                        <option value="AM">AM</option>
+                        <option value="PM">PM</option>
+                    </select>
+                </div>
+            </div>
+            <br>
+            <input type="hidden" name="slotone">
+            <input type="hidden" name="slottwo">
+            <button type="submit" class="btn-block">Save slot</button>
+        </form>
+
+
+
+
+    </section>
+
+    <div class="global-overlay hide"></div>
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+    <% } %>
+    <%- include('./components/uialert') -%>    
+
+
+
+
+    <script>
+
+
+    new tui.TimePicker('#timepicker-start-mer', {
+        initialHour: 12,
+        initialMinute: 13,
+        inputType: 'selectbox',
+        showMeridiem: true
+     });
+
+     new tui.TimePicker('#timepicker-end-mer', {
+        initialHour: 12,
+        initialMinute: 13,
+        inputType: 'selectbox',
+        showMeridiem: true
+     });
+
+
+
+
+    let el =  document.querySelectorAll('.start-b-time select')
+    let el2 =  document.querySelectorAll('.end-b-time select')
+    const slotone = document.querySelector('input[name=slotone]')
+    const slottwo = document.querySelector('input[name=slottwo]')
+
+
+
+         for(let i = 0; i < el.length; i++){
+             el[2].disabled = true;
+             el[i].addEventListener('change', () => {
+                let timeVal = `${el[0].value}:${el[1].value} ${el[3].value}`
+                slotone.value = timeVal
+             })
+         }
+
+         for(let i = 0; i < el2.length; i++){
+             el2[2].disabled = true;
+             el2[i].addEventListener('change', () => {
+                let timeVal = `${el2[0].value}:${el2[1].value} ${el2[3].value}`
+                slottwo.value = timeVal
+             })
+         }
+            
+
+
+
+
+         const timeSlotTab = document.querySelector('.time-booking')
+
+         document.querySelector('.add-time-slot').addEventListener('click', (e) => {
+             e.preventDefault()
+             timeSlotTab.classList.remove('hide')
+             document.querySelector('.global-overlay').classList.remove('hide')
+         })
+         document.querySelector('.close-time-slot').addEventListener('click', (e) => {
+             e.preventDefault()
+             timeSlotTab.classList.add('hide')
+             document.querySelector('.global-overlay').classList.add('hide')
+         })
+
+
+         
+
+    </script>

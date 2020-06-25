@@ -207,24 +207,23 @@ new ScrollMagic.Scene({
   triggerElement: "#triggerNav",
   triggerHook: "onLeave",
   duration: 1
+}).on('start', () => {
+    let daklogo = document.querySelector('.dak-logo')
+    let whlogo = document.querySelector('.wh-logo')
+    if(daklogo.classList.contains('hide')){
+        daklogo.classList.remove('hide')
+        whlogo.classList.add('hide')
+    } else {
+        daklogo.classList.add('hide')
+        whlogo.classList.remove('hide')
+    }
+    
 })
 .setTween(tl)
 .setTween(".topnav-bar, .tn-items a, .u-logs-a", 0.5, {backgroundColor: "#ffffff", color: '#6f6f74'}) // trigger a TweenMax.to tween
 .addTo(controller);
 
 
-const mobileNav = document.querySelector('.mobile-menu')
-document.querySelector('.menu-trigger').addEventListener('click', (e) => {
-    e.preventDefault()
 
-    if(mobileNav.classList.contains('not-active')){
-        mobileNav.style.transform = 'translateY(0%)'
-        mobileNav.classList.remove('not-active')
-    } else {
-        mobileNav.style.transform = 'translateY(-200%)'
-        mobileNav.classList.add('not-active')
-    }
-
-})
 
 </script>

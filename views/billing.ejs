@@ -2,7 +2,7 @@
 
 <% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
 
-<section class="user-profile-section main-layout">
+<section class="user-profile-section vev-page hide-force main-layout">
     <div class="row">
         <div class="three columns">
             <h5 class="user-d-dashboard"><%= user.first %> <%= user.last %> Dashbaord</h5>
@@ -27,7 +27,7 @@
             <div class="pricing-page">
                 <%- include('./components/pricing') -%>
             </div>
-            <div class="cancel-plan wrapper-ninety">
+            <div class="cancel-plan vev-page hide-force wrapper-ninety">
                 <form action="/cancel-plan" method="POST" class="mt-5">
                     <div class="globe-box no-bxs wrapper-ninety">
                         <div class="header-box">Danger Zone</div>
@@ -47,3 +47,7 @@
 <% } %>
 
 <%- include('./components/uialert') -%>
+<%- include('./aouth') -%>
+
+
+

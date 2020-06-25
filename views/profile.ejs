@@ -1,7 +1,7 @@
 <%- include('./components/sidebar') -%>
 <% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
 
-<section class="user-profile-section main-layout">
+<section class="user-profile-section main-layout vev-page hide-force">
     <div class="row">
         <div class="three columns">
             <h5 class="user-d-dashboard"><%= user.first %> <%= user.last %> Dashbaord</h5>
@@ -24,7 +24,7 @@
                 <% } %>
             </div>
  
-            <div class="globe-box no-bxs wrapper-ninety">
+            <div class="globe-box vev-page hide-force no-bxs wrapper-ninety">
                 <form action="/u/update-profile" method="POST">
                     <div class="header-box">Account Settings</div>
                     <div class="--dash"></div>
@@ -41,7 +41,7 @@
                     <button class="btn-outline my-3 u-pull-right">update</button>
                 </form>
             </div>
-            <form action="/u/delete-account" method="POST" class="mt-5">
+            <form action="/u/delete-account" method="POST" class="mt-5 vev-page hide-force">
                 <div class="globe-box no-bxs wrapper-ninety">
                     <div class="header-box">Danger Zone</div>
                     <div class="--dash"></div>
@@ -57,4 +57,7 @@
 </section>
 <% } %>
 
+
+
 <%- include('./components/uialert') -%>
+<%- include('./aouth') -%>

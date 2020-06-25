@@ -5,6 +5,10 @@ const passport = require('passport')
 //User model
 const User = require('../modules/User');
 const { ensureAuthenticated } = require('../config/auth');
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const async = require('async')
+const crypto = require('crypto')
 
 
 
@@ -29,7 +33,8 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
     if (req.user.subscribed == 'true' || req.user.subscribed == 'active') {
         res.render('admin', {
             user: req.user,
-            data: req.user.location
+            data: req.user.location,
+            vil: req.user.visitors
         })
     } else {
         res.redirect('/plans')
@@ -42,7 +47,7 @@ router.get('/profile', ensureAuthenticated, (req, res) => {
 })
 
 //@User Billing Page
-router.get('/billing', (req, res) => {
+router.get('/billing', ensureAuthenticated, (req, res) => {
     res.render('billing', { user: req.user })
 })
 
@@ -55,6 +60,13 @@ router.get('/trial', ensureAuthenticated, (req, res) => {
     }
 })
 
+//@Aouth Route
+router.get('/aouth', ensureAuthenticated, (req, res) => {
+    res.render('aouth', {
+        user: req.user
+    })
+})
+
 //@Create New Location
 router.get('/new-location', ensureAuthenticated, (req, res) => {
     res.render('setup', {
@@ -63,6 +75,22 @@ router.get('/new-location', ensureAuthenticated, (req, res) => {
     })
 })
 
+
+//@Appointments
+router.get('/appointment', ensureAuthenticated, (req, res) => {
+    res.render('booking', {
+        user: req.user,
+        bookin: req.user.book
+    })
+})
+
+//@Slots
+router.get('/slots', ensureAuthenticated, (req, res) => {
+    res.render('slot', {
+        user: req.user,
+        slots: req.user.slot
+    })
+})
 
 //@ See Location Settings
 router.get('/location/:_id', ensureAuthenticated, (req, res) => {
@@ -79,17 +107,24 @@ router.get('/location/:_id', ensureAuthenticated, (req, res) => {
 router.get('/service', ensureAuthenticated, (req, res) => {
     res.render('service', {
       user: req.user,
-      data: req.user.location
+      data: req.user.location,
+      visitors: req.user.visitors
     })
   })
 
 
+
+
   //@Get all locations
 router.get('/places', ensureAuthenticated, (req, res) => {
-    res.render('location', {
-        user: req.user,
-        locationList: req.user.location
-    })
+    if (req.user.onepass != "null") {
+        res.render('location', {
+            user: req.user,
+            locationList: req.user.location
+        })
+    } else {
+        res.redirect('/u/aouth')
+    }
 })
 
 //@Team Page
@@ -125,7 +160,7 @@ router.get('/register', (req, res) => {
 //@Register Handle
 router.post('/register', (req, res) => {
     
-    const { first, last, username, plan, plancode, subscribed, email, password, password2, locisadded} = req.body
+    const { first, last, onepass, username, plan, plancode, subscribed, email, password, password2, locisadded} = req.body
     
     let errors = [];
     //Check required fields
@@ -149,7 +184,8 @@ router.post('/register', (req, res) => {
             plan,
             plancode,
             password,
-            password2
+            password2,
+            onepass
         })
     } else {
        //Validate pass
@@ -166,7 +202,8 @@ router.post('/register', (req, res) => {
                         plan,
                         plancode,
                         password,
-                        password2
+                        password2,
+                        onepass
                     });
                 }  else {
                     const newUser = new User({
@@ -178,7 +215,9 @@ router.post('/register', (req, res) => {
                         plan,
                         plancode,
                         subscribed,
-                        locisadded
+                        locisadded,
+                        password2,
+                        onepass
                     });
                     //Hash Password
                     bcrypt.genSalt(10, (err, salt) =>
@@ -200,7 +239,14 @@ router.post('/register', (req, res) => {
 });
 
 
-//@ Update User Profile
+
+//@Update Access Code
+router.post('/aouth', ensureAuthenticated, (req, res) => {
+    User.findByIdAndUpdate(req.user._id,{ 'onepass': req.body.onepass }, {useFindAndModify: false}, (err, docs) => {
+        if (err) {return} 
+    })
+    res.redirect('/u/profile')
+  })
 
 //@Update User Settings
 router.post('/update-profile', ensureAuthenticated, (req, res) => {
@@ -233,6 +279,110 @@ router.get('/logout', (req, res) => {
 router.post('/delete-account', ensureAuthenticated, (req, res) => {
     User.findByIdAndRemove(req.user._id, {useFindAndModify: false}, (err, doc) => { if (err) throw err; res.redirect('/'); })
 })
+
+
+
+
+//@============ FORGET PASSWORD ===============//
+
+//@Forget password 
+router.post('/forgot', function(req, res, next) {
+    async.waterfall([
+      function(done) {
+        crypto.randomBytes(20, function(err, buf) {
+          var token = buf.toString('hex');
+          done(err, token);
+        });
+      },
+      function(token, done) {
+        User.findOne({ email: req.body.email}, function(err, user) {
+          if (!user) {
+          req.flash('error_msg', 'No account with that email address exists.');
+            return res.redirect('/u/forgot');
+          }
+          user.resetPasswordToken = token;
+          user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+          user.save(function(err) {
+            done(err, token, user);
+          });
+        });
+      },
+      function(token, user, done) {
+            const msg = {
+                to: user.email,
+                from: 'anthonylannn@gmail.com',
+                subject: 'Password Recovery',
+                text: 'Hey there',
+                html: `You are receiving this because you (or someone else) have requested the reset of the password for your account. Please click on the following link, or paste this into your browser to complete the process. http://${req.headers.host}/u/reset/${token} If you did not request this, please ignore this email and your password will remain unchanged.`,
+             };
+          sgMail.send(msg)
+          req.flash('success_msg', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
+          res.redirect('/u/forgot');
+    }
+    ], function(err) {
+      console.log('this err' + ' ' + err)
+      res.redirect('/');
+    });
+  });
+  
+
+//@Forget route
+router.get('/forgot', (req, res) => {
+    res.render('forgot', {
+        User: req.user
+    })
+})
+
+//@Reset Get Post
+router.get('/reset/:token', function(req, res) {
+    User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+        console.log(user);
+      if (!user) {
+        req.flash('error_msg', 'Password reset token is invalid or has expired.');
+        return res.redirect('/u/forgot');
+      }
+      res.render('reset', {
+       User: req.user
+      });
+    });
+  });
+  
+  
+  //@Reset Post Route
+  router.post('/reset/:token', function(req, res) {
+    async.waterfall([
+      function(done) {
+        User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user, next) {
+          if (!user) {
+            req.flash('error_msg', 'Password reset token is invalid or has expired.');
+            return res.redirect('/');
+          }
+          user.password = req.body.password;
+          user.resetPasswordToken = undefined;
+          user.resetPasswordExpires = undefined;
+            //Hash Password
+            bcrypt.genSalt(10, (err, salt) =>
+                bcrypt.hash(user.password, salt, (err, hash) => {
+                    if (err) throw err;
+                    //Set Password to hashed
+                    user.password = hash;
+                    //Save User
+                    user.save()
+                        .then(user => {
+                            req.flash('success_msg', 'Password changed!');
+                            res.redirect('/u/login')
+                    })
+                    .catch(err => console.log(err))
+                }));
+          });
+      },
+  
+    ], function(err) {
+      res.redirect('/u/login');
+    });
+  });
+//@======= END OF FORGET ========
+
 
 
 

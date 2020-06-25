@@ -1,0 +1,176 @@
+<title>Flexi-Q Appointment</title>
+
+<%- include('../components/topnavbar') -%>
+
+
+<% if(data.bookinglink === url){ %>
+<section class="appt-page">
+    <div class="row">
+        <div class="one-half column">
+            <form action="/reverse-space" method="POST" class="inner-page globe-box">
+                <div class="header-box">Book an appointment</div>
+                <div class="--dash"></div>
+                     <div class="row">
+                        <div class="one-half column">
+                            <label class="label-box">Your fullname</label>
+                        </div>
+                        <div class="one-half column">
+                            <input type="text" class="u-full-width" name="name" placeholder="Fullname here" required>
+                        </div>
+                    </div>
+                    <div class="--dash"></div>
+                    <div class="row">
+                        <div class="one-half column">
+                            <label class="label-box">Email address</label>
+                        </div>
+                        <div class="one-half column">
+                            <input type="email" class="u-full-width" name="email" placeholder="Enter email" required>
+                        </div>
+                    </div>
+                    <div class="--dash"></div>
+                    <div class="row">
+                        <div class="one-half column">
+                            <label class="label-box">Phone number</label>
+                        </div>
+                        <div class="one-half column">
+                            <input type="text" class="u-full-width" name="phone" placeholder="Enter phone" required>
+                        </div>
+                    </div>
+                    <div class="--dash"></div>
+                    <% if(data.location != []){ %>
+                        <div class="row">
+                            <div class="one-half column">
+                                <label class="label-box">Select location</label>
+                            </div>
+                            <div class="one-half column">
+                                <select name="location" class="u-full-width">
+                                    <% data.location.forEach(items => { %>
+                                    <option value="<%= items.name %>"><%= items.name %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                          </div>
+                        <div class="--dash"></div>
+                   <% } %>
+                   <br>
+                   <div class="tag time-reveal-bp my-3">No slot selected</div>
+                 <input type="hidden" name="time" id="timehd" required>
+                 <input type="hidden" name="emailid" value="<%- data.email %>">
+                 <br>
+                 <button type="submit" class="btn-outline my-3">book now</button>
+             </form>
+             <form action="/check-appt-client" method="post" class="inner-page globe-box">
+                <div class="header-box">Already Booked an appointment?</div> <ion-icon name="reorder-two-outline" class="open-checker"></ion-icon>
+                
+                <div class="appt-checker-inner hide">
+                    <p class="ml-3">Let owner know that you're currently at their location</p>
+                    <div class="--dash"></div>
+                         <div class="row">
+                            <div class="one-half column">
+                                <label class="label-box">Phone number</label>
+                            </div>
+                            <div class="one-half column">
+                                <input type="text" class="u-full-width" name="phone" placeholder="Phone" required>
+                            </div>
+                        </div>
+                        <div class="--dash"></div>
+                        <div class="row">
+                            <div class="one-half column">
+                                <label class="label-box">Email address</label>
+                            </div>
+                            <div class="one-half column">
+                                <input type="email" class="u-full-width" name="email" placeholder="Enter email" required>
+                            </div>
+                        </div>
+                        <div class="--dash"></div>
+                        <input type="hidden" name="emailid" value="<%- data.email %>">
+                        <button type="submit" class="btn-fill my-3">alert owner</button>
+                </div>
+            </form>
+        </div>
+        <div class="one-half column">
+            <div class="booking-tab">
+                <div class="header-box">Available Slots</div>
+                <div class="custom-row">
+                        <% if(data.slot){ %>
+                            <div class="col-5">
+                                <div class="header-box">Monday</div>
+                                <% data.slot.forEach(slot => { %>
+                                 <% if(slot.day == 'Monday'){ %>
+                                 <div class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></div>
+                                 <% } %>
+                               <% }) %>
+                            </div>
+                            <div class="col-5">
+                                <div class="header-box">Tuesday</div>
+                                <% data.slot.forEach(slot => { %>
+                                 <% if(slot.day == 'Tuesday'){ %>
+                                  <div class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></div>
+                                 <% } %>
+                               <% }) %>
+                            </div>
+                            <div class="col-5">
+                                <div class="header-box">Wednesday</div>
+                                <% data.slot.forEach(slot => { %>
+                                 <% if(slot.day == 'Wednesday'){ %>
+                                  <div class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></div>
+                                 <% } %>
+                               <% }) %>
+                            </div>
+                            <div class="col-5">
+                                <div class="header-box">Thursday</div>
+                                <% data.slot.forEach(slot => { %>
+                                  <% if(slot.day == 'Thursday'){ %>
+                                 <div class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></div>
+                                 <% } %>
+                               <% }) %>
+                            </div>
+                            <div class="col-5">
+                                <div class="header-box">Friday</div>
+                                <% data.slot.forEach(slot => { %>
+                                  <% if(slot.day == 'Friday'){ %>
+                                 <div class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></div>
+                             <% } %>
+                            <% }) %>
+                        </div>
+                     <%  } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<% } %>
+
+<%- include('../components/uialert') -%>
+
+
+
+
+
+<script>
+
+
+    document.querySelectorAll('.slots-time-db').forEach((time) => {
+     let timeholder = document.querySelector('#timehd')
+     let timeReveal = document.querySelector('.time-reveal-bp')
+        time.addEventListener('click', () => {
+            timeholder.value = `${time.id} ${time.innerHTML}`
+            document.querySelector('.time-reveal-bp').innerHTML = timeholder.value
+        })
+    })
+
+
+    const apptCheckerForm =  document.querySelector('.appt-checker-inner')
+
+    document.querySelector('.open-checker').addEventListener('click', (e) => {
+
+        e.preventDefault()
+
+        
+        if(apptCheckerForm.classList.contains('hide')){
+            apptCheckerForm.classList.remove('hide')
+        } else {
+            apptCheckerForm.classList.add('hide')
+        }
+    })
+</script>

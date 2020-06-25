@@ -1,0 +1,159 @@
+<%- include('./components/sidebar') -%>
+<% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
+
+    <title>Flexi-Q Appointments</title>
+
+    <section class="main-layout booking">
+        <div class="row">
+            <div class="one-half column">
+                <a href="/u/appointment" class="btn-playful card-selected"><ion-icon name="people-circle"></ion-icon> <span>people</span></a>
+                <a href="/u/slots" class="btn-playful"><ion-icon name="stopwatch-outline"></ion-icon> <span>time slots</span></a>
+                <a href="#" class="btn-playful add-b-url"><ion-icon name="create-outline"></ion-icon> <span>set booking link</span></a>
+            </div>
+        </div>
+        <br><br>
+
+        <div class="alert-slot">
+            <% if(success_msg != '') { %>
+                <div class="alert-success">
+                    <div class="notify-success">
+                    <%= success_msg %>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+
+        <div class="booking-inner">
+            <div class="booking-tab">
+                <div class="top-tab-wrapper">
+                    <div class="booking-grid">
+                        <div class="col-6">Name</div>
+                        <div class="col-6">Email</div>
+                        <div class="col-6">Phone</div>
+                        <div class="col-6">Visiting time</div>
+                        <div class="col-6">Selected location</div>
+                        <div class="col-6">Status</div>
+                    </div>
+                </div>
+                <div class="bottom-tab-wrapper">
+                    <div class="booking-grid">
+                        <% if(bookin){ %>
+                            <% bookin.forEach(book => { %>
+                                <div class="col-6"><%= book.name %></div>
+                                <div class="col-6"><%= book.email %></div>
+                                <div class="col-6"><%= book.phone %></div>
+                                <div class="col-6 booking-time"><%= book.time %></div>
+                                <div class="col-6"><%= book.location %></div>
+                                <div class="col-6 status">
+                                    <span class="<%= book.status %>"><%= book.status %></span>
+                                    <ion-icon name="open-outline" class="u-booking-actions"></ion-icon>
+                    
+                                    <div class="booking-actions hide">
+                                        <h5>Actions for <%= book.name %></h5>
+                                        <div class="--dash"></div>
+                                        <br>
+                                        <form action="/call-appt" method="POST" class="row">
+                                            <button type="submit" class="btn-outline btn-block">call in visitor by SMS</button>
+                                            <input type="hidden" name="phone" value="<%= book.phone %>">
+                                            <input type="hidden" name="name" value="<%= book.name %>">
+                                            <input type="hidden" value="<%= book._id %>" name="id">
+                                        </form>
+                                        <div class="--dash"></div>
+                                        <div class="row">
+                                            <form action="/delete-appt" method="POST" class="one-half column">
+                                                <button class="btn-danger u-pull-left">Delete appt<span>😨</span></button>
+                                                <input type="hidden" value="<%= book._id %>" name="id">
+                                            </form>
+                                            <form action="/cancel-appt" method="POST" class="one-half column">
+                                                <button class="btn-danger u-pull-left">Cancel appt <span>🥺</span></button>
+                                                <input type="hidden" value="<%= book._id %>" name="id">
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        <% } %>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <form action="/save-booking-url" method="POST" class="booking-url-form hide">
+           <a href="/appt/<%= user.bookinglink %>" target="_blank"><ion-icon name="open-outline"></ion-icon></a>
+            <div class="header-box">Booking page link</div>
+            <div class="--dash"></div>
+            <div class="inner">
+                <input type="text" placeholder="Page Url" class="u-full-width" value="<%= user.bookinglink %>" name="link" id="link">
+                <button type="submit" class="btn-block">save url</button>
+            </div>
+        </form>
+
+
+    </section>
+    
+    
+
+    <div class="global-overlay hide"></div>
+
+
+
+
+
+
+
+
+
+
+
+    <% } %>
+    <%- include('./components/uialert') -%>    
+
+
+
+
+
+    <script>
+
+//@ Booking page URL Add '-' on every space
+const bookingURL = document.querySelector('.booking-url-form #link');
+bookingURL.addEventListener('keyup', () => {
+    bookingURL.value = bookingURL.value.replace(/\s+/g, '-').toLowerCase(); 
+})
+
+
+
+const bookingUrlForm = document.querySelector('.booking-url-form')
+let overlayOnAppt = document.querySelector('.global-overlay')
+
+
+
+overlayOnAppt.addEventListener('click', () => {
+    bookingUrlForm.classList.add('hide')
+    overlayOnAppt.classList.add('hide')
+    document.querySelectorAll('.booking-actions').forEach(uaf => {
+        uaf.classList.add('hide')
+    })
+})
+
+
+document.querySelector('.add-b-url').addEventListener('click', (e) => {
+    e.preventDefault()
+    bookingUrlForm.classList.remove('hide')
+    overlayOnAppt.classList.remove('hide')
+})
+
+
+
+document.querySelectorAll('.u-booking-actions').forEach(uactions => {
+    uactions.addEventListener('click', (e) => {
+        e.preventDefault()
+
+        overlayOnAppt.classList.remove('hide')
+        uactions.nextElementSibling.classList.remove('hide')
+    })
+})
+    </script>

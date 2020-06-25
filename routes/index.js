@@ -1,12 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 const env = require('dotenv').config({ path: './.env' });
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const User = require('../modules/User');
 const { ensureAuthenticated } = require('../config/auth');
+
 
 
 //@ Get Home - Inside App
@@ -28,28 +31,66 @@ router.get('/queue/:vpurl', (req, res) => {
 
 
 //@Add Visitors Via Planner Page
-router.post('/join-queue', (req, res) => {
-  const { locid, firstname, phone, labels } = req.body;
-  if (firstname != '' && phone != '') {
-    let newVisitor = { "firstname": firstname, "phone": phone, "labels": labels, "line": locid, "status": "Waiting", "timeused": null };
+// router.post('/join-queue', (req, res) => {
+//   const { locid, firstname, phone, labels } = req.body;
+//   if (firstname != '' && phone != '') {
+//     let newVisitor = { "firstname": firstname, "phone": phone, "labels": labels, "line": locid, "status": "Waiting", "timeused": null };
 
-    User.findOneAndUpdate({ email: labels }, {$push: { visitors: newVisitor } },
-    ).exec((err, docs) => {
-      if (err) {
-        return
+//     User.findOneAndUpdate({ email: labels }, {$push: { visitors: newVisitor } },
+//     ).exec((err, docs) => {
+//       if (err) {
+//         return
+//       }
+//       res.send({rt: docs})
+//     })
+//   }
+// })
+
+//@ Join Queue
+router.post('/join-queue', (req, res) => {
+  const { locid, firstname, placename, phone, labels } = req.body;
+  let newVisitor = { "firstname": firstname, "phone": phone, "labels": labels, "place": placename, "line": locid, "status": "Waiting", "timeused": null };
+  User.findOneAndUpdate({ email: labels }, { $push: { visitors: newVisitor }}, {new: true}).exec((err, docs) => {
+    if (err) { return }
+    docs.visitors.forEach(nowuser => {
+      if (nowuser.firstname === firstname && nowuser.phone == phone) {
+          console.log(nowuser);
+          res.send({user: nowuser})
       }
-      res.send({rt: docs})
     })
-  }
+    if (docs) {
+      res.status(200)
+    }
+  })
 })
 
+//@Update Visitor to Served
+router.post('/finish-visitor', (req, res) => {
+  const { id, label, timeused } = req.body;
+  User.findOneAndUpdate({ email: label, "visitors._id": id },
+    { $set: { "visitors.$.status": "Served", "visitors.$.timeused": timeused } }).exec((err, docs) => {
+      if (!err) {
+         res.send()
+      } 
+  })
+})
 
 //@ Add Visitors Via Admin
 router.post('/add-vistor', (req, res) => {
-  const { locid, firstname, phone, labels } = req.body;
-  let newVisitor = { "firstname": firstname, "phone": phone, "labels": labels, "line": locid, "status": "Waiting", "timeused": null };
-  User.findOneAndUpdate({ email: labels },{$push: { visitors: newVisitor } }).exec((err, docs) => { if (err) { return}})
-  res.send()
+  const { locid, firstname, place, phone, labels } = req.body;
+  let newVisitor = { "firstname": firstname, "phone": phone, "labels": labels, "place": place, "line": locid, "status": "Waiting", "timeused": null };
+  User.findOneAndUpdate({ email: labels }, { $push: { visitors: newVisitor }}, {new: true}).exec((err, docs) => {
+    if (err) { return }
+    docs.visitors.forEach(nowuser => {
+      if (nowuser.firstname === firstname && nowuser.phone == phone) {
+          console.log(nowuser);
+          res.send({user: nowuser})
+      }
+    })
+    if (docs) {
+      res.status(200)
+    }
+  })
 })
 //@Update Calendar
 router.post('/update-calendar', ensureAuthenticated, (req, res) => {
@@ -88,8 +129,7 @@ router.post('/update-calendar', ensureAuthenticated, (req, res) => {
             });
         }
   });
-  
-     res.send()
+    res.send()
 })
 
 
@@ -127,7 +167,16 @@ router.post('/add-teams', ensureAuthenticated, (req, res) => {
   const { locid, workemail, fullname, role, location } = req.body;
   let newTeam = { "workemail": workemail, "fullname": fullname, "location": location, "role": role, "locationId": locid };
   User.findOneAndUpdate({ email: req.user.email },{$push: { team: newTeam } }).exec((err, docs) => {
-    if (err) {return}
+    if (!err) {
+      const msg = {
+        to: workemail,
+        from: 'anthonylannn@gmail.com',
+        subject: 'Invitation',
+        text: 'Hi',
+        html: `Hey ${fullname}, ${req.user.first} invited you to joined their team. Here is the login email and password: ${req.user.email} => ${req.user.password2} here is the login link: http://${req.headers.host}/u/login`,
+     };
+      sgMail.send(msg)
+    }
   })
   res.send()
 });
@@ -160,6 +209,118 @@ router.post('/delete-location', ensureAuthenticated, (req, res) => {
   })
 })
 
+//@Temporary aOuth Admin
+router.post('/aouth-admin', ensureAuthenticated, (req, res) => {
+  User.findOne({ email: req.user.email }).then(user => {
+    if (user) {
+      //@Pass first step
+      if (user.onepass == req.body.onepasser) {
+        console.log('Is admin');
+        res.send()
+      } else {
+        console.log('is not admin');
+        res.redirect('/u/dashboard')
+      }
+    }
+  }) 
+})
+
+//@Save Slot
+router.post('/save-slot', ensureAuthenticated, (req, res) => {
+  const { week, slotone, slottwo } = req.body;
+  let user = req.user
+  let slots = req.user.slot
+
+  let errors = []
+  if (slotone == '' || slottwo == '') {
+    errors.push({msg: 'Fields can not be empty!'})
+  }
+  if (errors.length > 0) {
+    res.render('slot', {
+      errors,
+      week,
+      slotone,
+      slottwo,
+      user,
+      slots
+    })
+  } else {
+    let newSlot = { "time": `${slotone} - ${slottwo}`, "day": week };
+    User.findOneAndUpdate({ email: user.email }, { $push: { slot: newSlot }}, {useFindAndModify: false}).exec((err, docs) => {
+      if (!err) {
+        req.flash('success_msg', 'SMS sent!');
+        res.redirect('/u/slots')
+      }
+    })
+  }
+
+})
+
+//@Update Booking page Link
+router.post('/save-booking-url', ensureAuthenticated, (req, res) => {
+  const { link } = req.body
+  User.findByIdAndUpdate(req.user._id, { 'bookinglink': `${link}${uuidv4()}` }, { useFindAndModify: false }, function (err, result) {
+      if (err) { return } 
+  })
+  res.redirect('/u/appointment')
+})
+
+//@ Appointees books from page
+router.post('/reverse-space', (req, res) => {
+  const { emailid, name, email, phone, time, location } = req.body;
+  if (time != '' || time != "") {
+    let newAppt = { "name": name, "phone": phone, "email": email, "location": location, "status": 'offline', "time": time };
+    User.findOneAndUpdate({ email: emailid }, { $push: { book: newAppt }}, {new: true}).exec((err, docs) => {
+      if (err) { return } 
+      res.render('confirm', {
+        msg: 'Your booking was successful!'
+      })
+      const msg = {
+        to: email,
+        from: email,
+        subject: 'Appointment Alert',
+        text: 'Hi',
+        html: `Hi, ${name} has scheduled an appointement at ${time}`,
+     };
+      sgMail.send(msg)
+    })
+  } else {
+    res.render('confirm', {
+      msg: 'Opps! Missing field'
+    })
+  }
+})
+
+//@Booking page
+router.get('/appt/:url', (req, res) => {
+  User.findOne({ 'bookinglink': req.params.url }).then(data => {
+    if (data) {
+      res.render('./frontend/appt', {
+        data: data,
+        url: req.params.url
+      })
+    }
+  })  
+})
+
+
+//@Cancel Appointment
+router.post('/cancel-appt', ensureAuthenticated, (req, res) => {
+  const { id } = req.body
+  User.findOneAndUpdate({ email: req.user.email }, { $set: { "book.$[elem].status": 'cancelled' } }, { arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(id) }], new: true }).exec((err, docs) => {
+    if (err) { return }
+  })
+  res.redirect('/u/appointment')
+})
+
+//@Delete Appointment
+router.post('/delete-appt', ensureAuthenticated, (req, res) => {
+  const { id } = req.body
+  User.updateOne({ email: req.user.email }, { $pull: { book: { _id : id } } },{ safe: true }, (err, obj) => {
+    if (err) { return } 
+  });
+  res.redirect('/u/appointment')
+})
 
 
 
@@ -322,8 +483,6 @@ router.get('/', (req, res) => {
 router.get('/plans', (req, res) => {
   res.render('./frontend/pricepage')
 })
-
-
 
 
 
