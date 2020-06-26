@@ -1,11 +1,13 @@
 <%- include('./components/sidebar') -%>
 
+<title>FlexyQ - Billing</title>
+
 <% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
 
 <section class="user-profile-section vev-page hide-force main-layout">
     <div class="row">
         <div class="three columns">
-            <h5 class="user-d-dashboard"><%= user.first %> <%= user.last %> Dashbaord</h5>
+            <h5 class="user-d-dashboard"><%= user.biz %> Dashbaord</h5>
             <div class="profile-holder">
                 <img src="/assets/profile-placeholder.jpg">
             </div>

@@ -673,10 +673,8 @@ if (dom.querySelector('.left-service-top')) {
 
 
     //@Show serving
-if (dom.querySelector('.--serving-page')) {
-
     var intId;
-    const startServingTimer = () => {
+    function startServingTimer(){
         if (dom.querySelector('.shr')) {
             let minutesLabel = document.querySelector('.smin')
             let secondsLabel = document.querySelector('.ssec')
@@ -694,6 +692,7 @@ if (dom.querySelector('.--serving-page')) {
             intId = setInterval(setTime, 1000);
         }
     }
+if (dom.querySelector('.--serving-page')) {
 
         dom.querySelector('.call-visitor-v-admin').addEventListener('click', (e) => {
             e.preventDefault()
@@ -717,26 +716,13 @@ if (dom.querySelector('.--serving-page')) {
             }).then(res => {
                 console.log(res);
                 if (res.status === 200) {
-                    dom.querySelector('.top-serving h5').innerHTML = name;
-                    dom.querySelector('.center-panel .header-box').innerHTML = name
-                    dom.querySelector('.serving-phone').innerHTML = phone;
-                    dom.querySelector('.served-id').innerHTML = vsid;
-                    dom.querySelector('.serve-email').innerHTML = email;
-                    startServingTimer()
-                    socket.emit('emiting', 'Start serving')
-                     //@Change Button
-                    dom.querySelector('.call-visitor-v-admin').classList.add('hide')
-                    dom.querySelector('.finish-visitor-v-admin').classList.remove('hide')
-                    queryQueue()
-                    const clearUL = () => {
-                        let ulDom = dom.querySelectorAll('#queue-holder li')
-                        let domArrays = Array.from(ulDom)
-                        console.log(domArrays.length);
-                        if (domArrays.length == 1) {
-                            dom.querySelector('#queue-holder').innerHTML = ''
-                        }
-                    }
-                    clearUL()
+                    socket.emit('emiting', {
+                        type: 'serving',
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        vsid: vsid
+                    })
                 }
                 
             })
@@ -766,9 +752,9 @@ if (dom.querySelector('.--serving-page')) {
                 })  
             }).then(res => {
                 if (res.status == 200) {
-                    dom.querySelector('.call-visitor-v-admin').classList.remove('hide')
-                    dom.querySelector('.finish-visitor-v-admin').classList.add('hide')
-                    clearInterval(intId)
+                    socket.emit('emiting', {
+                        type: 'finished'
+                    })
                 }
                 
             })
@@ -865,6 +851,7 @@ checkPositionForm.addEventListener('submit', (e) => {
                     joinQform['firstname'].value = ''
                     hideOnSubmit()
                     socket.emit('emiting', {
+                        type: 'added',
                         name: res.user.firstname,
                         phone: res.user.phone,
                         id: res.user._id,
@@ -947,37 +934,69 @@ socket.on('emiting', appendVisitor)
 
 function appendVisitor(data) {
     if (dom.querySelector('#queue-holder')) {
-        ul = dom.querySelector('#queue-holder')
-        let li = document.createElement('li')
-    
-        li.innerHTML = `
-        <span class="queue-visitor__fullname">${data.name}</span>
-          <p class="queue-visitor__waiting">
-            <i class="hide vs-id addr-holder">${data.id}</i>
-            <small class="hide visitor-label">${data.label}</small>
-            <small class="location-id hide">${data.line}</small>
-            <span class="queue-status">${data.status}</span> in <small>${data.place}</small>
-           <div class="queue-time-real tag">
-            <small class="waiting-hours"></small> hrs
-            <small class="waiting-minutes"></small> mins
-            <small class="real-date hide">${new Date(Date.parse(data.date))}</small>
-           </div>
-         </p>
-         <div class="update-user-progress buttn">
-           <ion-icon name="chatbox-ellipses-outline"></ion-icon>
-          <span class="u-number">${data.phone}</span>
-         </div>
-        `
-        if (data.name != undefined) {
-            ul.appendChild(li)
-            setInterval(() => { getWaitingDuration() }, 3000)
-            li.querySelector('.update-user-progress').addEventListener('click', () => {
-                let phone = li.querySelector('.u-number').innerHTML;
-                dom.querySelector('#uus').value = phone;
-                dom.querySelector('.update-u-sms').classList.remove('hide')
-            })
-            uialertText.innerHTML = 'Visitor has been added!'
-            callUIalert()
+        if (data.type == 'added') {
+            ul = dom.querySelector('#queue-holder')
+            let li = document.createElement('li')
+        
+            li.innerHTML = `
+            <span class="queue-visitor__fullname">${data.name}</span>
+              <p class="queue-visitor__waiting">
+                <i class="hide vs-id addr-holder">${data.id}</i>
+                <small class="hide visitor-label">${data.label}</small>
+                <small class="location-id hide">${data.line}</small>
+                <span class="queue-status">${data.status}</span> in <small>${data.place}</small>
+               <div class="queue-time-real tag">
+                <small class="waiting-hours"></small> hrs
+                <small class="waiting-minutes"></small> mins
+                <small class="real-date hide">${new Date(Date.parse(data.date))}</small>
+               </div>
+             </p>
+             <div class="update-user-progress buttn">
+               <ion-icon name="chatbox-ellipses-outline"></ion-icon>
+              <span class="u-number">${data.phone}</span>
+             </div>
+            `
+            if (data.name != undefined) {
+                ul.appendChild(li)
+                setInterval(() => { getWaitingDuration() }, 3000)
+                li.querySelector('.update-user-progress').addEventListener('click', () => {
+                    let phone = li.querySelector('.u-number').innerHTML;
+                    dom.querySelector('#uus').value = phone;
+                    dom.querySelector('.update-u-sms').classList.remove('hide')
+                })
+                uialertText.innerHTML = 'Visitor has been added!'
+                callUIalert()
+            }
+        }
+       
+
+
+        if (data.type == 'serving') {
+            dom.querySelector('.top-serving h5').innerHTML = data.name;
+            dom.querySelector('.center-panel .header-box').innerHTML = data.name
+            dom.querySelector('.serving-phone').innerHTML = data.phone;
+            dom.querySelector('.served-id').innerHTML = data.vsid;
+            dom.querySelector('.serve-email').innerHTML = data.email;
+            startServingTimer()
+             //@Change Button
+             dom.querySelector('.call-visitor-v-admin').classList.add('hide')
+             dom.querySelector('.finish-visitor-v-admin').classList.remove('hide')
+            queryQueue()
+            const clearUL = () => {
+                let ulDom = dom.querySelectorAll('#queue-holder li')
+                let domArrays = Array.from(ulDom)
+                console.log(domArrays.length);
+                if (domArrays.length == 1) {
+                    dom.querySelector('#queue-holder').innerHTML = ''
+                }
+            }
+            clearUL()
+        }
+
+        if (data.type == 'finished') {
+            dom.querySelector('.call-visitor-v-admin').classList.remove('hide')
+            dom.querySelector('.finish-visitor-v-admin').classList.add('hide')
+            clearInterval(intId)
         }
     }
 
@@ -1013,7 +1032,8 @@ if (dom.querySelector('.add-v-via-admin__form')) {
         return res.json()
     }).then(res => {
             closeOverlayEls()              
-            socket.emit('emiting', {
+        socket.emit('emiting', {
+                type: 'added',
                 name: res.user.firstname,
                 phone: res.user.phone,
                 id: res.user._id,
@@ -1182,4 +1202,84 @@ if(dom.querySelector('.add-time-slot')){
              timeSlotTab.classList.add('hide')
              dom.querySelector('.global-overlay').classList.add('hide')
          })
+}
+
+
+
+
+//@Booking page Filter function
+if (dom.querySelector('.date-filt-container')) {
+    let dateFiltContainer = document.querySelector('.date-filt-container')
+
+//@Open Filter Container
+dom.querySelector('.call-appt-filter').addEventListener('click', (e) => {
+    e.preventDefault()
+    dateFiltContainer.classList.remove('hide')
+})
+
+//@Close Filter Container
+dom.querySelector('.u-close-date__filter').addEventListener('click', (e) => {
+    e.preventDefault()
+    dateFiltContainer.classList.add('hide')
+
+})
+
+
+//@Set Dynamic Values to Options
+let lthd = dom.querySelector('#lthd').value = new Date().getMonth()
+let mtd = dom.querySelector('#mtd').value = new Date().getMonth() + 1
+
+
+
+//@On Change
+const apptQ = dom.querySelector('#date-filt')
+
+apptQ.addEventListener('change', (e) => {
+    dom.querySelectorAll('.booking-grid .cc').forEach(col => {
+        col.classList.add('hide')
+    })
+
+    dom.querySelectorAll('.u-book-date').forEach((uidate) => {
+    
+        const isFiltered = () => {
+            let _1stSib = uidate.previousElementSibling;
+            let _2ndSib = _1stSib.previousElementSibling;
+            let _3rdSib = _2ndSib.previousElementSibling;
+            let _4thSib = _3rdSib.previousElementSibling;
+            let _5thSib = _4thSib.previousElementSibling;
+            let _6thSib = _5thSib.previousElementSibling;
+
+            //@Remove Class
+            _1stSib.classList.remove('hide')
+            _2ndSib.classList.remove('hide')
+            _3rdSib.classList.remove('hide')
+            _4thSib.classList.remove('hide')
+            _5thSib.classList.remove('hide')
+            _6thSib.classList.remove('hide')
+        
+            //@Nexted
+            _1stSib.querySelector('.u-booking-actions').classList.remove('hide')
+            _1stSib.querySelector('.status')
+        }
+    
+    
+        let wasBooked = new Date(Date.parse(uidate.innerHTML))
+        let month = wasBooked.getMonth() + 1;
+       // let fulldate = wasBooked.getDate()
+        let now = moment()
+        let weeks = now.diff(wasBooked, "weeks")
+        if(apptQ.value == lthd && apptQ.value == month){
+            isFiltered()
+        } else if(apptQ.value == mtd && apptQ.value == month){
+            isFiltered() 
+        } else if(apptQ.value == weeks){
+            isFiltered()
+        } else if(apptQ.value == weeks){
+            isFiltered()
+        } else if(apptQ.value == 'all'){
+            isFiltered()
+        }
+
+})  
+})
 }

@@ -166,7 +166,11 @@ app.post('/call-appt', ensureAuthenticated, (req, res) => {
           })
             req.flash('success_msg', 'Slot saved!');
           } else {
-              console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
+            console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
+             //@Change Status
+            User.findOneAndUpdate({ email: req.user.email }, { $set: { "book.$[elem].status": 'failed' } }, { arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(id) }], new: true }).exec((err, docs) => {
+              if (err) { return }
+            })
         }
       }
    })

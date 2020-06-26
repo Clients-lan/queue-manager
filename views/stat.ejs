@@ -1,7 +1,9 @@
 <%- include('./components/sidebar') -%>
 
+<title>FlexyQ - Analytics</title>
 <% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js" integrity="sha256-ZsWP0vT+akWmvEMkNYgZrPHKU9Ke8nYBPC3dqONp1mY=" crossorigin="anonymous"></script>
 
 <section class="analytics">
 	<div class="container">
@@ -71,7 +73,9 @@
 	<% }) %>
   </ul>
  
- 
+
+  <ul class="min-slack"></ul>
+  <ul class="hrs-slack"></ul>
 
 
 </section>
@@ -98,10 +102,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
 <script>
 
-
-
-
-
 //@Get Average Mins and Hours of waiting
 let visitorEl = Array.from(document.querySelectorAll('#vdk li'))
 let servedVisitorsArray = Array.from(document.querySelectorAll('#vdk--served li'))
@@ -109,15 +109,65 @@ let locPoints = Array.from(document.querySelectorAll('#vkpoints li'))
 let tolTeam = Array.from(document.querySelectorAll('#teamdk li'))
 
 
-let sumHours = 0;
-for( let i = 0; i < visitorEl.length; i++ ){
-	let outputs = visitorEl[i].innerHTML
-	let getHours = new Date(outputs).getHours();
-	sumHours += parseInt(getHours, 10);
+visitorEl.forEach(vel => {
+	let thenn = new Date(Date.parse(vel.innerHTML))   
+        let noww = new Date()
+        let mss = moment(noww,"DD/MM/YYYY HH:mm:ss").diff(moment(thenn,"DD/MM/YYYY HH:mm:ss"));
+        let dd = moment.duration(mss);
+        let hrss = Math.floor(dd.asHours())
+		var minn = moment.utc(mss).format("mm");
+	
+		let minSlack = document.querySelector('.min-slack')
+		let minLi = document.createElement('li')
+		minLi.textContent = minn
+		minSlack.appendChild(minLi)
+
+		//@For Hours
+		let hrSlack = document.querySelector('.hrs-slack')
+		let hrsLi = document.createElement('li')
+		hrsLi.textContent = hrss
+		hrSlack.appendChild(hrsLi)
+})
+
+
+
+let dmin = []
+let dhr = []
+let minChildren = document.querySelectorAll('.min-slack li')
+let hrsChildren = document.querySelectorAll('.hrs-slack li')
+
+let minsum;
+let hrsum;
+
+//@Mins
+for(let i = 0; i < minChildren.length; i++){
+	dmin.push(parseInt(minChildren[i].innerHTML))
+	if(dmin.length === minChildren.length){
+		 minsum = dmin.reduce((a, b) => a + b, 0)
+	}
 }
 
-let avgHours = Math.round(sumHours/visitorEl.length) 
-let convertedHours = avgHours * 60;
+//@Hours
+for(let i = 0; i < hrsChildren.length; i++){
+	dhr.push(parseInt(hrsChildren[i].innerHTML))
+	if(dhr.length === hrsChildren.length){
+		 hrsum = dhr.reduce((a, b) => a + b, 0)
+	}
+}
+
+
+let conhrToMins = hrsum * 60
+let totalWaitingtime = minsum + conhrToMins
+
+// console.log('coverted to mins  '  + conhrToMins);
+// console.log('Tot min ' + minsum);
+// console.log('Total ' + totalWaitingtime);
+
+// console.log(minChildren.length);
+
+let avgWaitingtime =  Math.round(totalWaitingtime / minChildren.length)
+
+
 
 
 
@@ -125,12 +175,12 @@ let convertedHours = avgHours * 60;
 new Chart(document.getElementById("bar-chart"), {
     type: 'bar',
     data: {
-      labels: ['Avg waiting time(Mins)', 'Queue length', 'Visitors Served', 'Total Locations', 'Team Members'],
+      labels: ['Avg waiting time( in Minutes )', 'Queue length', 'Visitors Served', 'Total Locations', 'Team Members'],
       datasets: [
         {
           label: 'Total amount',
           backgroundColor: ["#1c96aa", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-          data: [convertedHours, visitorEl.length, servedVisitorsArray.length, locPoints.length, tolTeam.length]
+          data: [avgWaitingtime, visitorEl.length, servedVisitorsArray.length, locPoints.length, tolTeam.length]
         }
       ]
     },

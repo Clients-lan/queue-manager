@@ -11,6 +11,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    biz: {
+        type: String,
+        required: false
+    },
     email: {
         type: String,
         required: true
@@ -135,7 +139,11 @@ const UserSchema = new mongoose.Schema({
         phone: String,
         time: String,
         status: String,
-        location: String
+        location: String,
+        date: {
+            type: Date,
+            default: Date.now
+        }
     }],
     bookinglink: {
         type: String,

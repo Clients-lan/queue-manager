@@ -1,7 +1,8 @@
 <%- include('./components/sidebar') -%>
 <% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
 
-    <title>Flexi-Q Appointments</title>
+    <title>FlexyQ Appointments</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js" integrity="sha256-ZsWP0vT+akWmvEMkNYgZrPHKU9Ke8nYBPC3dqONp1mY=" crossorigin="anonymous"></script>
 
     <section class="main-layout booking">
         <div class="row">
@@ -9,6 +10,7 @@
                 <a href="/u/appointment" class="btn-playful card-selected"><ion-icon name="people-circle"></ion-icon> <span>people</span></a>
                 <a href="/u/slots" class="btn-playful"><ion-icon name="stopwatch-outline"></ion-icon> <span>time slots</span></a>
                 <a href="#" class="btn-playful add-b-url"><ion-icon name="create-outline"></ion-icon> <span>set booking link</span></a>
+                <a href="#" class="call-appt-filter btn-playful"><ion-icon name="color-filter-outline"></ion-icon> <span>filter</span> </a>
             </div>
         </div>
         <br><br>
@@ -26,7 +28,7 @@
         <div class="booking-inner">
             <div class="booking-tab">
                 <div class="top-tab-wrapper">
-                    <div class="booking-grid">
+                    <div class="booking-grid-alt">
                         <div class="col-6">Name</div>
                         <div class="col-6">Email</div>
                         <div class="col-6">Phone</div>
@@ -39,14 +41,14 @@
                     <div class="booking-grid">
                         <% if(bookin){ %>
                             <% bookin.forEach(book => { %>
-                                <div class="col-6"><%= book.name %></div>
-                                <div class="col-6"><%= book.email %></div>
-                                <div class="col-6"><%= book.phone %></div>
-                                <div class="col-6 booking-time"><%= book.time %></div>
-                                <div class="col-6"><%= book.location %></div>
-                                <div class="col-6 status">
-                                    <span class="<%= book.status %>"><%= book.status %></span>
-                                    <ion-icon name="open-outline" class="u-booking-actions"></ion-icon>
+                                <div class="col-6 cc"><%= book.name %></div>
+                                <div class="col-6 cc"><%= book.email %></div>
+                                <div class="col-6 cc"><%= book.phone %></div>
+                                <div class="col-6 cc booking-time"><%= book.time %></div>
+                                <div class="col-6 cc"><%= book.location %></div>
+                                <div class="col-6 cc">
+                                    <span class="<%= book.status %> status cc"><%= book.status %></span>
+                                    <ion-icon name="open-outline" class="cc u-booking-actions"></ion-icon>
                     
                                     <div class="booking-actions hide">
                                         <h5>Actions for <%= book.name %></h5>
@@ -71,11 +73,29 @@
                                         </div>
                                     </div>
                                 </div>
+                                <span class="u-book-date"><%= book.date %></span>
                             <% }) %>
                         <% } %>
-                       
                     </div>
                 </div>
+            </div>
+        </div>
+
+
+
+
+
+        <div class="date-filt-container hide">
+            <div class="header-box">Filter data</div> <ion-icon name="close-outline" class="u-close-date__filter"></ion-icon>
+            <div class="--dash"></div>
+            <div class="sm-wrapper">
+                <select id="date-filt" class="u-full-width">
+                    <option id="wtd" value="0">Week-to-date</option>
+                    <option id="ltw" value="2">Last 2 weeks</option>
+                    <option id="mtd">Month-to-date</option>
+                    <option id="lthd">Last 30 days</option>
+                    <option value="all">All time</option>
+                </select>
             </div>
         </div>
 
@@ -91,8 +111,6 @@
                 <button type="submit" class="btn-block">save url</button>
             </div>
         </form>
-
-
     </section>
     
     
@@ -111,6 +129,7 @@
 
     <% } %>
     <%- include('./components/uialert') -%>    
+
 
 
 

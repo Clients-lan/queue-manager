@@ -250,9 +250,9 @@ router.post('/aouth', ensureAuthenticated, (req, res) => {
 
 //@Update User Settings
 router.post('/update-profile', ensureAuthenticated, (req, res) => {
-    const { first, last } = req.body;
+    const { first, last, biz } = req.body;
 
-    User.findByIdAndUpdate(req.user._id, { 'first': first, 'last': last }, {useFindAndModify: false}, function(err, result){
+    User.findByIdAndUpdate(req.user._id, { 'first': first, 'last': last, 'biz': biz }, {useFindAndModify: false}, function(err, result){
         if (err) { return } 
     })
     req.flash('success_msg', 'Your Information(s) has been updated!');

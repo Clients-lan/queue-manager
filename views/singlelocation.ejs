@@ -20,6 +20,8 @@
     <% locationList.forEach(location => { %>
      <% if(location._id == verify){ %>
 
+        <title><%= location.name %> </title>
+
         <div class="global-upper-section main-layout">
             <div class="wrapper-ninety">
                 <a href="/u/places" class="btn-playful mr-layout my-5"><ion-icon name="location-outline"></ion-icon> <span>back to places</span></a>
@@ -114,7 +116,7 @@
              <div class="row">
                  <div class="one-half mb-5 column">
                      <small>QR code</small>
-                    <input id="text" type="hidden" value="http://flex.com/queue/<%= location.vpurl %>" style="width:80%" /><br />
+                    <input id="text" type="hidden" value="http://flexyq.com/queue/<%= location.vpurl %>" style="width:80%" /><br />
                     <div id="qrcode"></div>
                  </div>
                  <div class="one-half copy-code column">

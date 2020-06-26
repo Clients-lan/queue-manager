@@ -1,10 +1,11 @@
 <%- include('./components/sidebar') -%>
 <% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
 
+    <title>FlexyQ - Profile</title>
 <section class="user-profile-section main-layout vev-page hide-force">
     <div class="row">
         <div class="three columns">
-            <h5 class="user-d-dashboard"><%= user.first %> <%= user.last %> Dashbaord</h5>
+            <h5 class="user-d-dashboard"> <%= user.biz %>  Dashbaord</h5>
             <div class="profile-holder">
                 <img src="/assets/profile-placeholder.jpg">
             </div>
@@ -30,12 +31,17 @@
                     <div class="--dash"></div>
                     <div class="row">
                         <div class="one-half column"><label class="label-box">Change First name</label></div>
-                        <div class="one-half column"><input type="text" class="u-full-width" name="first" value="<%= user.first %>" placeholder=""></div>
+                        <div class="one-half column"><input type="text" class="u-full-width" name="first" value="<%= user.first %>"></div>
                     </div>
                     <div class="--dash"></div>
                     <div class="row">
                         <div class="one-half column"><label class="label-box">Change Last name</label></div>
-                        <div class="one-half column"><input type="text" class="u-full-width" name="last" placeholder="" value="<%= user.last %>"></div>
+                        <div class="one-half column"><input type="text" class="u-full-width" name="last" value="<%= user.last %>"></div>
+                    </div>
+                    <div class="--dash"></div>
+                    <div class="row">
+                        <div class="one-half column"><label class="label-box">Set Business name</label></div>
+                        <div class="one-half column"><input type="text" class="u-full-width" name="biz" value="<%= user.biz %>" placeholder="Your business name"></div>
                     </div>
                     <div class="--dash"></div>
                     <button class="btn-outline my-3 u-pull-right">update</button>

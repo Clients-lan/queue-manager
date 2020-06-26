@@ -113,10 +113,10 @@ body::-webkit-scrollbar {
         padding: 0rem 0 2rem 0;
         margin-bottom: 9rem;
         img{
-            width: 18rem;
+            width: 5rem;
             position: absolute;
-            top: 0;
-            left: -10.7rem;
+            top: 1rem;
+            left: .4rem;
         }
         &:hover{
             background-color: #20292a !important;
@@ -2206,6 +2206,31 @@ tbody{
 
 //@Booking Page
 .booking{
+    .call-appt-filter{
+        position: absolute;
+        right: 15%;
+    }
+    .date-filt-container{
+        position: fixed;
+        top: 4%;
+        right: 3%;
+        background-color: #fff;
+        border: $glob-border;
+        box-shadow: $bx-sh-left;
+        width: 200px;
+        height: 120px;
+        border-radius: 5px;
+        .sm-wrapper{
+            padding: 1rem 2rem;
+        }
+        .u-close-date__filter{
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+    }
     .booking-time{
         background-color: $brand-color;
         color: #fff;
@@ -2226,6 +2251,12 @@ tbody{
         ion-icon{
             color: $brand-color;
         }
+    }
+    .u-book-date{
+        position: absolute;
+        right: 0;
+        top: -2rem;
+        opacity: 0;
     }
  .booking-url-form{
     @include elFixedTC();
@@ -2259,7 +2290,7 @@ tbody{
     border: $glob-border;
     border-radius: 5px;
     margin-right: 3%;
-    .booking-grid{
+    .booking-grid, .booking-grid-alt{
         display: grid;
         grid-template-columns: repeat(6, 1fr);
         grid-gap: 20px;
@@ -2278,9 +2309,9 @@ tbody{
         .status{
             display: inline-block;
             width: 50%;
-            span{
-                padding: .2rem .5rem;
-            }
+            padding: 0 0 0 .5rem;
+            border-radius: 0px;
+            text-align: left;
         }
         .u-booking-actions{
             position: absolute;

@@ -263,7 +263,7 @@ router.post('/delete-slot', ensureAuthenticated, (req, res) => {
     if (err) { return } 
   });
   req.flash('success_msg', 'Slot deleted!');
-  res.redirect('/u/slot')
+  res.redirect('/u/slots')
 })
 
 //@Update Booking page Link
@@ -286,7 +286,7 @@ router.post('/reverse-space', (req, res) => {
         msg: 'Your booking was successful!'
       })
       const msg = {
-        to: email,
+        to: emailid,
         from: email,
         subject: 'Appointment Alert',
         text: 'Hi',
