@@ -26,12 +26,16 @@ const callUIalert = () => {
 if (dom.querySelector('#teamLocation')) {
     const teamLocFilter = document.querySelector('#location-team')
     dom.querySelector('#teamLocation').value = teamLocFilter.options[teamLocFilter.selectedIndex].innerHTML
-    dom.querySelector('#teamLocationex').value = teamLocFilter.options[teamLocFilter.selectedIndex].innerHTML
+    if (dom.querySelector('#teamLocationex')) {
+        dom.querySelector('#teamLocationex').value = teamLocFilter.options[teamLocFilter.selectedIndex].innerHTML
+    }
 
     //#Listener
     teamLocFilter.addEventListener('change', () => {
         dom.querySelector('#teamLocation').value = teamLocFilter.options[teamLocFilter.selectedIndex].innerHTML
-        dom.querySelector('#teamLocationex').value = teamLocFilter.options[teamLocFilter.selectedIndex].innerHTML
+        if (dom.querySelector('#teamLocationex')) {
+            dom.querySelector('#teamLocationex').value = teamLocFilter.options[teamLocFilter.selectedIndex].innerHTML
+        }
     })
     
 
@@ -893,6 +897,7 @@ checkPositionForm.addEventListener('submit', (e) => {
                     queueMsg.classList.remove('hide')
                     queueMsg.innerHTML = joinQform['msg'].value;
                     joinQform['firstname'].value = ''
+                    window.scrollTo(0, 0);
                     hideOnSubmit()
                     socket.emit('emiting', {
                         type: 'added',
@@ -1117,6 +1122,10 @@ window.addEventListener('DOMContentLoaded', () => {
         locationName.value = filter.options[filter.selectedIndex].innerHTML
         queryQueue()
     }
+
+    if (dom.querySelector('.date-filt-container')) {
+        selectTodayfilter()
+    }
 })
 
 
@@ -1278,6 +1287,46 @@ let todayappt = document.querySelector('#today-appt').value = new Date().getDate
 
 //@On Change
 const apptQ = dom.querySelector('#date-filt')
+
+    
+    function selectTodayfilter() {
+        dom.querySelectorAll('.booking-grid .cc').forEach(col => {
+            col.classList.add('hide')
+        })
+        dom.querySelectorAll('.u-book-date').forEach((uidate) => {
+            const isFiltered = () => {
+                let _1stSib = uidate.previousElementSibling;
+                let _2ndSib = _1stSib.previousElementSibling;
+                let _3rdSib = _2ndSib.previousElementSibling;
+                let _4thSib = _3rdSib.previousElementSibling;
+                let _5thSib = _4thSib.previousElementSibling;
+                let _6thSib = _5thSib.previousElementSibling;
+    
+                //@Remove Class
+                _1stSib.classList.remove('hide')
+                _2ndSib.classList.remove('hide')
+                _3rdSib.classList.remove('hide')
+                _4thSib.classList.remove('hide')
+                _5thSib.classList.remove('hide')
+                _6thSib.classList.remove('hide')
+            
+                //@Nexted
+                _1stSib.querySelector('.u-booking-actions').classList.remove('hide')
+                _1stSib.querySelector('.status')
+            }
+    
+        
+            let wasBooked = new Date(Date.parse(uidate.innerHTML))
+            let month = wasBooked.getMonth() + 1;
+            let fulldate = wasBooked.getDate()
+            let now = moment()
+          
+             if (apptQ.value == fulldate && month == new Date().getMonth()+1) {
+                 isFiltered() 
+            }
+        })
+        
+}    
 
 apptQ.addEventListener('change', (e) => {
     dom.querySelectorAll('.booking-grid .cc').forEach(col => {

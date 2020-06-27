@@ -32,7 +32,7 @@ body::-webkit-scrollbar {
     .col-6{
        flex-basis: 8%;
     }
-    @media (max-width: 900px) {
+    @media (max-width:550px) {
         flex-direction: column;
     }
 }
@@ -1534,7 +1534,7 @@ tbody{
         @media (max-width:990px) {
             margin-right: 0rem !important;
             .q-planner-info{
-                position: relative;
+                
             }
         }
     }
@@ -1551,6 +1551,10 @@ tbody{
         display: block;
         color: $faded-gray;
         padding: .3rem 1rem;
+    }
+    @media (max-width:550px) {
+        position: relative;
+        margin-top: 4rem;
     }
 }
 
@@ -1700,6 +1704,27 @@ tbody{
     font-size: 1.4rem;
 }
 
+
+
+.static{
+    padding: 5rem;
+    background-color: #fff;
+    .title{
+        font-size: 2.8rem;
+        font-weight: 500;
+        span:nth-child(1){
+            color: #6B6B6B;
+        }
+    }
+   
+
+    p{
+        color: #6B6B6B;
+        font-weight: 300;
+        word-spacing: 2px;
+    }
+}
+
 //==================================
 // FRONT END
 //=====================================================//
@@ -1829,6 +1854,10 @@ tbody{
                 &:hover{
                     @include cardHover();
                 }
+                @media (max-width:1024px) {
+                    height: 100%;
+                    padding-bottom: 3rem;
+                }
             }
         }
     }
@@ -1887,7 +1916,7 @@ tbody{
     p{
         font-size: 1.7rem;
     }
-    @media (max-width:550px) {
+    @media (max-width:1024px) {
         h2{
             font-size: 2.6rem;
         }
@@ -1950,7 +1979,7 @@ tbody{
                     margin-bottom: 5rem;
                 }
             }
-            @media (max-width:550px) {
+            @media (max-width:1024px) {
                 flex-direction: column;
                 .how--content{
                     h3{
@@ -2016,7 +2045,7 @@ tbody{
         padding: 27px 0px;
     }
  
-    .new_footer_top .company_widget p {
+    .new_footer_top .company_widget p, a {
         font-size: 16px;
         font-weight: 300;
         line-height: 28px;
@@ -2027,10 +2056,7 @@ tbody{
         border-width: 1px;
         margin-top: 20px;
     }
-    .btn_get_two:hover {
-        background: transparent;
-        color: #5e2ced;
-    }
+  
     
     .new_footer_top .f_widget.about-widget .f_list li a:hover {
         color: #5e2ced;
@@ -2066,6 +2092,10 @@ tbody{
         background: #ebeef5;
         text-align: center;
         padding-top: .3rem;
+        transition: all .3s;
+        &:hover{
+            transform: scale(1.1);
+        }
     }
 
     .new_footer_top .f_social_icon a + a {
@@ -2152,6 +2182,12 @@ tbody{
     
     /*************footer End*****************/
     
+
+    a{
+        &:hover{
+            color: $brand-color !important;
+        }
+    }
 }
 
 .topnav-bar{
@@ -2170,6 +2206,7 @@ tbody{
             padding: 2rem;
             color: #ccc;
             font-size: 1.6rem;
+            font-weight: 400;
             &:hover{
                 color: $green !important;
             }
@@ -2200,7 +2237,7 @@ tbody{
           }
       }
     }
-    @media (max-width:550px) {
+    @media (max-width:1024px) {
         position: absolute;
         .tn-items, .u-logs{
             display: none;
@@ -2243,7 +2280,7 @@ tbody{
 }
 
 //@hIde on Lg
-@media (min-width:990px){
+@media (min-width:1024px){
     .hide-lg{
         display: none;
     }

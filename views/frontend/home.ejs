@@ -239,17 +239,21 @@ new ScrollMagic.Scene({
 }).on('start', () => {
     let daklogo = document.querySelector('.dak-logo')
     let whlogo = document.querySelector('.wh-logo')
+    let navtop = document.querySelector('.topnav-bar')
     if(daklogo.classList.contains('hide')){
         daklogo.classList.remove('hide')
         whlogo.classList.add('hide')
+        navtop.style.boxShadow = '0 0 15px -5px #555'
     } else {
         daklogo.classList.add('hide')
         whlogo.classList.remove('hide')
+        navtop.style.boxShadow = 'none'
+
     }
     
 })
 .setTween(tl)
-.setTween(".topnav-bar, .tn-items a, .u-logs-a", 0.5, {backgroundColor: "#ffffff", color: '#6f6f74'}) // trigger a TweenMax.to tween
+.setTween(".topnav-bar, .tn-items a, .u-logs-a", 0.5, {backgroundColor: "#ffffff", color: '#666'}) // trigger a TweenMax.to tween
 .addTo(controller);
 
 

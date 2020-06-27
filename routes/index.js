@@ -29,22 +29,29 @@ router.get('/queue/:vpurl', (req, res) => {
 })
 
 
+//@Static Pages
+//Privacy Policy
+router.get('/privacy-policy', (req, res) => {
+  res.render('./frontend/static', {
+    title: 'Privacy policy',
+    forp: 'privacy'
+  })
+})
 
-//@Add Visitors Via Planner Page
-// router.post('/join-queue', (req, res) => {
-//   const { locid, firstname, phone, labels } = req.body;
-//   if (firstname != '' && phone != '') {
-//     let newVisitor = { "firstname": firstname, "phone": phone, "labels": labels, "line": locid, "status": "Waiting", "timeused": null };
-
-//     User.findOneAndUpdate({ email: labels }, {$push: { visitors: newVisitor } },
-//     ).exec((err, docs) => {
-//       if (err) {
-//         return
-//       }
-//       res.send({rt: docs})
-//     })
-//   }
-// })
+//Term & condtition
+router.get('/terms-and-conditions', (req, res) => {
+  res.render('./frontend/static', {
+    title: 'Terms and Conditions',
+    forp: 'terms'
+  })
+})
+//Term of service
+router.get('/terms-of-service', (req, res) => {
+  res.render('./frontend/static', {
+    title: 'Terms of Service',
+    forp: 'service'
+  })
+})
 
 //@ Join Queue
 router.post('/join-queue', (req, res) => {
