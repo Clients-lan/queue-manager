@@ -385,7 +385,8 @@ router.post('/create-customer', ensureAuthenticated, async (req, res) => {
   const subscription = await stripe.subscriptions.create({
     customer: customer.id,
     items: [{ plan: req.user.plancode }],
-    expand: ['latest_invoice.payment_intent']
+    expand: ['latest_invoice.payment_intent'],
+    trial_period_days: 14,
   });
     res.send(subscription);
     const sub = subscription.id;
@@ -449,6 +450,78 @@ router.post('/cancel-plan', ensureAuthenticated, (req, res) => {
   })
   res.redirect('/u/dashboard')
 })
+
+
+
+//@WebHooks
+router.post('/stripe-webhook', async function (req, res) {
+  console.log('/webhooks POST route hit! req.body: ', req.body)
+
+  let { data, type } = req.body
+  let { previous_attributes, object } = data
+
+  console.log('Data ' + previous_attributes);
+  console.log('Object ' + object);
+
+  try {
+      if ('status' in previous_attributes
+          && type === 'customer.subscription.updated'
+          && previous_attributes.status === 'active'
+          && object.status === 'past_due') {
+          console.log("subscription payment has failed! Subscription id: ", object.id)
+
+          let customer_id = object.customer
+          let product_id = object.plan.product
+          // https://stripe.com/docs/api/subscriptions/object
+
+          let customer_object = await stripe.customers.retrieve(
+              customer_id,
+              { expand: ["default_source"] }
+          )
+
+          let product_object = await stripe.products.retrieve(
+              product_id
+          )
+
+          let customer_email = customer_object.email
+          // https://stripe.com/docs/api/customers/object
+         let product_name = product_object.name
+          // https://stripe.com/docs/api/service_products/object
+         let plan_name = object.plan.nickname
+          // https://stripe.com/docs/api/plans
+
+          // Nodemailer configuration
+        //@======Perform Actions========================
+        const msg = {
+            to: customer_email,
+            from: 'anthonylannn@gmail.com',
+            subject: 'Your subscription payment has failed!',
+            text: 'Hey there',
+            html: `<p>An automatic payment for your subscription to FlexyQ has failed. `
+            + `Please log in and update your payment information to ensure your subscription remains valid.</p>`
+        };
+        sgMail.send(msg)
+
+        //@Change status to false
+        User.findOneAndUpdate({email: customer_email}, { 'subscribed': null }, {useFindAndModify: false}, function(err, result){
+          if (err) { return } 
+      })
+        
+          
+        //@End of perferm actions
+          res.sendStatus(200)
+      }
+      else {
+          res.sendStatus(200)
+      }
+  }
+  catch (err) {
+      console.log("webhook error: ", err)
+      res.sendStatus(200)
+  }
+})
+
+
 
 //@ ========== END STRIPE ==========================
 
