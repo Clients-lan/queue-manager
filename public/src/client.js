@@ -26,10 +26,54 @@ const callUIalert = () => {
 if (dom.querySelector('#teamLocation')) {
     const teamLocFilter = document.querySelector('#location-team')
     dom.querySelector('#teamLocation').value = teamLocFilter.options[teamLocFilter.selectedIndex].innerHTML
+    dom.querySelector('#teamLocationex').value = teamLocFilter.options[teamLocFilter.selectedIndex].innerHTML
+
     //#Listener
     teamLocFilter.addEventListener('change', () => {
-    dom.querySelector('#teamLocation').value = teamLocFilter.options[teamLocFilter.selectedIndex].innerHTML
-})
+        dom.querySelector('#teamLocation').value = teamLocFilter.options[teamLocFilter.selectedIndex].innerHTML
+        dom.querySelector('#teamLocationex').value = teamLocFilter.options[teamLocFilter.selectedIndex].innerHTML
+    })
+    
+
+    //@Edit and Delete team
+    let overlayOnTeam = dom.querySelector('.global-overlay')
+    
+    dom.querySelectorAll('.open-u-edit-team').forEach(teamEdit => {
+        teamEdit.addEventListener('click', (e) => {
+            e.preventDefault()
+            teamEdit.nextElementSibling.classList.remove('hide')
+            overlayOnTeam.classList.remove('hide')
+        })
+    })
+
+
+
+    dom.querySelectorAll('.u-edit-team').forEach((tedit) => {
+        tedit.addEventListener('click', (e) => {
+            if(e.target.classList.contains('close-u-edit-team')){
+                tedit.classList.add('hide')
+                overlayOnTeam.classList.add('hide')
+            }
+        })
+    })
+
+
+
+    dom.querySelectorAll('.open-delete-team').forEach(opendelteam => {
+        opendelteam.addEventListener('click', (e) => {
+            e.preventDefault()
+            opendelteam.nextElementSibling.classList.remove('hide')
+            overlayOnTeam.classList.remove('hide')
+        })
+    })
+
+
+    dom.querySelectorAll('.close-delete-team').forEach(closedelteam => {
+        closedelteam.addEventListener('click', (e) => {
+          closedelteam.closest('.delete-team-form').classList.add('hide')
+          overlayOnTeam.classList.add('hide')
+        })
+    })
 }
 
 
@@ -1176,15 +1220,15 @@ if(dom.querySelector('.add-time-slot')){
          for(let i = 0; i < el.length; i++){
              el[2].disabled = true;
              el[i].addEventListener('change', () => {
-                let timeVal = `${el[0].value}:${el[1].value} ${el[3].value}`
-                slotone.value = timeVal
+                let timeVal = `${el[0].value}:${('0' + el[1].value).slice(-2)} ${el[3].value}`
+                 slotone.value = timeVal
              })
          }
 
          for(let i = 0; i < el2.length; i++){
              el2[2].disabled = true;
              el2[i].addEventListener('change', () => {
-                let timeVal = `${el2[0].value}:${el2[1].value} ${el2[3].value}`
+                let timeVal = `${el2[0].value}:${('0' + el2[1].value).slice(-2)} ${el2[3].value}`
                 slottwo.value = timeVal
              })
          }
@@ -1228,6 +1272,7 @@ dom.querySelector('.u-close-date__filter').addEventListener('click', (e) => {
 //@Set Dynamic Values to Options
 let lthd = dom.querySelector('#lthd').value = new Date().getMonth()
 let mtd = dom.querySelector('#mtd').value = new Date().getMonth() + 1
+let todayappt = document.querySelector('#today-appt').value = new Date().getDate()    
 
 
 
@@ -1265,7 +1310,7 @@ apptQ.addEventListener('change', (e) => {
     
         let wasBooked = new Date(Date.parse(uidate.innerHTML))
         let month = wasBooked.getMonth() + 1;
-       // let fulldate = wasBooked.getDate()
+        let fulldate = wasBooked.getDate()
         let now = moment()
         let weeks = now.diff(wasBooked, "weeks")
         if(apptQ.value == lthd && apptQ.value == month){
@@ -1277,6 +1322,8 @@ apptQ.addEventListener('change', (e) => {
         } else if(apptQ.value == weeks){
             isFiltered()
         } else if(apptQ.value == 'all'){
+            isFiltered()
+        } else if (apptQ.value == fulldate && month == new Date().getMonth()+1) {
             isFiltered()
         }
 

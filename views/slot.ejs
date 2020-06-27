@@ -102,6 +102,30 @@
                                <% } %>
                                <% }) %>
                             </div>
+                            <div class="col-5">
+                                <div class="header-box">Saturday</div>
+                                <% slots.forEach(slot => { %>
+                               <% if(slot.day == 'Saturday'){ %>
+                                 <div class="slots-time-db"><%= slot.time %></div>
+                                 <form action="/delete-slot" method="post">
+                                  <input type="hidden" name="id" value="<%= slot._id %>">
+                                  <button>Delete slot</button>
+                                </form>
+                               <% } %>
+                               <% }) %>
+                            </div>
+                            <div class="col-5">
+                                <div class="header-box">Sunday</div>
+                                <% slots.forEach(slot => { %>
+                               <% if(slot.day == 'Sunday'){ %>
+                                 <div class="slots-time-db"><%= slot.time %></div>
+                                 <form action="/delete-slot" method="post">
+                                  <input type="hidden" name="id" value="<%= slot._id %>">
+                                  <button>Delete slot</button>
+                                </form>
+                               <% } %>
+                               <% }) %>
+                            </div>
                          <%  } %>
                 </div>
             </div>
@@ -117,6 +141,8 @@
                 <option value="Wednesday">Wednesday</option>
                 <option value="Thursday">Thursday</option>
                 <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
             </select>
             <label class="label-box">Start time</label>
             <div class="start-b-time custom-time-med">
@@ -144,25 +170,9 @@
             <button type="submit" class="btn-block">Save slot</button>
         </form>
 
-
-
-
     </section>
-
     <div class="global-overlay hide"></div>
     
-    
-
-
-
-
-
-
-
-
-
-
-
     <% } %>
     <%- include('./components/uialert') -%>    
 
@@ -170,3 +180,27 @@
 
 
   
+    <script>
+
+
+
+setTimeout(() => {
+    
+
+    let _1stel = document.getElementsByTagName('select')[2]
+    let _2ndel = document.getElementsByTagName('select')[6]
+
+
+
+    _1stel.querySelectorAll('option').forEach(op => {
+        op.innerHTML =  ('0' + op.innerHTML).slice(-2)
+    })  
+    _2ndel.querySelectorAll('option').forEach(op => {
+        op.innerHTML =  ('0' + op.innerHTML).slice(-2)
+    })   
+
+}, 2000);
+
+
+
+    </script>

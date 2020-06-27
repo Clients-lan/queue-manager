@@ -33,7 +33,7 @@
                             <label class="label-box">Phone number</label>
                         </div>
                         <div class="one-half column">
-                            <input type="text" class="u-full-width" name="phone" placeholder="Enter phone" required>
+                            <input type="text" class="u-full-width" name="phone" placeholder="Enter phone (eg. +393510578080)" required>
                         </div>
                     </div>
                     <div class="--dash"></div>
@@ -70,7 +70,7 @@
                                 <label class="label-box">Phone number</label>
                             </div>
                             <div class="one-half column">
-                                <input type="text" class="u-full-width" name="phone" placeholder="Phone" required>
+                                <input type="text" class="u-full-width" name="phone" placeholder="Enter phone (eg. +393510578080)" required>
                             </div>
                         </div>
                         <div class="--dash"></div>
@@ -133,6 +133,22 @@
                              <% } %>
                             <% }) %>
                         </div>
+                        <div class="col-5">
+                            <div class="header-box">Saturday</div>
+                            <% data.slot.forEach(slot => { %>
+                              <% if(slot.day == 'Saturday'){ %>
+                             <div class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></div>
+                             <% } %>
+                           <% }) %>
+                        </div>
+                        <div class="col-5">
+                            <div class="header-box">Sunday</div>
+                            <% data.slot.forEach(slot => { %>
+                              <% if(slot.day == 'Sunday'){ %>
+                             <div class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></div>
+                         <% } %>
+                        <% }) %>
+                    </div>
                      <%  } %>
                 </div>
             </div>

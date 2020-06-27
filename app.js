@@ -103,7 +103,7 @@ app.post('/serve-visitor', (req, res) => {
   User.findOneAndUpdate({ email: email, "visitors._id": vsid },
     { $set: { "visitors.$.status": "Serving" } }).exec((err, docs) => {
       if (!err) {
-        const from = 'Flexi-Q'
+        const from = '15065031886'
         const to = phone
         const text = 'A text message sent using the Nexmo SMS API'
 
@@ -128,7 +128,7 @@ app.post('/serve-visitor', (req, res) => {
 //@Text user // Using custom form/msg
 app.post('/text-user', (req, res) => {
   const { phone, text } = req.body;
-  const from = `Flex-Q`;
+  const from = '15065031886';
   //@Send SMS
    nexmo.message.sendSms(from, phone, text, {type: 'unicode'}, (err, responseData) => {
       if (err) {
@@ -149,8 +149,8 @@ app.post('/text-user', (req, res) => {
 
 //@Call in User for the Appointment they booked
 app.post('/call-appt', ensureAuthenticated, (req, res) => {
-  const { phone, name } = req.body;
-  const from = `Flexi-Q`;
+  const { phone, name, id } = req.body;
+  const from = '15065031886';
   const text = `Hello ${name}, you're next! You can come in now.`
   //@Send SMS
    nexmo.message.sendSms(from, phone, text, {type: 'unicode'}, (err, responseData) => {

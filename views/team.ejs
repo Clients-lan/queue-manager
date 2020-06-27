@@ -17,12 +17,55 @@
         <%  teams.forEach(team => { %>
              <div class="row team-list">
                  <div class="one-third column">
-                     <span><%= team.fullname %></span></div>
+                     <span><%= team.fullname %></span>
+                </div>
                  <div class="one-third column">
                      <span class="tag">
-                     <%= team.role %> </span><i>@</i>  <span><%= team.location %></span></div>
+                     <%= team.role %> </span><i>@</i>  <span><%= team.location %></span>
+                </div>
                  <div class="one-third column">
-                     <span><%= team.workemail %></span></div>
+                     <span><%= team.workemail %></span>
+                </div>
+                <ion-icon name="pencil-outline" class="open-u-edit-team"></ion-icon>
+                <form action="/edit-team" method="post" class="u-edit-team hide">
+                    <ion-icon name="close-outline" class="close-u-edit-team"></ion-icon>
+                    <div class="header-box">Edit Team</div>
+                    <div class="inner-content">
+                        <input type="text" name="fullname" value="<%= team.fullname %>" class="u-full-width">
+                        <input type="text" name="workemail" value="<%= team.workemail %>" class="u-full-width">
+                        <select name="role" class="u-full-width">
+                            <option value="clerk"> Clerk </option>
+                            <option value="manager">Location Manager </option>
+                            <option value="admin"> Administrator </option>
+                        </select>
+                        <select name="locid" id="location-team" class="u-full-width">
+                            <% data.forEach(items => { %>
+                              <option value="<%= items._id %>"><%= items.name %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <input type="hidden" value="<%= team._id %>" name="id">
+                    <input type="hidden" name="location" id="teamLocationex">
+                    <div class="row">
+                        <button type="submit" class="btn-block btn-outline">save changes</button>
+                    </div>
+                </form>
+                <!-- Delete Team -->
+                <ion-icon name="trash-outline" class="open-delete-team"></ion-icon>
+                <form action="/delete-team" method="post" class="delete-team-form hide">
+                    <div class="header-box">Removing <%= team.fullname %>? Are you sure?</div>
+                    <div class="--dash"></div>
+                 <br>
+                 <div class="row">
+                     <div class="one-half column">
+                         <a href="#" class="button close-delete-team">cancel</a>
+                     </div>
+                     <div class="one-half column">
+                         <button type="submit"> yes, I'm sure</button>
+                     </div>
+                 </div>
+                 <input type="hidden" value="<%= team._id %>" name="id">
+                </form>
              </div>
              <div class="--dash"></div>
         <% }) %>
@@ -91,6 +134,14 @@
 <%- include('./components/uialert') -%>
 <%- include('./aouth') -%>
 
+<div class="global-overlay hide"></div>
 
 
 
+
+
+<script>
+
+  
+
+</script>

@@ -181,6 +181,32 @@ router.post('/add-teams', ensureAuthenticated, (req, res) => {
   res.send()
 });
 
+//@Edit Team
+router.post('/edit-team', ensureAuthenticated, (req, res) => {
+  const { id, fullname, workemail, role, locationId, location } = req.body;
+  User.findOneAndUpdate({ email: req.user.email, "team._id": id },
+    {
+      $set: {
+        "team.$.fullname": fullname, "team.$.workemail": workemail,
+        "team.$.role": role, "team.$.locationId": locationId, "team.$.location": location,
+      }
+    }).exec((err, docs) => {
+      if (!err) {
+         res.redirect('/u/team')
+      } else {
+        console.log(err);
+        
+      }
+  })
+})
+//@Delete Team
+router.post('/delete-team', ensureAuthenticated, (req, res) => {
+  const { id } = req.body
+  User.updateOne({ email: req.user.email }, { $pull: { team: { _id : id } } },{ safe: true }, (err, obj) => {
+    if (err) { return } 
+  });
+  res.redirect('/u/team')
+})
 
 //@Save Location
 router.post('/savelocation', ensureAuthenticated, (req, res) => {

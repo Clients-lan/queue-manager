@@ -960,6 +960,54 @@ textarea{
         padding-top: 1rem;
         padding-bottom: 1rem;
     }
+    .team-list{
+        position: relative;
+    }
+   
+}
+
+.open-u-edit-team{
+    position: absolute;
+    top: 1rem;
+    right: 4rem;
+    cursor: pointer;
+}
+.u-edit-team{
+    @include elFixedTC();
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    width: 300px;
+    height: 400px;
+    z-index: 99999;
+    border-radius: 5px;
+    .inner-content{
+        padding: 1rem;
+    }
+    .row{
+        padding: 0 1rem;
+    }
+    ion-icon{
+        font-size: 2.5rem;
+        position: absolute;
+        right: 1rem;
+        top: 1rem;
+        cursor: pointer;
+    }
+}
+
+.open-delete-team{
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    cursor: pointer;
+}
+.delete-team-form{
+    @include elFixedTC();
+    width: 350px;
+    height: 150px;
+    background-color: #fff;
+    z-index: 99999;
+    border-radius: 5px;
 }
 
 //@END OF TEAM PAGE===================//
@@ -2302,7 +2350,7 @@ tbody{
             background-color: #ffe2e5;
             color: #856404;
         }
-        .cancelled{
+        .cancelled, .failed{
             background-color: #ff3860;
             color: #fff;
         }
@@ -2467,6 +2515,12 @@ tbody{
       margin-top: 5rem; 
     }
 }
+
+
+
+
+
+
 
 //@Temporary One pass
 #onepass-auth{
