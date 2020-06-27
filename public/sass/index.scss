@@ -1261,6 +1261,9 @@ table {
   width: 100%;
   position: relative;
   background-color: #fff;
+  @media (max-width:550px) {
+      margin-left: -2rem;
+  }
 }
 
 
@@ -1300,6 +1303,9 @@ table td {
   border-left: $glob-border;
   border-top: $glob-border;
   border-bottom: none;
+  @media (max-width:550px) {
+      padding-left: 1rem;
+  }
 }
 table th:nth-child(1) {
   display: flex;
@@ -1410,6 +1416,9 @@ tbody{
             margin: 0;
             padding: 0;
             line-height: 0;
+            @media (max-width:550px) {
+                line-height: 1.5;
+            }
         }
     }
 }
