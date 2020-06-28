@@ -8,8 +8,10 @@ const { ensureAuthenticated } = require('../config/auth');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const async = require('async')
-const crypto = require('crypto')
+const crypto = require('crypto');
+const { log } = require('console');
 require('dotenv').config();
+//const passwordComplexity = require('joi-password-complexity');
 
 
 
@@ -178,12 +180,25 @@ router.post('/register', (req, res) => {
         errors.push({msg: 'Passwords does not match'})
     }
     //Password length
-    if (password.length < 6) {
-        errors.push({ msg: 'Password should be at least 6 characters' })
+    if (password.length < 8) {
+        errors.push({ msg: 'Password should be at least 8 characters' })
     }
     if (!token || token == '') {
         errors.push({ msg: 'Hmmm! Are you a bot?' })
     }
+
+    
+    let matchNumber = password.match(/\d+/g)
+    if (matchNumber == null) {
+        errors.push({ msg: 'Password must contains at least 1 numeric value' })
+    }
+
+    let format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    if (!format.test(password)) {
+        errors.push({ msg: 'Password must contains at least 1 special character, eg. @, !, etc' })
+    }  
+
+
     if (errors.length > 0) {
         res.render('register', {
             errors,
