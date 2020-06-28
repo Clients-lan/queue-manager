@@ -179,7 +179,7 @@ router.post('/register', (req, res) => {
     }
     //Password length
     if (password.length < 6) {
-        errors.push({ msg: 'Password should be at less 6 characters' })
+        errors.push({ msg: 'Password should be at least 6 characters' })
     }
     if (!token || token == '') {
         errors.push({ msg: 'Hmmm! Are you a bot?' })
