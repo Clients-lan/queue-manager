@@ -168,8 +168,6 @@ router.post('/register', (req, res) => {
     
     const { first, last, token, onepass, username, plan, plancode, subscribed, email, password, password2, locisadded} = req.body
     
-   
-
     let errors = [];
     //Check required fields
     if (!first || !last || !email || !password || !password2) {

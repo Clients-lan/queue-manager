@@ -177,7 +177,7 @@ router.post('/add-teams', ensureAuthenticated, (req, res) => {
     if (!err) {
       const msg = {
         to: workemail,
-        from: 'anthonylannn@gmail.com',
+        from: 'contactus@flexyq.com',
         subject: 'Invitation',
         text: 'Hi',
         html: `Hey ${fullname}, ${req.user.first} invited you to joined their team. Here is the login email and password: ${req.user.email} => ${req.user.password2} here is the login link: http://${req.headers.host}/u/login`,
@@ -501,7 +501,7 @@ router.post('/stripe-webhook', async function (req, res) {
         //@======Perform Actions========================
         const msg = {
             to: customer_email,
-            from: 'anthonylannn@gmail.com',
+            from: 'contactus@flexyq.com',
             subject: 'Your subscription payment has failed!',
             text: 'Hey there',
             html: `<p>An automatic payment for your subscription to FlexyQ has failed. `
