@@ -38,11 +38,11 @@ router.get('/privacy-policy', (req, res) => {
   })
 })
 
-//Term & condtition
-router.get('/terms-and-conditions', (req, res) => {
+//Cookie
+router.get('/cookie-policy', (req, res) => {
   res.render('./frontend/static', {
-    title: 'Terms and Conditions',
-    forp: 'terms'
+    title: 'Cookie Policy',
+    forp: 'cookie'
   })
 })
 //Term of service
