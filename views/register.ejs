@@ -1,7 +1,9 @@
 <title>FlexyQ - Register </title>
  
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+    async defer>
+</script>
 <section class="auth">
- 
     <div class="auth-wrapper">
         <form action="/u/register" method="post">
             <% if(typeof errors != 'undefined') { %>
@@ -28,6 +30,8 @@
             <input type="hidden" name="subscribed" value="false">
             <input type="hidden" name="plancode" value="<%= plancode %>">
             <input type="hidden" name="onepass" value="null">
+            <div class="g-recaptcha" data-sitekey="6LdQnKoZAAAAAIGiKtaJ7-Q18p32s0BHspMK7-rT"></div>
+
             <button type="submit" class="btn-fill btn-block">Create Account</button>
              <p>Already have an account? <a href="/u/login">Login</a></p>
           </form>
@@ -37,3 +41,7 @@
 </section>
 
 
+
+<script>
+
+</script>
