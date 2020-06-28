@@ -1,10 +1,18 @@
 <title>FlexyQ - Register </title>
  
+<script type="text/javascript">
 
+    var onloadCallback = function() {
+      grecaptcha.render('html_element', {
+        'sitekey' : '6LcsrKoZAAAAAMe39Hl1udxxg2usdIrfdqMOoSSH',
+        callback: verifyCallback
+      });
+    };
 
+  </script>
 
 <section class="auth">
-    <div class="auth-wrapper">
+    <div class="auth-wrapper" id="create-accout">
         <form action="/u/register" method="post">
             <% if(typeof errors != 'undefined') { %>
             <div class="alert-errors">
@@ -30,7 +38,9 @@
             <input type="hidden" name="subscribed" value="false">
             <input type="hidden" name="plancode" value="<%= plancode %>">
             <input type="hidden" name="onepass" value="null">
-
+            <div id="html_element"></div>
+            <br>
+            <input type="hidden" name="token" id="gtoken">
             <button type="submit" class="btn-fill btn-block">Create Account</button>
              <p>Already have an account? <a href="/u/login">Login</a></p>
           </form>
@@ -38,5 +48,21 @@
 
     
 </section>
+<%- include('./components/uialert') -%>
+
+
+
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+async defer>
+</script>
+
+
+<script>
+     var verifyCallback = function (response) {
+            document.querySelector('#gtoken').value = response
+        };
+</script>
+
+
 
 

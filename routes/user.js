@@ -9,6 +9,8 @@ const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const async = require('async')
 const crypto = require('crypto')
+require('dotenv').config();
+
 
 
 
@@ -157,11 +159,15 @@ router.get('/register', (req, res) => {
 })
 
 
+
+
 //@Register Handle
 router.post('/register', (req, res) => {
     
-    const { first, last, onepass, username, plan, plancode, subscribed, email, password, password2, locisadded} = req.body
+    const { first, last, token, onepass, username, plan, plancode, subscribed, email, password, password2, locisadded} = req.body
     
+   
+
     let errors = [];
     //Check required fields
     if (!first || !last || !email || !password || !password2) {
@@ -174,6 +180,9 @@ router.post('/register', (req, res) => {
     //Password length
     if (password.length < 6) {
         errors.push({ msg: 'Password should be at less 6 characters' })
+    }
+    if (!token || token == '') {
+        errors.push({ msg: 'Hmmm! Are you a bot?' })
     }
     if (errors.length > 0) {
         res.render('register', {

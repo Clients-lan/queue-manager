@@ -63,6 +63,8 @@ if (dom.querySelector('#teamLocation')) {
 
 
 
+    
+
     dom.querySelectorAll('.open-delete-team').forEach(opendelteam => {
         opendelteam.addEventListener('click', (e) => {
             e.preventDefault()

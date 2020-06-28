@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
-const env = require('dotenv').config({ path: './.env' });
+require('dotenv').config();
 const socketio = require('socket.io')
 const http = require('http')
 const sgMail = require('@sendgrid/mail');
@@ -220,6 +220,7 @@ app.post('/check-appt-client', (req, res) => {
     }
   })
 })
+
 
 
 
