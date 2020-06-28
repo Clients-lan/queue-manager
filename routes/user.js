@@ -190,12 +190,12 @@ router.post('/register', (req, res) => {
     
     let matchNumber = password.match(/\d+/g)
     if (matchNumber == null) {
-        errors.push({ msg: 'Password must contains at least 1 numeric value' })
+        errors.push({ msg: 'Password must contain at least 1 numeric value' })
     }
 
     let format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
     if (!format.test(password)) {
-        errors.push({ msg: 'Password must contains at least 1 special character, eg. @, !, etc' })
+        errors.push({ msg: 'Password must contain at least 1 special character, eg. @, !, etc' })
     }  
 
 
