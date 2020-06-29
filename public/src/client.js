@@ -1381,3 +1381,70 @@ apptQ.addEventListener('change', (e) => {
 })  
 })
 }
+
+
+socket.on('appt', apptChecked)
+
+
+
+function apptChecked(user) {
+    //@User End
+     if (dom.querySelector('.bapt-client')) {
+        
+         if (user.good != undefined) {
+                uialertText.innerHTML = 'Location owner has been alerted!'
+                callUIalert()
+         }
+
+         if (user.error != undefined) {
+            uiAlert.innerHTML = 'Opps! The number and/or email you inserted does not match what you booked the appointment with.'
+            callUIalert()
+         }
+
+ }
+
+    if (dom.querySelector('.booking-url-form')) {
+        if (user.good != undefined) {
+            uialertText.innerHTML =  `${user.good.name} who has an appointment at ${user.good.time} has checked in`;
+            callUIalert()
+            setTimeout(() => { location.reload() }, 2000);
+     }
+    }
+    
+}
+
+if(dom.querySelector('.appt-checker-inner')){
+
+const apptCheckerForm = dom.querySelector('.bapt-client')
+
+    apptCheckerForm.addEventListener('submit', (e) => {
+       
+        e.preventDefault()
+
+
+        fetch('/check-appt-client', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                emailid: apptCheckerForm['emailid'].value,
+                email: apptCheckerForm['email'].value,
+                phone: apptCheckerForm['phone'].value
+               
+            })
+        }).then((res) => {
+            return res.json()
+        }).then(res => {
+            console.log(res);
+            socket.emit('appt', {
+                good: res.good,
+                error: res.error
+            })
+        }) 
+    })
+
+
+
+
+}

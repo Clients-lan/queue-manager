@@ -27,6 +27,10 @@ io.on('connection', socket => {
     socket.emit('emiting', data)
     socket.broadcast.emit('emiting', data)
   })
+  socket.on('appt', (user) => {
+    socket.emit('appt', user)
+    socket.broadcast.emit('appt', user)
+  })
 })
 
 //@EJS Template Engine
@@ -166,20 +170,20 @@ app.post('/call-appt', ensureAuthenticated, (req, res) => {
             console.log('Message sent successfully. ');
            //@Change Status
            User.findOneAndUpdate({ email: req.user.email }, { $set: { "book.$[elem].status": 'called' } }, { arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(id) }], new: true }).exec((err, docs) => {
-            if (err) { console.log(err);
-             }
-          })
-            req.flash('success_msg', 'Slot saved!');
+            if (err) { console.log(err);}
+           })
+           res.redirect('/u/appointment')
           } else {
             console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
              //@Change Status
             User.findOneAndUpdate({ email: req.user.email }, { $set: { "book.$[elem].status": 'failed' } }, { arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(id) }], new: true }).exec((err, docs) => {
               if (err) { console.log(err); }
             })
+            res.redirect('/u/appointment')
         }
       }
    })
-  res.redirect('/u/appointment')
+  
 })
 
 
@@ -188,40 +192,16 @@ app.post('/check-appt-client', (req, res) => {
   const { emailid, phone, email } = req.body;
   User.findOne({ email: emailid, 'book.phone': phone, 'book.email': email }).then(user => {
     if (user) {
-      res.render('confirm', {
-        msg: 'Location owner has been alerted' 
-      })
       user.book.forEach(bo => {
         if (bo.phone === phone && bo.email === email) {
           User.findOneAndUpdate({ email: emailid }, { $set: { "book.$[elem].status": 'online' } }, { arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(bo._id) }], new: true }).exec((err, docs) => {
             if (err) { return }
           })
-          const from = '15065031886'; 
-          const text = `Hello, ${bo.name} who has an appointment has checked in. Please login to FlexyQ and invite them in`;
-          //@Send SMS
-           nexmo.message.sendSms(from, phone, text, {type: 'unicode'}, (err, responseData) => {
-             if (err) {
-               console.log(err);
-               return
-              } else {
-                  if(responseData.messages[0]['status'] === "0") {
-                    console.log('Message sent successfully. ');
-                   //@Change Status
-                   User.findOneAndUpdate({ email: emailid, 'book.email': email, 'book.phone': phone }, { $set: { "book.$[elem].status": 'online' } }, { new: true }).exec((err, docs) => {
-                    if (!err) { console.log(docs);
-                     }
-                  })
-                  } else {
-                      console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
-                }
-              }
-           })
+          res.send({good: bo})
         }
       })
     } else {
-      res.render('confirm', {
-        msg: 'Opps! The number and/or email you inserted does not match what you booked the appointment with'
-      })
+      res.send({error: 'No result'})
     }
   })
 })
