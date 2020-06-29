@@ -218,7 +218,7 @@ app.post('/check-appt-client', (req, res) => {
       })
     } else {
       res.render('confirm', {
-        msg: 'We cound not process your enquiries, sorry.'
+        msg: 'Opps! The number and/or email you inserted does not match what you booked the appointment with'
       })
     }
   })

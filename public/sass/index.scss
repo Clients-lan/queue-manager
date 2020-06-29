@@ -2559,7 +2559,10 @@ tbody{
 
 .comfirm{
     text-align: center;
-    padding: 10% 0;
+    padding: 10% 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
     h3{
       margin-top: 5rem; 
     }
