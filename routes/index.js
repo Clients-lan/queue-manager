@@ -90,7 +90,6 @@ router.post('/add-vistor', (req, res) => {
     if (err) { return }
     docs.visitors.forEach(nowuser => {
       if (nowuser.firstname === firstname && nowuser.phone == phone) {
-          console.log(nowuser);
           res.send({user: nowuser})
       }
     })
