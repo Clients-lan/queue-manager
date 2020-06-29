@@ -1414,13 +1414,10 @@ function apptChecked(user) {
 }
 
 if(dom.querySelector('.appt-checker-inner')){
-
 const apptCheckerForm = dom.querySelector('.bapt-client')
-
     apptCheckerForm.addEventListener('submit', (e) => {
-       
-        e.preventDefault()
 
+        e.preventDefault()
 
         fetch('/check-appt-client', {
             method: 'post',
@@ -1436,15 +1433,12 @@ const apptCheckerForm = dom.querySelector('.bapt-client')
         }).then((res) => {
             return res.json()
         }).then(res => {
-            console.log(res);
             socket.emit('appt', {
                 good: res.good,
                 error: res.error
             })
         }) 
     })
-
-
 
 
 }
