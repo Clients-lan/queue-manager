@@ -675,8 +675,9 @@ if (dom.querySelector('.left-service-top')) {
                         servedHolder.innerHTML = ''
                         setTimeout(() => { servedHolder.appendChild(li) }, 500);
                     }
-
-                    dom.querySelector('#sms-dyno').innerHTML = res.location.sms
+                    if (dom.querySelector('#sms-dyno')) {
+                        dom.querySelector('#sms-dyno').innerHTML = res.location.sms
+                    }
                 }
             
             })
