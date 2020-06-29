@@ -107,13 +107,13 @@ app.post('/query-visitors', (req, res) => {
 
 //@Update Visitor
 app.post('/serve-visitor', (req, res) => {
-  const { vsid, phone, email } = req.body;
+  const { vsid, phone, email, sms } = req.body;
   User.findOneAndUpdate({ email: email, "visitors._id": vsid },
     { $set: { "visitors.$.status": "Serving" } }).exec((err, docs) => {
       if (!err) {
         const from = '15065031886'
         const to = phone
-        const text = 'A text message sent using the Nexmo SMS API'
+        const text = `${sms}` 
 
         nexmo.message.sendSms(from, to, text, (err, responseData) => {
             if (err) {

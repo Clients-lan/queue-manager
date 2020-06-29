@@ -675,6 +675,8 @@ if (dom.querySelector('.left-service-top')) {
                         servedHolder.innerHTML = ''
                         setTimeout(() => { servedHolder.appendChild(li) }, 500);
                     }
+
+                    dom.querySelector('#sms-dyno').innerHTML = res.location.sms
                 }
             
             })
@@ -752,6 +754,7 @@ if (dom.querySelector('.--serving-page')) {
             let email = ul.querySelector('.visitor-label').innerHTML;
             let phone = ul.querySelector('.u-number').innerHTML;
             let name = ul.querySelector('.queue-visitor__fullname').innerHTML
+            let smsdyno = dom.querySelector('#sms-dyno').innerHTML
             fetch('/serve-visitor', {
                 method: 'post',
                 headers: {
@@ -761,7 +764,8 @@ if (dom.querySelector('.--serving-page')) {
                     email: email,
                     locid: locid,
                     vsid: vsid,
-                    phone: phone
+                    phone: phone,
+                    sms: smsdyno
                 })  
             }).then(res => {
                 console.log(res);
