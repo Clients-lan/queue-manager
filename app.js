@@ -165,14 +165,15 @@ app.post('/call-appt', ensureAuthenticated, (req, res) => {
             console.log('Message sent successfully. ');
            //@Change Status
            User.findOneAndUpdate({ email: req.user.email }, { $set: { "book.$[elem].status": 'called' } }, { arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(id) }], new: true }).exec((err, docs) => {
-            if (err) { return }
+            if (err) { console.log(err);
+             }
           })
             req.flash('success_msg', 'Slot saved!');
           } else {
             console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
              //@Change Status
             User.findOneAndUpdate({ email: req.user.email }, { $set: { "book.$[elem].status": 'failed' } }, { arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(id) }], new: true }).exec((err, docs) => {
-              if (err) { return }
+              if (err) { console.log(err); }
             })
         }
       }
@@ -205,10 +206,9 @@ app.post('/check-appt-client', (req, res) => {
                   if(responseData.messages[0]['status'] === "0") {
                     console.log('Message sent successfully. ');
                    //@Change Status
-                   User.findOneAndUpdate({ email: req.user.email }, { $set: { "book.$[elem].status": 'called' } }, { arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(id) }], new: true }).exec((err, docs) => {
+                   User.findOneAndUpdate({ email: emailid }, { $set: { "book.$[elem].status": 'called' } }, { arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(id) }], new: true }).exec((err, docs) => {
                     if (err) { return }
                   })
-                    req.flash('success_msg', 'Slot saved!');
                   } else {
                       console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
                 }
