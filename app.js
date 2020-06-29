@@ -67,9 +67,12 @@ app.use('/', require('./routes/index'));
 app.use('/u', require('./routes/user'));
 
 
+//@App name
+const appName = 'Flexy Queue'
+
 //@Connect To Database
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://allioxsh:AL2020@ds143614.mlab.com:43614/allio', { useNewUrlParser: true, useUnifiedTopology: true })
-.then(() => console.log('Mongoose Connected...'))
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://flexyqdbadmin:AeY3Ft!G$N@ds213255.mlab.com:13255/heroku_f7k8rfn3', { useNewUrlParser: true, useUnifiedTopology: true })
+.then(() => console.log(`${appName} Mongoose Connected...`))
 .catch(err => console.log(err))
 
 
