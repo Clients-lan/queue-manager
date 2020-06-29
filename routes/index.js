@@ -182,7 +182,7 @@ router.post('/add-teams', ensureAuthenticated, (req, res) => {
         from: 'contactus@flexyq.com',
         subject: 'Invitation',
         text: 'Hi',
-        html: `Hey ${fullname}, ${req.user.first} invited you to joined their team. Here is the login email and password: ${req.user.email} => ${req.user.password2} here is the login link: http://${req.headers.host}/u/login`,
+        html: `<h3>Hello ${fullname},</h3> <p>${req.user.first} from ${req.user.biz} invited you to join their FlexyQ team.</p> <p>Here is the login ID and password:</p> <p>Login Id: ${req.user.email}</p><p>Password: ${req.user.password2}</p> <p>Login via: https://${req.headers.host}/u/login`
      };
       sgMail.send(msg)
     }

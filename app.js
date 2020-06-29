@@ -154,7 +154,7 @@ app.post('/text-user', (req, res) => {
 app.post('/call-appt', ensureAuthenticated, (req, res) => {
   const { phone, name, id } = req.body;
   const from = '15065031886';
-  const text = `Hello ${name}, you're next! You can come in now.`
+  const text = `Hello ${name}, you're next! Please proceed into the location.`
   //@Send SMS
    nexmo.message.sendSms(from, phone, text, {type: 'unicode'}, (err, responseData) => {
      if (err) {
@@ -195,7 +195,7 @@ app.post('/check-appt-client', (req, res) => {
             if (err) { return }
           })
           const from = '15065031886'; 
-          const text = `Hey ${user.first}, ${bo.name} is already at your location, please check your schedule to see if they're at the right time`;
+          const text = `Hello, ${bo.name} who has an appointment has checked in. Please login to FlexyQ and invite them in`;
           //@Send SMS
            nexmo.message.sendSms(from, phone, text, {type: 'unicode'}, (err, responseData) => {
              if (err) {

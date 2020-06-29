@@ -119,10 +119,20 @@
           </div>
           <div class="--dash"></div>
           <div class="row">
-           <div class="one-half column"></div>
+           <div class="one-half column">
+            <div class="alert-errors mt-5">
+                <% if(user.biz == undefined || user.biz == '') { %>
+                <div class="notify-warning">
+                  <a href="/u/profile">Please setup your business name before inviting a team member</a>
+                </div>
+                <% } %>
+            </div>
+           </div>
             <div class="one-half column u-pull-right">
              <input type="hidden" name="location" id="teamLocation">
-              <button type="submit" class="btn-block btn-outline mt-3">Invite</button>
+             <% if(user.biz !== undefined){ %>
+                <button type="submit" class="btn-block btn-outline mt-3">Invite</button>
+             <% } %>
               </div>
           </div>
       </form>

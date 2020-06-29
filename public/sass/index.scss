@@ -570,6 +570,9 @@ textarea{
     font-size: 1.5rem;
     color: #856404;
     font-weight: 300;
+    a{
+        color: #856404 !important;
+    }
 }
 .notify-success{
     @include alertSuccess();
