@@ -411,7 +411,7 @@ updatemapForm.addEventListener('submit', (e) => {
           },
           body: JSON.stringify({
             locid: updateSmsForm['locid'].value,
-            title: updateSmsForm['sms'].value,
+            sms: updateSmsForm['sms'].value,
          })
         }).then(res => {
             if(res.status === 200){

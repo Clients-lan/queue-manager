@@ -194,7 +194,7 @@ app.post('/check-appt-client', (req, res) => {
           User.findOneAndUpdate({ email: emailid }, { $set: { "book.$[elem].status": 'online' } }, { arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(bo._id) }], new: true }).exec((err, docs) => {
             if (err) { return }
           })
-          const from = `FlexyQ Appointment`;
+          const from = '15065031886';
           const text = `Hey ${user.first}, ${bo.name} is already at your location, please check your schedule to see if they're at the right time`;
           //@Send SMS
            nexmo.message.sendSms(from, phone, text, {type: 'unicode'}, (err, responseData) => {

@@ -153,6 +153,8 @@ router.post('/update-location', ensureAuthenticated, (req, res) => {
 //@Update SMS
 router.post('/update-sms', ensureAuthenticated, (req, res) => {
   const { locid, sms } = req.body;
+  console.log(sms);
+  
   User.findOneAndUpdate({ email: req.user.email }, { $set: { "location.$[elem].sms": sms } }, { arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(locid) }], new: true }).exec((err, docs) => {
     if (err) { return }
   })
@@ -320,7 +322,7 @@ router.post('/reverse-space', (req, res) => {
       })
       const msg = {
         to: emailid,
-        from: email,
+        from: 'contactus@flexyq.com',
         subject: 'Appointment Alert',
         text: 'Hi',
         html: `Hi, ${name} has scheduled an appointement at ${time}`,

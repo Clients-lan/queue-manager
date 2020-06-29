@@ -332,7 +332,7 @@ router.post('/forgot', function(req, res, next) {
       function(token, user, done) {
             const msg = {
                 to: user.email,
-                from: 'anthonylannn@gmail.com',
+                from: 'contactus@flexyq.com',
                 subject: 'Password Recovery',
                 text: 'Hey there',
                 html: `You are receiving this because you (or someone else) have requested the reset of the password for your account. Please click on the following link, or paste this into your browser to complete the process. http://${req.headers.host}/u/reset/${token} If you did not request this, please ignore this email and your password will remain unchanged.`,
