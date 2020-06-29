@@ -114,7 +114,6 @@ app.post('/serve-visitor', (req, res) => {
         const from = '15065031886'
         const to = phone
         const text = `${sms}` 
-
         nexmo.message.sendSms(from, to, text, (err, responseData) => {
             if (err) {
                 console.log(err);
