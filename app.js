@@ -80,6 +80,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://flexyqdbadmin:AeY3Ft!G$N@
 
 //@SMS NEXMO
 const Nexmo = require('nexmo');
+const { log } = require('util');
 const nexmo = new Nexmo({
   apiKey: '229aae5a',
   apiSecret: process.env.NEX_KEY,
@@ -206,8 +207,9 @@ app.post('/check-appt-client', (req, res) => {
                   if(responseData.messages[0]['status'] === "0") {
                     console.log('Message sent successfully. ');
                    //@Change Status
-                   User.findOneAndUpdate({ email: emailid }, { $set: { "book.$[elem].status": 'called' } }, { arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(id) }], new: true }).exec((err, docs) => {
-                    if (err) { return }
+                   User.findOneAndUpdate({ email: emailid, 'book.email': email, 'book.phone': phone }, { $set: { "book.$[elem].status": 'online' } }, { new: true }).exec((err, docs) => {
+                    if (!err) { console.log(docs);
+                     }
                   })
                   } else {
                       console.log(`Message failed with error: ${responseData.messages[0]['error-text']}`);
