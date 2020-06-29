@@ -578,6 +578,7 @@ textarea{
     @include alertSuccess();
     margin-bottom: 1rem;
 }
+
 .ui-alert{
     @include  elFixedTC();
     top: 10%;
