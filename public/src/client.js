@@ -3,7 +3,10 @@ const dom  = document.querySelector('body')
 const uiAlert = dom.querySelector('.ui-alert')
 const uialertText = uiAlert.querySelector('.ui-alert-text')
 const addTeamPanel = dom.querySelector('.add-teams');
-const socket = io()
+//const socket = io()
+
+const socket = io({transports: ['websocket']});
+
 
 //@Date
 const dJS = new Date();

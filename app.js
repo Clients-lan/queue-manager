@@ -20,6 +20,8 @@ require('./config/passport')(passport);
 const User = require('./modules/User');
 const { ensureAuthenticated } = require('./config/auth');
 
+io.set('transports', ['websocket']);
+
 
 //@Run When clients connects
 io.on('connection', socket => {
