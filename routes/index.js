@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const { v4: uuidv4 } = require('uuid');
-const env = require('dotenv').config({ path: './.env' });
+require('dotenv').config();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -61,7 +61,6 @@ router.post('/join-queue', (req, res) => {
     if (err) { return }
     docs.visitors.forEach(nowuser => {
       if (nowuser.firstname === firstname && nowuser.phone == phone) {
-          console.log(nowuser);
           res.send({user: nowuser})
       }
     })

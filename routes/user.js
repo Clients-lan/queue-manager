@@ -3,15 +3,14 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport')
 //User model
+require('dotenv').config();
 const User = require('../modules/User');
 const { ensureAuthenticated } = require('../config/auth');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const async = require('async')
 const crypto = require('crypto');
-const { log } = require('console');
-require('dotenv').config();
-//const passwordComplexity = require('joi-password-complexity');
+
 
 
 

@@ -84,10 +84,9 @@ mongoose.connect(process.env.MONGOLAB_PURPLE_URI || 'mongodb://flexyqdbadmin:AeY
 
 //@SMS NEXMO
 const Nexmo = require('nexmo');
-const { log } = require('util');
 const nexmo = new Nexmo({
   apiKey: '229aae5a',
-  apiSecret: process.env.NEX_KEY,
+  apiSecret: process.env.NEX_KEY
 });
 
 
