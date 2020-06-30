@@ -16,11 +16,14 @@ const io = socketio(server)
 //Passport config
 require('./config/passport')(passport);
 
+const PORT = process.env.PORT || 9002;
+
+
 //User model
 const User = require('./modules/User');
 const { ensureAuthenticated } = require('./config/auth');
 
-io.set('transports', ['websocket']);
+//io.set('transports', ['websocket']);
 
 
 //@Run When clients connects
@@ -212,7 +215,6 @@ app.post('/check-appt-client', (req, res) => {
 
 
 
-const PORT = process.env.PORT || 9002;
 // listener
 server.listen(PORT, function () {
     console.log(`listening on ${PORT}`);
