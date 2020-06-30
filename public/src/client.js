@@ -1213,58 +1213,6 @@ dom.querySelectorAll('.u-booking-actions').forEach(uactions => {
 
 if(dom.querySelector('.add-time-slot')){
 
-    new tui.TimePicker('#timepicker-start-mer', {
-        initialHour: 12,
-        initialMinute: 13,
-        inputType: 'selectbox',
-        showMeridiem: true
-     });
-
-     new tui.TimePicker('#timepicker-end-mer', {
-        initialHour: 12,
-        initialMinute: 13,
-        inputType: 'selectbox',
-        showMeridiem: true
-     });
-
-
-
-
-    let el =  dom.querySelectorAll('.start-b-time select')
-    let el2 =  dom.querySelectorAll('.end-b-time select')
-    const slotone = dom.querySelector('input[name=slotone]')
-    const slottwo = dom.querySelector('input[name=slottwo]')
-
-
-         for(let i = 0; i < el.length; i++){
-             el[2].disabled = true;
-             el[i].addEventListener('change', () => {
-                let timeVal = `${el[0].value}:${('0' + el[1].value).slice(-2)} ${el[3].value}`
-                 slotone.value = timeVal
-             })
-         }
-
-         for(let i = 0; i < el2.length; i++){
-             el2[2].disabled = true;
-             el2[i].addEventListener('change', () => {
-                let timeVal = `${el2[0].value}:${('0' + el2[1].value).slice(-2)} ${el2[3].value}`
-                slottwo.value = timeVal
-             })
-         }
-            
-
-         const timeSlotTab = dom.querySelector('.time-booking')
-
-         dom.querySelector('.add-time-slot').addEventListener('click', (e) => {
-             e.preventDefault()
-             timeSlotTab.classList.remove('hide')
-             dom.querySelector('.global-overlay').classList.remove('hide')
-         })
-         dom.querySelector('.close-time-slot').addEventListener('click', (e) => {
-             e.preventDefault()
-             timeSlotTab.classList.add('hide')
-             dom.querySelector('.global-overlay').classList.add('hide')
-         })
 }
 
 

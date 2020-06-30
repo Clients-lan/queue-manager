@@ -3,6 +3,7 @@
 
     <title>FlexyQ Time Slots</title>
 
+
     <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
     <script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
 
@@ -179,27 +180,87 @@
 
 
 
+    <script>
+        function io(){}
+    </script>
   
     <script>
 
 
 
-setTimeout(() => {
+function io(){}
+
+
+
+new tui.TimePicker('#timepicker-start-mer', {
+        initialHour: 12,
+        initialMinute: 13,
+        inputType: 'selectbox',
+        showMeridiem: true
+     });
+
+     new tui.TimePicker('#timepicker-end-mer', {
+        initialHour: 12,
+        initialMinute: 13,
+        inputType: 'selectbox',
+        showMeridiem: true
+     });
+
+
+
+
+    let el =  document.querySelectorAll('.start-b-time select')
+    let el2 =  document.querySelectorAll('.end-b-time select')
+    const slotone = document.querySelector('input[name=slotone]')
+    const slottwo = document.querySelector('input[name=slottwo]')
+
+
+         for(let i = 0; i < el.length; i++){
+             el[2].disabled = true;
+             el[i].addEventListener('change', () => {
+                let timeVal = `${el[0].value}:${('0' + el[1].value).slice(-2)} ${el[3].value}`
+                 slotone.value = timeVal
+             })
+         }
+
+         for(let i = 0; i < el2.length; i++){
+             el2[2].disabled = true;
+             el2[i].addEventListener('change', () => {
+                let timeVal = `${el2[0].value}:${('0' + el2[1].value).slice(-2)} ${el2[3].value}`
+                slottwo.value = timeVal
+             })
+         }
+            
+
+         const timeSlotTab = document.querySelector('.time-booking')
+
+         document.querySelector('.add-time-slot').addEventListener('click', (e) => {
+             e.preventDefault()
+             timeSlotTab.classList.remove('hide')
+             document.querySelector('.global-overlay').classList.remove('hide')
+         })
+         document.querySelector('.close-time-slot').addEventListener('click', (e) => {
+             e.preventDefault()
+             timeSlotTab.classList.add('hide')
+             document.querySelector('.global-overlay').classList.add('hide')
+         })
+
+
+         setTimeout(() => {
     
 
-    let _1stel = document.getElementsByTagName('select')[2]
-    let _2ndel = document.getElementsByTagName('select')[6]
-
-
-
-    _1stel.querySelectorAll('option').forEach(op => {
-        op.innerHTML =  ('0' + op.innerHTML).slice(-2)
-    })  
-    _2ndel.querySelectorAll('option').forEach(op => {
-        op.innerHTML =  ('0' + op.innerHTML).slice(-2)
-    })   
-
-}, 2000);
+            let _1stel = document.getElementsByTagName('select')[2]
+            let _2ndel = document.getElementsByTagName('select')[6]
+        
+        
+            _1stel.querySelectorAll('option').forEach(op => {
+                op.innerHTML =  ('0' + op.innerHTML).slice(-2)
+            })  
+            _2ndel.querySelectorAll('option').forEach(op => {
+                op.innerHTML =  ('0' + op.innerHTML).slice(-2)
+            })   
+        
+        }, 2000);
 
 
 
