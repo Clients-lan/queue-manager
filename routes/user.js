@@ -155,7 +155,7 @@ router.get('/login', (req, res) => res.render('login'))
 router.get('/register', (req, res) => {
     res.render('register', {
         plan: 'Starter',
-        plancode: 'plan_HDYy3VlOapvguc'
+        plancode: 'price_1GziLCDs4JGjbQ5T93SHHJKp'
     })
 })
 

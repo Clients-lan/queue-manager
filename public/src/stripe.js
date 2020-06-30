@@ -3,7 +3,7 @@
 var stripe;
 
 var stripeElements = function(publicKey) {
-  stripe = Stripe('pk_test_LjmoWX4EHzWUgd3EUTETOksP');
+  stripe = Stripe('pk_live_51GyMENDs4JGjbQ5TuGsC7w3UdbEfAixRRD8E6UcdgYF6oxbRhCMqh4uL2Dq2UD0ctCl7aJxfWvMAK2pROCjK2GGm00tK97Tzjc');
   var elements = stripe.elements();
 
   // Element styles
