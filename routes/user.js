@@ -337,7 +337,7 @@ router.post('/register', (req, res) => {
                                       });
                                       let mailOptions = {
                                         from: 'FlexyQ Queuing System',
-                                        to: workemail,
+                                        to: user.email,
                                         subject: 'Account Verification',
                                         text: 'Welcome to FlexyQ', 
                                         html:  `<h3>Welcome to FlexyQ, ${user.first} ${user.last}! </h3> <p> Click on the button below to activate your FlexyQ account or use this <a href="https://${req.headers.host}/u/verify-account/${user.verifyToken}">link</a> </p> <br><p> <a href="https://${req.headers.host}/u/verify-account/${user.verifyToken}" style="text-decoration: none; padding: 1rem 2rem; border-radius: 5px; background: #1c96aa; color: #fff;">Activate now</a></p> <br> <p>After successful activation, you can log in to your new account.</p>`,
