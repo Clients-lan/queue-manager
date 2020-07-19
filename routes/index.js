@@ -5,6 +5,7 @@ const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
 const moment = require('moment')
 const cron = require('node-cron')
+const nodemailer = require('nodemailer');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -189,14 +190,40 @@ router.post('/add-teams', ensureAuthenticated, (req, res) => {
   let newTeam = { "workemail": workemail, "fullname": fullname, "location": location, "role": role, "locationId": locid, "token": req.user.teamToken };
   User.findOneAndUpdate({ email: req.user.email },{$push: { team: newTeam } }).exec((err, docs) => {
     if (!err) {
-      const msg = {
+      let transporter = nodemailer.createTransport({
+        host: 'smtp.office365.com', // Office 365 server
+        port: 587,     // secure SMTP
+        secure: false, // false for TLS - as a boolean not string - but the default is false so just remove this completely
+        requireTLS: true,
+        auth: {
+            user: 'contactus@flexyq.com',
+            pass: 'AXszr#$39!@'
+        },
+        tls: {
+            ciphers: 'SSLv3'
+        }
+      });
+      let mailOptions = {
+        from: 'FlexyQ Queuing System',
         to: workemail,
-        from: 'contactus@flexyq.com',
-        subject: 'Invitation',
-        text: 'Hi',
+        subject: 'Team Invitation',
+        text: 'Hey there, you got an invitation', 
         html: `<h3>Hello ${fullname},</h3> <p>${req.user.first} from ${req.user.biz} invited you to join their FlexyQ team.</p>  <p>Login via: https://${req.headers.host}/u/team-signup/${req.user.teamToken}`
-     };
-      sgMail.send(msg)
+      };
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log(error);
+        }
+        console.log('Message sent: %s', info.messageId);
+      })
+    //   const msg = {
+    //     to: workemail,
+    //     from: 'contactus@flexyq.com',
+    //     subject: 'Invitation',
+    //     text: 'Hi',
+    //     html: `<h3>Hello ${fullname},</h3> <p>${req.user.first} from ${req.user.biz} invited you to join their FlexyQ team.</p>  <p>Login via: https://${req.headers.host}/u/team-signup/${req.user.teamToken}`
+    //  };
+    //   sgMail.send(msg)
     }
   })
   res.send()
