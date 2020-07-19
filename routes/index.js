@@ -796,7 +796,7 @@ router.post('/update-planner', ensureAuthenticated, (req, res) => {
         {
           $set: {
             "location.$[elem].header": header, "location.$[elem].subheader": subheader, "location.$[elem].notes": notes, "location.$[elem].vpurl": vpurl,
-            "location.$[elem].adminmail": adminmail, "location.$[elem].adminphone": adminphone, "location.$[elem].allowqueue": allowqueue, "location.$[elem].requiredemail": requiredemail,
+            "location.$[elem].adminmail": adminmail, "location.$[elem].adminphone": adminphone, "location.$[elem].allowqueue": allowqueue,
             "location.$[elem].requiredphone": requiredphone, "location.$[elem].msg": msg
           }
         },
