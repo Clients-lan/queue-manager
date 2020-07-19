@@ -80,9 +80,11 @@ app.use('/u', require('./routes/user'));
 
 //@App name
 const appName = 'Flexy Queue'
+const URI = process.env.MONGODB_URL || 'mongodb+srv://flexyqnok:1IOvauD5kzNmVprs@flexyqdb.gyzb2.mongodb.net/flexyqdb?retryWrites=true&w=majority'
 
 //@Connect To Database
-mongoose.connect('mongodb+srv://flexyqnok:1IOvauD5kzNmVprs@flexyqdb.gyzb2.mongodb.net/flexyqdb?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
+
+mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => console.log(`${appName} Mongoose Connected...`))
 .catch(err => console.log(err))
 
@@ -93,6 +95,7 @@ mongoose.connect('mongodb+srv://flexyqnok:1IOvauD5kzNmVprs@flexyqdb.gyzb2.mongod
 
 //@SMS NEXMO
 const Nexmo = require('nexmo');
+const { url } = require('inspector');
 const nexmo = new Nexmo({
   apiKey: '229aae5a',
   apiSecret: process.env.NEX_KEY
