@@ -82,13 +82,13 @@ app.use('/u', require('./routes/user'));
 const appName = 'Flexy Queue'
 
 //@Connect To Database
-mongoose.connect(process.env.MONGOLAB_PURPLE_URI || 'mongodb://flexyqdbadmin:AeY3Ft!G$N@ds213255.mlab.com:13255/heroku_f7k8rfn3', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGOLAB_PURPLE_URI || 'mongodb+srv://flexyqnok:zzC40n9RWUNxwEEV@cluster0.gyzb2.mongodb.net/Cluster0?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => console.log(`${appName} Mongoose Connected...`))
 .catch(err => console.log(err))
 
 //U@2adminstack
-//mongodb+srv://adminstarck:U@2adminstack@dev-env.lea8o.mongodb.net/Dev-env?retryWrites=true&w=majority
-
+//mongodb+srv://flexyqnok:zzC40n9RWUNxwEEV@cluster0.gyzb2.mongodb.net/Cluster0?retryWrites=true&w=majority
+//mongodb://flexyqdbadmin:AeY3Ft!G$N@ds213255.mlab.com:13255/heroku_f7k8rfn3
 
 
 //@SMS NEXMO
