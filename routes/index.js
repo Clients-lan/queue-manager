@@ -772,7 +772,7 @@ router.post('/stripe-webhook', async function (req, res) {
 
 //@Update Planner
 router.post('/update-planner', ensureAuthenticated, (req, res) => {
-  const { locid, header, subheader, notes, vpurl, adminmail, adminphone, allowqueue, maxnum, msg } = req.body;
+  const { locid, header, subheader, notes, vpurl, adminmail, adminphone, allowqueue, requiredphone, maxnum, msg } = req.body;
   User.findOne({ 'location.vpurl': vpurl }).then(url => {
     if (url) {
       User.findOneAndUpdate({ email: req.user.email },

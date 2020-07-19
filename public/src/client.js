@@ -352,7 +352,7 @@ plannerForm.addEventListener('submit', (e) => {
         adminphone: plannerForm['adminphone'].value,
         allowqueue: plannerForm['allowqueue'].value,
         maxnum: plannerForm['maxnum'].value.replace(/\D/g, ''),
-        // requiredphone: plannerForm['requiredphone'].value,
+        requiredphone: plannerForm['requiredphone'].value,
         msg: plannerForm['msg'].value
         })
     }).then(res => {
