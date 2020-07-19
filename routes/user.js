@@ -327,14 +327,12 @@ router.post('/register', (req, res) => {
                                         port: 587,   // secure SMTP
                                         requireTLS: true,
                                         secureConnection: false,
-                                        auth: {
-                                            user: 'contactus@flexyq.com',
-                                            pass: 'AXszr#$39!@'
+                                        auth: { user: 'contactus@flexyq.com', pass: 'AXszr#$39!@'
                                         },
                                         tls: {ciphers: 'SSLv3'}
                                       });
                                       let mailOptions = {
-                                        from: 'contactus@flexyq.com',
+                                        from: 'FlexyQ Queuing System',
                                         to: user.email,
                                         subject: 'Account Verification',
                                         text: 'Welcome to FlexyQ', 
