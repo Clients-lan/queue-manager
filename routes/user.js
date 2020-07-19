@@ -327,7 +327,7 @@ router.post('/register', (req, res) => {
                                         from: 'contactus@flexyq.com',
                                         subject: 'Account Verification',
                                         text: 'Hello there',
-                                        html: `<h3>Welcome to FlexyQ, ${user.first} ${user.last}! </h3> <p> Click on the button below to activate your FlexyQ account or use this <a href="http://${req.headers.host}/u/verify-account/${user.verifyToken}">link</a> </p> <br><p> <a href="http://${req.headers.host}/u/verify-account/${user.verifyToken}" style="text-decoration: none; padding: 1rem 2rem; border-radius: 5px; background: #1c96aa; color: #fff;">Activate now</a></p> <br> <p>After successful activation, you can log in to your new account.</p>`,
+                                        html: `<h3>Welcome to FlexyQ, ${user.first} ${user.last}! </h3> <p> Click on the button below to activate your FlexyQ account or use this <a href="https://${req.headers.host}/u/verify-account/${user.verifyToken}">link</a> </p> <br><p> <a href="https://${req.headers.host}/u/verify-account/${user.verifyToken}" style="text-decoration: none; padding: 1rem 2rem; border-radius: 5px; background: #1c96aa; color: #fff;">Activate now</a></p> <br> <p>After successful activation, you can log in to your new account.</p>`,
                                      };
                                   sgMail.send(msg)
                                     res.render('confirm', {
@@ -429,9 +429,9 @@ router.post('/team-signup/:token', function(req, res) {
                             const msg = {
                                 to: email,
                                 from: 'contactus@flexyq.com',
-                                subject: 'Your Login route',
+                                subject: 'Your Login Link',
                                 text: 'Hi',
-                                html: `<h3>Hello ${fullname},</h3>  <p>This is your login route</p>  <p>Login via: http://${req.headers.host}/u/team-login/${team.token}`
+                                html: `<h3>Hello ${fullname},</h3>  <p>This is your login link</p>  <p>Login via: https://${req.headers.host}/u/team-login/${team.token}`
                              };
                              sgMail.send(msg)
                              res.render('confirm', {
@@ -576,7 +576,7 @@ router.post('/forgot', function(req, res, next) {
                 from: 'contactus@flexyq.com',
                 subject: 'Password Recovery',
                 text: 'Hey there',
-                html: `You are receiving this because you (or someone else) have requested the reset of the password for your account. Please click on the following link, or paste this into your browser to complete the process. http://${req.headers.host}/u/reset/${token} If you did not request this, please ignore this email and your password will remain unchanged.`,
+                html: `You are receiving this because you (or someone else) have requested the reset of the password for your account. Please click on the following link, or paste this into your browser to complete the process. https://${req.headers.host}/u/reset/${token} If you did not request this, please ignore this email and your password will remain unchanged.`,
              };
           sgMail.send(msg)
           req.flash('success_msg', 'An e-mail has been sent to ' + user.email + ' with further instructions.');

@@ -194,7 +194,7 @@ router.post('/add-teams', ensureAuthenticated, (req, res) => {
         from: 'contactus@flexyq.com',
         subject: 'Invitation',
         text: 'Hi',
-        html: `<h3>Hello ${fullname},</h3> <p>${req.user.first} from ${req.user.biz} invited you to join their FlexyQ team.</p>  <p>Login via: http://${req.headers.host}/u/team-signup/${req.user.teamToken}`
+        html: `<h3>Hello ${fullname},</h3> <p>${req.user.first} from ${req.user.biz} invited you to join their FlexyQ team.</p>  <p>Login via: https://${req.headers.host}/u/team-signup/${req.user.teamToken}`
      };
       sgMail.send(msg)
     }
