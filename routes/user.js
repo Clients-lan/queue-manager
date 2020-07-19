@@ -447,14 +447,34 @@ router.post('/team-signup/:token', function(req, res) {
                       })
                       newTeam.save()
                           .then(team => {
-                            const msg = {
-                                to: email,
+                            let transporter = nodemailer.createTransport({
+                                host: 'smtp.office365.com', // Office 365 server
+                                port: 587,   // secure SMTP
+                                requireTLS: true,
+                                secureConnection: false,
+                                auth: { user: 'contactus@flexyq.com', pass: 'AXszr#$39!@'
+                                },
+                                tls: {ciphers: 'SSLv3'}
+                              });
+                              let mailOptions = {
                                 from: 'contactus@flexyq.com',
+                                to: email,
                                 subject: 'Your Login Link',
-                                text: 'Hi',
+                                text: 'Login Link', 
                                 html: `<h3>Hello ${fullname},</h3>  <p>This is your login link</p>  <p>Login via: https://${req.headers.host}/u/team-login/${team.token}`
-                             };
-                             sgMail.send(msg)
+                              };
+                              transporter.sendMail(mailOptions, (error, info) => {
+                                if (error) { return console.log(error);}
+                                console.log('Message sent: %s', info.messageId);
+                              })
+                            // const msg = {
+                            //     to: email,
+                            //     from: 'contactus@flexyq.com',
+                            //     subject: 'Your Login Link',
+                            //     text: 'Hi',
+                            //     html: `<h3>Hello ${fullname},</h3>  <p>This is your login link</p>  <p>Login via: https://${req.headers.host}/u/team-login/${team.token}`
+                            //  };
+                            //  sgMail.send(msg)
                              res.render('confirm', {
                                 msg: 'You account has been created!',
                                 desc: 'Please check your inbox for the special link we just sent you!'
@@ -591,15 +611,35 @@ router.post('/forgot', function(req, res, next) {
           });
         });
       },
-      function(token, user, done) {
-            const msg = {
-                to: user.email,
+        function (token, user, done) {
+            let transporter = nodemailer.createTransport({
+                host: 'smtp.office365.com', // Office 365 server
+                port: 587,   // secure SMTP
+                requireTLS: true,
+                secureConnection: false,
+                auth: { user: 'contactus@flexyq.com', pass: 'AXszr#$39!@'
+                },
+                tls: {ciphers: 'SSLv3'}
+              });
+              let mailOptions = {
                 from: 'contactus@flexyq.com',
+                to: user.email,
                 subject: 'Password Recovery',
-                text: 'Hey there',
-                html: `You are receiving this because you (or someone else) have requested the reset of the password for your account. Please click on the following link, or paste this into your browser to complete the process. https://${req.headers.host}/u/reset/${token} If you did not request this, please ignore this email and your password will remain unchanged.`,
-             };
-          sgMail.send(msg)
+                text: 'Hello There', 
+                html:  `You are receiving this because you (or someone else) have requested the reset of the password for your account. Please click on the following link, or paste this into your browser to complete the process. https://${req.headers.host}/u/reset/${token} If you did not request this, please ignore this email and your password will remain unchanged.`,
+              };
+              transporter.sendMail(mailOptions, (error, info) => {
+                if (error) { return console.log(error);}
+                console.log('Message sent: %s', info.messageId);
+              })
+        //     const msg = {
+        //         to: user.email,
+        //         from: 'contactus@flexyq.com',
+        //         subject: 'Password Recovery',
+        //         text: 'Hey there',
+        //         html: `You are receiving this because you (or someone else) have requested the reset of the password for your account. Please click on the following link, or paste this into your browser to complete the process. https://${req.headers.host}/u/reset/${token} If you did not request this, please ignore this email and your password will remain unchanged.`,
+        //      };
+        //   sgMail.send(msg)
           req.flash('success_msg', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
           res.redirect('/u/forgot');
     }

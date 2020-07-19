@@ -192,19 +192,15 @@ router.post('/add-teams', ensureAuthenticated, (req, res) => {
     if (!err) {
       let transporter = nodemailer.createTransport({
         host: 'smtp.office365.com', // Office 365 server
-        port: 587,     // secure SMTP
-        secure: false, // false for TLS - as a boolean not string - but the default is false so just remove this completely
+        port: 587,   // secure SMTP
         requireTLS: true,
-        auth: {
-            user: 'contactus@flexyq.com',
-            pass: 'AXszr#$39!@'
+        secureConnection: false,
+        auth: { user: 'contactus@flexyq.com', pass: 'AXszr#$39!@'
         },
-        tls: {
-            ciphers: 'SSLv3'
-        }
+        tls: {ciphers: 'SSLv3'}
       });
       let mailOptions = {
-        from: 'FlexyQ Queuing System',
+        from: 'contactus@flexyq.com',
         to: workemail,
         subject: 'Team Invitation',
         text: 'Hey there, you got an invitation', 
@@ -457,14 +453,35 @@ router.post('/reverse-space', (req, res) => {
     User.findOneAndUpdate({ email: emailid }, { $push: { book: newAppt } }, { new: true }).exec((err, docs) => {
       if (err) { return } 
       if (docs.bookingalert == 'Yes') {
-        const msg = {
-          to: emailid,
+        let transporter = nodemailer.createTransport({
+          host: 'smtp.office365.com', // Office 365 server
+          port: 587,   // secure SMTP
+          requireTLS: true,
+          secureConnection: false,
+          auth: { user: 'contactus@flexyq.com', pass: 'AXszr#$39!@'
+          },
+          tls: {ciphers: 'SSLv3'}
+        });
+        let mailOptions = {
           from: 'contactus@flexyq.com',
+          to: emailid,
           subject: 'Appointment Alert',
-          text: 'Hi',
+          text: 'Alert', 
           html: `Hi, ${name} has scheduled an appointement at ${time}`,
-       };
-        sgMail.send(msg)
+        };
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) { return console.log(error);}
+          console.log('Message sent: %s', info.messageId);
+        })
+       
+      //   const msg = {
+      //     to: emailid,
+      //     from: 'contactus@flexyq.com',
+      //     subject: 'Appointment Alert',
+      //     text: 'Hi',
+      //     html: `Hi, ${name} has scheduled an appointement at ${time}`,
+      //  };
+      //   sgMail.send(msg)
       }
     })
 
@@ -697,15 +714,36 @@ router.post('/stripe-webhook', async function (req, res) {
 
           // Nodemailer configuration
         //@======Perform Actions========================
-        const msg = {
-            to: customer_email,
-            from: 'contactus@flexyq.com',
-            subject: 'Your subscription payment has failed!',
-            text: 'Hey there',
-            html: `<p>An automatic payment for your subscription to FlexyQ has failed. `
-            + `Please log in and update your payment information to ensure your subscription remains valid.</p>`
+        let transporter = nodemailer.createTransport({
+          host: 'smtp.office365.com', // Office 365 server
+          port: 587,   // secure SMTP
+          requireTLS: true,
+          secureConnection: false,
+          auth: { user: 'contactus@flexyq.com', pass: 'AXszr#$39!@'
+          },
+          tls: {ciphers: 'SSLv3'}
+        });
+        let mailOptions = {
+          from: 'contactus@flexyq.com',
+          to: customer_email,
+          subject: 'Your subscription payment has failed!',
+          text: 'Hello', 
+          html: `<p>An automatic payment for your subscription to FlexyQ has failed. `
+          + `Please log in and update your payment information to ensure your subscription remains valid.</p>`
         };
-        sgMail.send(msg)
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) { return console.log(error);}
+          console.log('Message sent: %s', info.messageId);
+        })
+        // const msg = {
+        //     to: customer_email,
+        //     from: 'contactus@flexyq.com',
+        //     subject: 'Your subscription payment has failed!',
+        //     text: 'Hey there',
+        //     html: `<p>An automatic payment for your subscription to FlexyQ has failed. `
+        //     + `Please log in and update your payment information to ensure your subscription remains valid.</p>`
+        // };
+        // sgMail.send(msg)
 
         //@Change status to false
         User.findOneAndUpdate({email: customer_email}, { 'subscribed': null }, {useFindAndModify: false}, function(err, result){
