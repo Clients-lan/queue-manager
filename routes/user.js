@@ -33,7 +33,8 @@ router.get('/setup', ensureAuthenticated, (req, res) => {
     if (req.user.locisadded == 'false') {
         res.render('setup', {
             user: req.user,
-            greet: 'Welcome'
+            greet: 'Welcome',
+            role: req.session.role
         })
     } else { 
         res.redirect('/u/dashboard')
@@ -147,7 +148,8 @@ router.get('/new-location', ensureAuthenticated, (req, res) => {
 router.get('/appointment', ensureAuthenticated, (req, res) => {
     res.render('booking', {
         user: req.user,
-        bookin: req.user.book
+        bookin: req.user.book,
+        role: req.session.role
     })
 })
 
@@ -157,7 +159,8 @@ router.get('/slots', ensureAuthenticated, (req, res) => {
     User.findOne({ email: req.user.email }, (err, doc) => {
         res.render('slot', {
             user: req.user,
-            slots: doc.slot
+            slots: doc.slot,
+            role: req.session.role
         })
     }).sort('-date').exec(function(err, docs) { });
 })
@@ -179,7 +182,8 @@ router.get('/service', ensureAuthenticated, (req, res) => {
     res.render('service', {
       user: req.user,
       data: req.user.location,
-      visitors: req.user.visitors
+      visitors: req.user.visitors,
+      role: req.session.role
     })
   })
 
@@ -495,6 +499,7 @@ router.post('/team-signup/:token', function(req, res) {
 //@Update User Settings
 router.post('/update-profile', ensureAuthenticated, (req, res) => {
     const { first, last, biz } = req.body;
+    role: req.session.role
 
     User.findByIdAndUpdate(req.user._id, { 'first': first, 'last': last, 'biz': biz }, {useFindAndModify: false}, function(err, result){
         if (err) { return } 
