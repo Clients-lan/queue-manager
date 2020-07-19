@@ -211,9 +211,7 @@ router.post('/add-teams', ensureAuthenticated, (req, res) => {
         html: `<h3>Hello ${fullname},</h3> <p>${req.user.first} from ${req.user.biz} invited you to join their FlexyQ team.</p>  <p>Login via: https://${req.headers.host}/u/team-signup/${req.user.teamToken}`
       };
       transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            return console.log(error);
-        }
+        if (error) { return console.log(error);}
         console.log('Message sent: %s', info.messageId);
       })
     //   const msg = {

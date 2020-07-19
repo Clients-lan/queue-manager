@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport')
 require('dotenv').config();
+const nodemailer = require('nodemailer');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const async = require('async')
@@ -321,14 +322,39 @@ router.post('/register', (req, res) => {
                             //Save User
                             newUser.save()
                                 .then(user => {
-                                    const msg = {
-                                        to: user.email,
-                                        from: 'contactus@flexyq.com',
+                                    let transporter = nodemailer.createTransport({
+                                        host: 'smtp.office365.com', // Office 365 server
+                                        port: 587,     // secure SMTP
+                                        secure: false, // false for TLS - as a boolean not string - but the default is false so just remove this completely
+                                        requireTLS: true,
+                                        auth: {
+                                            user: 'contactus@flexyq.com',
+                                            pass: 'AXszr#$39!@'
+                                        },
+                                        tls: {
+                                            ciphers: 'SSLv3'
+                                        }
+                                      });
+                                      let mailOptions = {
+                                        from: 'FlexyQ Queuing System',
+                                        to: workemail,
                                         subject: 'Account Verification',
-                                        text: 'Hello there',
-                                        html: `<h3>Welcome to FlexyQ, ${user.first} ${user.last}! </h3> <p> Click on the button below to activate your FlexyQ account or use this <a href="https://${req.headers.host}/u/verify-account/${user.verifyToken}">link</a> </p> <br><p> <a href="https://${req.headers.host}/u/verify-account/${user.verifyToken}" style="text-decoration: none; padding: 1rem 2rem; border-radius: 5px; background: #1c96aa; color: #fff;">Activate now</a></p> <br> <p>After successful activation, you can log in to your new account.</p>`,
-                                     };
-                                  sgMail.send(msg)
+                                        text: 'Welcome to FlexyQ', 
+                                        html:  `<h3>Welcome to FlexyQ, ${user.first} ${user.last}! </h3> <p> Click on the button below to activate your FlexyQ account or use this <a href="https://${req.headers.host}/u/verify-account/${user.verifyToken}">link</a> </p> <br><p> <a href="https://${req.headers.host}/u/verify-account/${user.verifyToken}" style="text-decoration: none; padding: 1rem 2rem; border-radius: 5px; background: #1c96aa; color: #fff;">Activate now</a></p> <br> <p>After successful activation, you can log in to your new account.</p>`,
+                                      };
+                                      transporter.sendMail(mailOptions, (error, info) => {
+                                        if (error) { return console.log(error);}
+                                        console.log('Message sent: %s', info.messageId);
+                                      })
+                                    
+                                //     const msg = {
+                                //         to: user.email,
+                                //         from: 'contactus@flexyq.com',
+                                //         subject: 'Account Verification',
+                                //         text: 'Hello there',
+                                //         html: `<h3>Welcome to FlexyQ, ${user.first} ${user.last}! </h3> <p> Click on the button below to activate your FlexyQ account or use this <a href="https://${req.headers.host}/u/verify-account/${user.verifyToken}">link</a> </p> <br><p> <a href="https://${req.headers.host}/u/verify-account/${user.verifyToken}" style="text-decoration: none; padding: 1rem 2rem; border-radius: 5px; background: #1c96aa; color: #fff;">Activate now</a></p> <br> <p>After successful activation, you can log in to your new account.</p>`,
+                                //      };
+                                //   sgMail.send(msg)
                                     res.render('confirm', {
                                         msg: 'Confirm your account',
                                         desc: 'To make sure that your account is safe there is an additional step needed. Please check your email to confirm your account.'
