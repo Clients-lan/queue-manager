@@ -82,7 +82,7 @@ app.use('/u', require('./routes/user'));
 const appName = 'Flexy Queue'
 
 //@Connect To Database
-mongoose.connect(process.env.MONGOLAB_PURPLE_URI || 'mongodb+srv://adminstarck:U@2adminstack@dev-env.lea8o.mongodb.net/Dev-env?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb+srv://flexyqnok:1IOvauD5kzNmVprs@flexyqdb.gyzb2.mongodb.net/flexyqdb?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => console.log(`${appName} Mongoose Connected...`))
 .catch(err => console.log(err))
 
