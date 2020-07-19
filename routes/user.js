@@ -326,7 +326,7 @@ router.post('/register', (req, res) => {
                                         host: 'smtp.office365.com', // Office 365 server
                                         port: 587,   // secure SMTP
                                         requireTLS: true,
-                                        secure: false,
+                                        secure: true,
                                         auth: {
                                             user: 'contactus@flexyq.com',
                                             pass: 'AXszr#$39!@'
