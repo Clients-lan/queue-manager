@@ -2,9 +2,9 @@
 
 <title>FlexyQ - Team</title>
 
-<% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
+<% if(role === 'Admin' || role === 'Manager'){ %>
 
-<div class="global-upper-section main-layout vev-page hide-force">
+<div class="global-upper-section main-layout ">
     <div class="row">
         <div class="one-half column"><h3>Team</h3></div>
         <div class="one-half column">
@@ -12,7 +12,7 @@
         </div>
     </div>
     
-<section class="team-panel globe-box vev-page hide-force">
+<section class="team-panel globe-box">
     <% if(teams){ %>
         <%  teams.forEach(team => { %>
              <div class="row team-list">
@@ -34,9 +34,9 @@
                         <input type="text" name="fullname" value="<%= team.fullname %>" class="u-full-width">
                         <input type="text" name="workemail" value="<%= team.workemail %>" class="u-full-width">
                         <select name="role" class="u-full-width">
-                            <option value="clerk"> Clerk </option>
-                            <option value="manager">Location Manager </option>
-                            <option value="admin"> Administrator </option>
+                            <option value="Clerk"> Clerk </option>
+                            <option value="Manager">Location Manager </option>
+                            <option value="Admin"> Administrator </option>
                         </select>
                         <select name="locid" id="location-team" class="u-full-width">
                             <% data.forEach(items => { %>
@@ -65,13 +65,14 @@
                      </div>
                  </div>
                  <input type="hidden" value="<%= team._id %>" name="id">
+                 <input type="hidden" value="<%= team.workemail %>" name="workemail">
                 </form>
              </div>
              <div class="--dash"></div>
         <% }) %>
      <% } %>
 
-     <form class="hide add-teams vev-page hide-force">
+     <form class="hide add-teams">
         <div class="header-box">Invite Team</div>
       <div class="--dash"></div>
           <div class="row">
@@ -142,7 +143,7 @@
 <% } %>
 
 <%- include('./components/uialert') -%>
-<%- include('./aouth') -%>
+
 
 <div class="global-overlay hide"></div>
 

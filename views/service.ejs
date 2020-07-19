@@ -5,8 +5,8 @@
 <% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
 
 <% if(data){ %>
-        <section class="main-layout">
-            <div class="row">
+        <section class="main-layout sprsm">
+            <div class="row service-page-ref-sm">
                 <div class="four columns">
                     <div class="row left-service-top --is-service-page select-wrapper">
                             <select name="filter" id="filter" class="btn-playful u-full-width">
@@ -128,7 +128,9 @@
         
 
 
-            <div id="sms-dyno" class="hide"></div>
+            <% data.forEach(items => { %>
+                <div id="sms-dyno" class="hide"><%= items.sms %></div>
+            <% }) %>
 
  
 <% } %>

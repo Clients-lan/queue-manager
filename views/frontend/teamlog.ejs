@@ -1,0 +1,33 @@
+<title>FlexyQ Team Login</title>
+
+<section class="auth">
+    <div class="auth-wrapper">
+        <form action="" method="post">
+          <h3>Hello there! 😀</h3>
+          <p>It's nice to see you here</p>
+        
+          <% if(typeof errors != 'undefined') { %>
+            <div class="alert-errors">
+                <% errors.forEach(function(error) { %>
+                <ul class="notify-warning">
+                    <li><%= error.msg %></li>
+                </ul>
+                <% }); %>
+            </div>
+            <% } %>
+            <% if(error_msg != '') { %>
+              <div class="alert-errors">
+                <div class="notify-warning">
+                  <%= error_msg %>
+              </div>
+            <% } %>
+           
+            
+            <input type="email" class="u-full-width" placeholder="Your email" name="teamemail">
+            <input type="password" class="u-full-width" placeholder="Enter password" name="teampassword">
+            <input type="hidden" name="email" value="<%= email %>">
+            <input type="hidden" name="password" value="<%= password %>">
+            <button type="submit" class="btn-fill btn-block">Sign in member</button>
+          </form>
+    </div>
+</section>

@@ -21,6 +21,8 @@ const PORT = process.env.PORT || 9002;
 
 //User model
 const User = require('./modules/User');
+const Booking = require('./modules/Booking');
+
 const { ensureAuthenticated } = require('./config/auth');
 
 //io.set('transports', ['websocket']);
@@ -84,6 +86,8 @@ mongoose.connect(process.env.MONGOLAB_PURPLE_URI || 'mongodb://flexyqdbadmin:AeY
 .then(() => console.log(`${appName} Mongoose Connected...`))
 .catch(err => console.log(err))
 
+//U@2adminstack
+//mongodb+srv://adminstarck:U@2adminstack@dev-env.lea8o.mongodb.net/Dev-env?retryWrites=true&w=majority
 
 
 
@@ -118,7 +122,7 @@ app.post('/serve-visitor', (req, res) => {
         const from = '15065031886'
         const to = phone
         const text = `${sms}` 
-        nexmo.message.sendSms(from, to, text, (err, responseData) => {
+        nexmo.message.sendSms(from, to, text, {type: 'unicode'}, (err, responseData) => {
             if (err) {
                 console.log(err);
             } else {
@@ -192,22 +196,25 @@ app.post('/call-appt', ensureAuthenticated, (req, res) => {
 
 //@Check for user appointment
 app.post('/check-appt-client', (req, res) => {
-  const { emailid, phone, email } = req.body;
-  User.findOne({ email: emailid, 'book.phone': phone, 'book.email': email }).then(user => {
-    if (user) {
-      user.book.forEach(bo => {
-        if (bo.phone === phone && bo.email === email) {
-          User.findOneAndUpdate({ email: emailid }, { $set: { "book.$[elem].status": 'online' } }, { arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(bo._id) }], new: true }).exec((err, docs) => {
-            if (err) { return }
-          })
-          res.send({good: bo})
-        }
-      })
-    } else {
-      res.send({error: 'No result'})
+  const { emailid, phone, email, id, time, name } = req.body;
+  
+
+  Booking.findOneAndUpdate({ email: email }, { $set: { "book.$[elem].status": 'online' } }, { arrayFilters: [{ "elem.oneid": id }], new: true }).exec((err, docs) => {
+    if (err) { return }
+  })
+  User.findOneAndUpdate({ email: emailid }, { $set: { "book.$[elem].status": 'online' } }, { arrayFilters: [{ "elem.oneid": id }], new: true }).exec((err, doc) => {
+    if (err) { return }
+    if (!err) {
+      res.send({
+        good: {
+          name: name,
+          time: time
+      }})
     }
   })
+  
 })
+
 
 
 

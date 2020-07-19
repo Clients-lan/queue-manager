@@ -10,7 +10,7 @@
 <!-- If you use the default popups, use this. -->
 <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
 <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css" />
-<% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
+<% if(role === 'Admin'){ %>
 
 
 
@@ -98,7 +98,8 @@
                        <div class="one-half column"></div>
                          <div class="one-half column u-pull-right">
                         <input type="hidden" name="locid" value="<%= location._id %>">  
-                         <button type="submit" class="btn-block btn-outline">update location</button>
+ 
+                         <button type="submit" class="btn-block btn-outline mt-3">update location</button>
                     </div>
                 </div>
         </div>
@@ -202,12 +203,22 @@
                             </div>
                         </div>
                         <div class="--dash"></div>
+                        <div class="row has-child-paragraph">
+                            <div class="one-half column">
+                              <label class="label-box">Maximum number of visitors</label>
+                              <p>After this number is reached no visitor will be able to check in</p>
+                            </div>
+                            <div class="one-half column mb-3">
+                                <input type="text" class="u-full-width" name="maxnum" value="<%= location.maxnum %>" placeholder="30">
+                            </div>
+                        </div>
+                        <div class="--dash"></div>
                         <div class="header-box">Set Remote Sign-in</div>
                         <div class="--dash"></div>
                         <div class="row has-child-paragraph">
                             <div class="one-half column">
                               <label class="label-box">Join queue</label>
-                               <p><p>Allow people to sign in and to wait outside your premises</p></p>
+                               <p>Allow people to sign in and to wait outside your premises</p>
                             </div>
                             <div class="one-half column mt-3">
                                 <input type="checkbox" id="remote" class="checkbox opacity" name="allowqueue">
@@ -215,19 +226,7 @@
                                 <input type="hidden" value="<%= location.allowqueue %>" id="allowRemoteValue">
                             </div>
                         </div>
-                        <div class="--dash"></div>
-                        <div class="row has-child-paragraph">
-                            <div class="one-half column">
-                                <div class="mt-3"></div>
-                              <label class="label-box">Email required?</label>
-                            </div>
-                            <div class="one-half column mt-3">
-                                <input type="checkbox" id="reqemail" class="checkbox opacity" name="requiredemail">
-                                <label for="reqemail" class="switch"></label>
-                                <input type="hidden" value="<%= location.requiredemail %>" id="requiredEmailValue">
-                               
-                            </div>
-                        </div>
+                
                         <div class="--dash"></div>
                         <div class="row has-child-paragraph">
                             <div class="one-half column">
@@ -235,7 +234,7 @@
                               <label class="label-box">Phone required?</label>
                             </div>
                             <div class="one-half column mt-3">
-                                <input type="checkbox" id="reqphone" class="checkbox opacity" name="requiredphone">
+                                <input type="checkbox" id="reqphone" class="checkbox opacity" name="requiredphone" checked>
                                 <label for="reqphone" class="switch"></label>
                                 <input type="hidden" value="<%= location.requiredphone %>" id="checkreqphone">
                             </div>
@@ -255,7 +254,7 @@
 <!-- Calendar -->
 <div class="global-page --calendar">
     <div class="close-page btn-playful"><ion-icon name="arrow-back-outline"></ion-icon><span>back</span></div>
-   <form class="location-name-settings wrapper alt-globe-box">
+   <form class="location-calendar wrapper alt-globe-box">
        <div class="input-controller-mod" id="calendar-wrapper">
         <div class="calendar-wrapper">
             <div id="calendar"></div>
@@ -429,9 +428,9 @@
                     </div>
                     <div class="one-half column">
                         <select name="role" class="u-full-width">
-                            <option value="clerk"> Clerk </option>
-                            <option value="manager">Location Manager </option>
-                            <option value="admin"> Administrator </option>
+                            <option value="Clerk"> Clerk </option>
+                            <option value="Manager">Location Manager </option>
+                            <option value="Admin"> Administrator </option>
                         </select>
                     </div>
                 </div>

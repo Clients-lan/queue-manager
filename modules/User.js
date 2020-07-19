@@ -27,9 +27,9 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    onepass: {
+    verified: {
         type: String,
-        required: false
+        required: true
     },
     password2: {
         type: String,
@@ -76,6 +76,7 @@ const UserSchema = new mongoose.Schema({
         requiredemail: String,
         requiredphone: String,
         msg: String,
+        maxnum: String,
         num: String,
         sms: String,
         avgwt: String,
@@ -105,6 +106,7 @@ const UserSchema = new mongoose.Schema({
         location: String,
         role: String,
         locationId: String,
+        token: String,
         date: {
             type: Date,
             default: Date.now
@@ -131,8 +133,15 @@ const UserSchema = new mongoose.Schema({
     },
     slot: [{
         time: String,
-        day: String
+        day: String,
     }],
+    monspday: String,
+    tuespday: String,
+    wenspday: String,
+    thuspday: String,
+    frispday: String,
+    satspday: String,
+    sunspday: String,
     book: [{
         name: String,
         email: String,
@@ -140,17 +149,22 @@ const UserSchema = new mongoose.Schema({
         time: String,
         status: String,
         location: String,
+        rdate: String,
+        oneid: String,
         date: {
             type: Date,
             default: Date.now
         }
     }],
+    bookingalert: String,
     bookinglink: {
         type: String,
         required: false
     },
+    verifyToken: String,
     resetPasswordToken: String,
-    resetPasswordExpires: Date
+    resetPasswordExpires: Date,
+    teamToken: String
 })
 
 

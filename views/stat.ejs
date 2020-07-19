@@ -1,13 +1,13 @@
 <%- include('./components/sidebar') -%>
 
 <title>FlexyQ - Analytics</title>
-<% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
+<% if(role === 'Admin' || role === 'Manager'){ %>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js" integrity="sha256-ZsWP0vT+akWmvEMkNYgZrPHKU9Ke8nYBPC3dqONp1mY=" crossorigin="anonymous"></script>
 
 <section class="analytics">
-	<div class="container">
-		<h3>Daily Data Insights</h3>
+	<div class="container" id="stat-canvas">
+		<h3 class="header-stat">Daily Data Insights</h3>
 		<canvas id="bar-chart" width="800" height="450"></canvas>
 	</div>
 	 <div class="container mt-5">
@@ -159,12 +159,6 @@ for(let i = 0; i < hrsChildren.length; i++){
 let conhrToMins = hrsum * 60
 let totalWaitingtime = minsum + conhrToMins
 
-// console.log('coverted to mins  '  + conhrToMins);
-// console.log('Tot min ' + minsum);
-// console.log('Total ' + totalWaitingtime);
-
-// console.log(minChildren.length);
-
 let avgWaitingtime =  Math.round(totalWaitingtime / minChildren.length)
 
 
@@ -190,8 +184,14 @@ new Chart(document.getElementById("bar-chart"), {
         display: false,
         text: 'Daily Stats'
       }
-    }
+	}
 });
+
+
+function io(){}
+
+
+let bar = document.querySelector('#bar-chart')
 
 
 </script>

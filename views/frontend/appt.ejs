@@ -1,14 +1,32 @@
-<title>FlexyQ Appointment</title>
 
-<%- include('../components/topnavbar') -%>
+
 <script src="/socket.io/socket.io.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pikaday/pikaday.js"></script>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pikaday/css/pikaday.css">
 
 
 <% if(data.bookinglink === url){ %>
+
+    <title><%= data.biz %> Appointment</title>
+
+    <div class="client-navbar">
+        <a href="/" class="logo-appt"><img src="/assets/flex-01.png"></a>
+        <div class="profile-buttons">
+            <a href="#" class="button btn-danger appt-login-btn"><ion-icon name="lock-closed-outline" class="u-pull-left"></ion-icon> Login</a>
+            <a href="#" class="button appt-signup-btn"><ion-icon name="person-outline" class="u-pull-left"></ion-icon> Sign up</a>
+        </div>
+        <div class="dynamic-ui-profile hide"></div>
+    </div>
+
+
 <section class="appt-page">
     <div class="row">
-        <div class="one-half column">
-            <form action="/reverse-space" method="POST" class="inner-page globe-box">
+        <div class="one-half appt-top-section column">
+            <div class="container">
+                <div class="red-tag alert-unauth">Please sign up or login to continue your booking</div>
+            </div>
+            <form class="inner-page appt-reserve-spot globe-box">
                 <div class="header-box">Book an appointment</div>
                 <div class="--dash"></div>
                      <div class="row">
@@ -54,13 +72,30 @@
                         <div class="--dash"></div>
                    <% } %>
                    <br>
-                   <div class="tag time-reveal-bp my-3">No slot selected</div>
+                   <div class="row">
+                       <div class="one-half column">
+                        <div class="tag time-reveal-bp my-3">No slot selected</div>
+                       </div>
+                       <div class="one-half column">
+                        <input type="text" id="datepicker" class="u-full-width" name="rdate" placeholder="Select date" required>
+                       </div>
+                   </div>
+
                  <input type="hidden" name="time" id="timehd" required>
-                 <input type="hidden" name="emailid" value="<%- data.email %>">
+                 <input type="hidden" name="emailid" value="<%= data.email %>">
+                 <input type="hidden" name="bizname" value="<%= data.biz %>">
+                 <input type="hidden" name="url" value="<%= data.bookinglink %>">
                  <br>
-                 <button type="submit" class="btn-outline my-3">book now</button>
+                 <div class="row">
+                     <div class="one-half column">
+                        <button type="submit" class="btn-outline reserve-spot-btn my-3">book now</button>
+                     </div>
+                     <div class="one-half column">
+                         <div class="error-reserve"></div>
+                     </div>
+                 </div>
              </form>
-             <form class="bapt-client inner-page globe-box">
+             <!-- <form class="bapt-client inner-page globe-box">
                 <div class="header-box mks">Already Booked an appointment?</div> <ion-icon name="reorder-two-outline" class="open-checker"></ion-icon>
                 
                 <div class="appt-checker-inner hide">
@@ -87,79 +122,164 @@
                         <input type="hidden" name="emailid" value="<%- data.email %>">
                         <button type="submit" class="btn-fill my-3">alert owner</button>
                 </div>
-            </form>
+            </form> -->
         </div>
         <div class="one-half column">
             <div class="booking-tab">
-                <div class="header-box">Available Slots</div>
-                <div class="custom-row">
-                        <% if(data.slot){ %>
+                <div class="header-box"><span id="custom-holder-slot">Available Slots for</span> <span id="custom-slot-label"></span> </div>
+                  <div class="--dash"></div>
+                   <% if(data.slot){ %>
+                     <div class="custom-row-grid">
                             <div class="col-5">
                                 <div class="header-box">Monday</div>
                                 <% data.slot.forEach(slot => { %>
-                                 <% if(slot.day == 'Monday'){ %>
-                                 <div class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></div>
+                                 <% if(slot.day == 'Mon'){ %>
+                                 <button class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></button>
+                                 <span class="perday"><%= data.monspday %></span>
                                  <% } %>
                                <% }) %>
                             </div>
                             <div class="col-5">
                                 <div class="header-box">Tuesday</div>
                                 <% data.slot.forEach(slot => { %>
-                                 <% if(slot.day == 'Tuesday'){ %>
-                                  <div class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></div>
+                                 <% if(slot.day == 'Tue'){ %>
+                                  <button class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></button>
+                                  <span class="perday"><%= data.tuespday %></span>
                                  <% } %>
                                <% }) %>
                             </div>
                             <div class="col-5">
                                 <div class="header-box">Wednesday</div>
                                 <% data.slot.forEach(slot => { %>
-                                 <% if(slot.day == 'Wednesday'){ %>
-                                  <div class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></div>
+                                 <% if(slot.day == 'Wed'){ %>
+                                  <button class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></button>
+                                  <span class="perday"><%= data.wenspday %></span>
                                  <% } %>
                                <% }) %>
                             </div>
                             <div class="col-5">
                                 <div class="header-box">Thursday</div>
                                 <% data.slot.forEach(slot => { %>
-                                  <% if(slot.day == 'Thursday'){ %>
-                                 <div class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></div>
+                                  <% if(slot.day == 'Thu'){ %>
+                                 <button class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></button>
+                                 <span class="perday"><%= data.thuspday %></span>
                                  <% } %>
                                <% }) %>
                             </div>
                             <div class="col-5">
                                 <div class="header-box">Friday</div>
                                 <% data.slot.forEach(slot => { %>
-                                  <% if(slot.day == 'Friday'){ %>
-                                 <div class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></div>
+                                  <% if(slot.day == 'Fri'){ %>
+                                 <button class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></button>
+                                 <span class="perday"><%= data.frispday %></span>
                              <% } %>
                             <% }) %>
                         </div>
                         <div class="col-5">
                             <div class="header-box">Saturday</div>
                             <% data.slot.forEach(slot => { %>
-                              <% if(slot.day == 'Saturday'){ %>
-                             <div class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></div>
+                              <% if(slot.day == 'Sat'){ %>
+                                <button class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></button>
+                                <span class="perday"><%= data.satspday %></span>
                              <% } %>
                            <% }) %>
                         </div>
                         <div class="col-5">
                             <div class="header-box">Sunday</div>
                             <% data.slot.forEach(slot => { %>
-                              <% if(slot.day == 'Sunday'){ %>
-                             <div class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></div>
+                              <% if(slot.day == 'Sun'){ %>
+                             <button class="slots-time-db" id="<%= slot.day %>"><%= slot.time %></button>
+                             <span class="perday"><%= data.sunspday %></span>
                          <% } %>
                         <% }) %>
                     </div>
-                     <%  } %>
+                     
                 </div>
+                <%  } %>
             </div>
         </div>
     </div>
 </section>
 <% } %>
 
+
+
+<form class="appt-signup__form hide">
+  <div class="wrapper">
+      <h4>Fill in all fields 😊 </h4>
+      <p>...and you're go to go!</p>
+    <input type="text" name="fullname" placeholder="Your name" required>
+    <input type="text" name="phone" placeholder="Enter phone (eg. 14161234564" required>
+    <input type="email" name="email" placeholder="Email address" required>
+    <input type="password" name="password" placeholder="Enter a strong password" required minlength="8">
+    <button type="submit" class="button btn-fill btn-block">sign up</button>
+   </div>
+   <ion-icon name="close-outline" class="elfixed-close close-appt-signup"></ion-icon>
+</form>
+
+
+<!-- APPT LOGIN -->
+<form class="appt-login__form hide">
+    <div class="wrapper">
+        <h4>Hello there 🥰 </h4>
+        <p>...It's nice to see you again!</p>
+      <input type="email" name="email" placeholder="Email address" required>
+      <input type="password" name="password" placeholder="Enter your password" required>
+      <button type="submit" class="button btn-fill btn-block">sign in</button>
+     </div>
+     <ion-icon name="close-outline" class="elfixed-close close-appt-login"></ion-icon>
+  </form>
+
+
+
+  <div id="perday-unit" class="hide"></div>
+
+  <div class="appt-counter hide-force">
+      <span id="appt-number">0</span> Appointment(s)
+  </div>
+  <div class="static-appt hide-force">
+    <span>Date</span>
+    <span>Status</span>
+    <span class="expanded-row">Business name</span>
+    <span>Time</span>
+    <span class="expanded-row">Business location</span>
+    <span>Actions</span>
+</div>
+  <section class="client-portal">
+    <ul id="user-bookings"></ul>
+  </section>
+
+
+
+
+  <div class="session-info hide">
+    🔐 <span>Session info</span>
+    <p>To maintain data persistency, try not to refresh this page.</p>
+    <a href="#">ok, got it!</a>
+  </div>
+
 <%- include('../components/uialert') -%>
 
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js" integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZMYUHEcjKbjLjyddGWMrNEvZg==" crossorigin="anonymous"></script>
+<script>
 
 
+
+
+let now = moment(new Date()).format('ddd')
+let nowFormat = moment(new Date()).format('ddd Do MMM YYYY')
+
+let customslabel =  document.querySelector('#custom-slot-label')
+customslabel.innerHTML = nowFormat
+customslabel.className = 'green-tag'
+ 
+        document.querySelectorAll('.slots-time-db').forEach(stdbr => {
+          stdbr.classList.add('hide')
+         if(now == stdbr.id){
+             stdbr.classList.remove('hide')
+          }
+      })
+      
+      
+</script>

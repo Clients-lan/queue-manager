@@ -23,7 +23,12 @@
                 <% }); %>
             </div>
             <% } %>
-
+            <% if(error_msg != '') { %>
+              <div class="alert-errors">
+                <div class="notify-warning">
+                  <%= error_msg %>
+              </div>
+            <% } %>
             <h3>Hello there 👋</h3>
              <p>Come on in, there is a free trial</p>
             <div class="row">
@@ -37,7 +42,7 @@
             <input type="hidden" name="plan" value="<%= plan %>">
             <input type="hidden" name="subscribed" value="false">
             <input type="hidden" name="plancode" value="<%= plancode %>">
-            <input type="hidden" name="onepass" value="null">
+            <input type="hidden" name="verified" value="false">
             <div id="html_element"></div>
             <br>
             <input type="hidden" name="token" id="gtoken">
@@ -60,7 +65,12 @@ async defer>
 <script>
      var verifyCallback = function (response) {
             document.querySelector('#gtoken').value = response
-        };
+        }
+    
+       
+    function io(){}
+
+
 </script>
 
 

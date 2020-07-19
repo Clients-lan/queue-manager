@@ -1,0 +1,31 @@
+<title>FlexyQ Team Registration</title>
+
+
+<section class="auth">
+    <div class="auth-wrapper">
+        <form action="" method="post">
+          <h3>Hi there! 😀</h3>
+          <p>You're one step away to becoming a member</p>
+        
+          <% if(typeof errors != 'undefined') { %>
+            <div class="alert-errors">
+                <% errors.forEach(function(error) { %>
+                <ul class="notify-warning">
+                    <li><%= error.msg %></li>
+                </ul>
+                <% }); %>
+            </div>
+            <% } %>
+            <% if(error_msg != '') { %>
+              <div class="alert-errors">
+                <div class="notify-warning">
+                  <%= error_msg %>
+              </div>
+            <% } %>
+            
+          <input type="email" class="u-full-width" placeholder="Your email address" name="email" required>
+          <input type="password" class="u-full-width" placeholder="Enter password" name="password" required>
+            <button type="submit" class="btn-fill btn-block">Sign up member</button>
+          </form>
+    </div>
+</section>

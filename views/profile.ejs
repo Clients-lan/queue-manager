@@ -1,9 +1,10 @@
 <%- include('./components/sidebar') -%>
-<% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
+<% if(role === 'Admin'){ %>
 
-    <title>FlexyQ - Profile</title>
-<section class="user-profile-section main-layout vev-page hide-force">
-    <div class="row">
+<title>FlexyQ - Profile <%= role %></title>
+
+<section class="user-profile-section main-layout">
+    <div class="row upstarget">
         <div class="three columns">
             <h5 class="user-d-dashboard"> <%= user.biz %>  Dashbaord</h5>
             <div class="profile-holder">
@@ -25,7 +26,7 @@
                 <% } %>
             </div>
  
-            <div class="globe-box vev-page hide-force no-bxs wrapper-ninety">
+            <div class="globe-box no-bxs wrapper-ninety">
                 <form action="/u/update-profile" method="POST">
                     <div class="header-box">Account Settings</div>
                     <div class="--dash"></div>
@@ -47,7 +48,7 @@
                     <button class="btn-outline my-3 u-pull-right">update</button>
                 </form>
             </div>
-            <form action="/u/delete-account" method="POST" class="mt-5 vev-page hide-force">
+            <form action="/u/delete-account" method="POST" class="mt-5">
                 <div class="globe-box no-bxs wrapper-ninety">
                     <div class="header-box">Danger Zone</div>
                     <div class="--dash"></div>
@@ -66,4 +67,7 @@
 
 
 <%- include('./components/uialert') -%>
-<%- include('./aouth') -%>
+
+<script>
+    function io(){}
+</script>

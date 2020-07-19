@@ -33,8 +33,8 @@
                 <div class="top-tab-wrapper">
                     <div class="booking-grid-alt">
                         <div class="col-6">Name</div>
-                        <div class="col-6">Email</div>
                         <div class="col-6">Phone</div>
+                        <div class="col-6">Visiting date</div>
                         <div class="col-6">Visiting time</div>
                         <div class="col-6">Selected location</div>
                         <div class="col-6">Status</div>
@@ -45,8 +45,8 @@
                         <% if(bookin){ %>
                             <% bookin.forEach(book => { %>
                                 <div class="col-6 cc"><%= book.name %></div>
-                                <div class="col-6 cc"><%= book.email %></div>
                                 <div class="col-6 cc"><%= book.phone %></div>
+                                <div class="col-6 cc"><%= book.rdate %></div>
                                 <div class="col-6 cc booking-time"><%= book.time %></div>
                                 <div class="col-6 cc"><%= book.location %></div>
                                 <div class="col-6 cc">
@@ -58,25 +58,27 @@
                                         <div class="--dash"></div>
                                         <br>
                                         <form action="/call-appt" method="POST" class="row">
-                                            <button type="submit" class="btn-outline btn-block">call in visitor by SMS</button>
+                                            <button type="submit" class="btn-outline">call in visitor by SMS</button>
                                             <input type="hidden" name="phone" value="<%= book.phone %>">
                                             <input type="hidden" name="name" value="<%= book.name %>">
-                                            <input type="hidden" value="<%= book._id %>" name="id">
                                         </form>
                                         <div class="--dash"></div>
                                         <div class="row">
                                             <form action="/delete-appt" method="POST" class="one-half column">
                                                 <button class="btn-danger u-pull-left">Delete appt<span>😨</span></button>
-                                                <input type="hidden" value="<%= book._id %>" name="id">
+                                                <input type="hidden" value="<%= book.oneid %>" name="id">
+                                                <input type="hidden" name="uemail" value="<%= book.email %>">
                                             </form>
                                             <form action="/cancel-appt" method="POST" class="one-half column">
-                                                <button class="btn-danger u-pull-left">Cancel appt <span>🥺</span></button>
+                                                <button class="btn-danger u-pull-left">Cancel appt</button>
                                                 <input type="hidden" value="<%= book._id %>" name="id">
+                                                <input type="hidden" value="<%= book.oneid %>" name="oneid">
+                                                <input type="hidden" name="uemail" value="<%= book.email %>">
                                             </form>
                                         </div>
                                     </div>
                                 </div>
-                                <span class="u-book-date"><%= book.date %></span>
+                                <span class="u-book-date"><%= book.rdate %></span>
                             <% }) %>
                         <% } %>
                     </div>
@@ -89,16 +91,19 @@
 
 
         <div class="date-filt-container hide">
-            <div class="header-box">Filter data</div> <ion-icon name="close-outline" class="u-close-date__filter"></ion-icon>
+            <div class="header-box">Filter date</div> <ion-icon name="close-outline" class="u-close-date__filter"></ion-icon>
             <div class="--dash"></div>
             <div class="sm-wrapper">
                 <select id="date-filt" class="u-full-width">
                     <option id="today-appt" selected>Today</option>
-                    <option id="wtd" value="0">Week-to-date</option>
-                    <option id="ltw" value="2">Last 2 weeks</option>
-                    <option id="mtd">Month-to-date</option>
-                    <option id="lthd">Last 30 days</option>
-                    <option value="all">All time</option>
+                    <option value="0">This Week</option>
+                    <option id="wtd" value="-1">Next Week</option>
+                    <option id="ltw" value="-2">Next 2 weeks</option>
+                    <option id="ltw" value="-3">Next 3 weeks</option>
+                    <option id="mtd" value="-4">Next 4 Weeks</option>
+                    <option id="ltw" value="-5">Next 5 weeks</option>
+                    <option id="lthd" value="-6">Next 6 Weeks</option>
+                    <option value="all">All Future Appointments</option>
                 </select>
             </div>
         </div>
@@ -112,7 +117,14 @@
             <div class="--dash"></div>
             <div class="inner">
                 <input type="text" placeholder="Page Url" class="u-full-width" value="<%= user.bookinglink %>" name="link" id="link">
-                <button type="submit" class="btn-block">save url</button>
+                <div class="--dash"></div>
+                <label class="label-box">Recieve alert when visitor books? <span class="real-option"><%= user.bookingalert %></span></label>
+                <div class="option-box">
+                    <div class="option-value">Yes</div>
+                    <div class="option-value">No</div>
+                </div>
+                <input type="hidden" name="alert" id="alert">
+                <button type="submit" class="btn-block">save changes</button>
             </div>
         </form>
     </section>
@@ -138,5 +150,35 @@
 
 
 
+<script>
+
+document.querySelector('#today-appt').value = new Date().getDate()
+
+
+
+document.querySelectorAll('.booking-url-form .option-value').forEach(options => {
+    options.addEventListener('click', (e) => {
+        document.querySelector('#alert').value = options.innerHTML
+    })
+})
+//zzC40n9RWUNxwEEV
+//flexyqnok
+//mongodb+srv://flexyqnok:<password>@cluster0.gyzb2.mongodb.net/<dbname>?retryWrites=true&w=majority
+
+
+// let date = new Date('Sun Jul 19 2020')
+// let momentO = moment(date)
+// let momentB = momentO.format('YYYY-MM-DD')
+// let days = moment().diff(momentB, 'weeks');
+// console.log(date.getDate());
+
+
+
+
+
+
+
+
+</script>
 
    

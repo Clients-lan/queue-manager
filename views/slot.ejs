@@ -40,90 +40,131 @@
                 <% } %>
             </div>
       
-            <div class="booking-tab">
-                <div class="custom-row">
+            <div class="booking-tab admin-slot">
+                <div class="flex-row days-of-week">
+                    <div class="header-time">Monday</div>
+                    <div class="header-time">Tuesday</div>
+                    <div class="header-time">Wednesday</div>
+                    <div class="header-time">Thursday</div>
+                    <div class="header-time">Friday</div>
+                    <div class="header-time">Saturday</div>
+                    <div class="header-time">Sunday</div>
+                </div>
+                <div class="flex-row">
                         <% if(slots){ %>
                             <div class="col-5">
-                                <div class="header-box">Monday</div>
                                 <% slots.forEach(slot => { %>
-                               <% if(slot.day == 'Monday'){ %>
+                               <% if(slot.day == 'Mon'){ %>
                                  <div class="slots-time-db"><%= slot.time %></div>
                                  <form action="/delete-slot" method="post">
+                                    <div class="header-box">Are you sure you want to do this?</div>
+                                     <a href="#" class="button close-del-slot-ignore">cancel</a>
                                     <input type="hidden" name="id" value="<%= slot._id %>">
                                     <button>Delete slot</button>
                                   </form>
+                                 
+                                    <ion-icon name="close-outline" class="del-slot-admin"></ion-icon>
+                               
                                <% } %>
                                <% }) %>
                             </div>
                             <div class="col-5">
-                                <div class="header-box">Tuesday</div>
+                               
                                 <% slots.forEach(slot => { %>
-                               <% if(slot.day == 'Tuesday'){ %>
+                               <% if(slot.day == 'Tue'){ %>
                                  <div class="slots-time-db"><%= slot.time %></div>
                                  <form action="/delete-slot" method="post">
+                                    <div class="header-box">Are you sure you want to do this?</div>
+                                    <a href="#" class="button close-del-slot-ignore">cancel</a>
                                     <input type="hidden" name="id" value="<%= slot._id %>">
                                     <button>Delete slot</button>
                                   </form>
+                                 
+                                    <ion-icon name="close-outline" class="del-slot-admin"></ion-icon>
+                                
                                <% } %>
                                <% }) %>
                             </div>
                             <div class="col-5">
-                                <div class="header-box">Wednesday</div>
+                               
                                 <% slots.forEach(slot => { %>
-                               <% if(slot.day == 'Wednesday'){ %>
+                                  <% if(slot.day == 'Wed'){ %>
                                  <div class="slots-time-db"><%= slot.time %></div>
                                  <form action="/delete-slot" method="post">
+                                    <div class="header-box">Are you sure you want to do this?</div>
+                                    <a href="#" class="button close-del-slot-ignore">cancel</a>
                                     <input type="hidden" name="id" value="<%= slot._id %>">
                                     <button>Delete slot</button>
                                   </form>
+                                 
+                                    <ion-icon name="close-outline" class="del-slot-admin"></ion-icon>
+                               
+                                <% } %>
+                               <% }) %>
+                            </div>
+                            <div class="col-5">
+                                
+                                <% slots.forEach(slot => { %>
+                               <% if(slot.day == 'Thu'){ %>
+                                 <div class="slots-time-db"><%= slot.time %></div>
+                                 <form action="/delete-slot" method="post">
+                                    <div class="header-box">Are you sure you want to do this?</div>
+                                    <a href="#" class="button close-del-slot-ignore">cancel</a>
+                                    <input type="hidden" name="id" value="<%= slot._id %>">
+                                    <button>Delete slot</button>
+                                  </form>
+                                  
+                                    <ion-icon name="close-outline" class="del-slot-admin"></ion-icon>
+                             
                                <% } %>
                                <% }) %>
                             </div>
                             <div class="col-5">
-                                <div class="header-box">Thursday</div>
+                              
                                 <% slots.forEach(slot => { %>
-                               <% if(slot.day == 'Thursday'){ %>
+                               <% if(slot.day == 'Fri'){ %>
                                  <div class="slots-time-db"><%= slot.time %></div>
                                  <form action="/delete-slot" method="post">
-                                    <input type="hidden" name="id" value="<%= slot._id %>">
-                                    <button>Delete slot</button>
-                                  </form>
-                               <% } %>
-                               <% }) %>
-                            </div>
-                            <div class="col-5">
-                                <div class="header-box">Friday</div>
-                                <% slots.forEach(slot => { %>
-                               <% if(slot.day == 'Friday'){ %>
-                                 <div class="slots-time-db"><%= slot.time %></div>
-                                 <form action="/delete-slot" method="post">
+                                    <div class="header-box">Are you sure you want to do this?</div>
+                                    <a href="#" class="button close-del-slot-ignore">cancel</a>
                                   <input type="hidden" name="id" value="<%= slot._id %>">
                                   <button>Delete slot</button>
                                 </form>
+                               
+                                    <ion-icon name="close-outline" class="del-slot-admin"></ion-icon>
+                               
                                <% } %>
                                <% }) %>
                             </div>
                             <div class="col-5">
-                                <div class="header-box">Saturday</div>
+                               
                                 <% slots.forEach(slot => { %>
-                               <% if(slot.day == 'Saturday'){ %>
+                               <% if(slot.day == 'Sat'){ %>
                                  <div class="slots-time-db"><%= slot.time %></div>
                                  <form action="/delete-slot" method="post">
+                                    <div class="header-box">Are you sure you want to do this?</div>
+                                    <a href="#" class="button close-del-slot-ignore">cancel</a>
                                   <input type="hidden" name="id" value="<%= slot._id %>">
                                   <button>Delete slot</button>
                                 </form>
+                               
+                                    <ion-icon name="close-outline" class="del-slot-admin"></ion-icon>
+                               
                                <% } %>
                                <% }) %>
                             </div>
                             <div class="col-5">
-                                <div class="header-box">Sunday</div>
                                 <% slots.forEach(slot => { %>
-                               <% if(slot.day == 'Sunday'){ %>
+                               <% if(slot.day == 'Sun'){ %>
                                  <div class="slots-time-db"><%= slot.time %></div>
                                  <form action="/delete-slot" method="post">
+                                    <div class="header-box">Are you sure you want to do this?</div>
+                                    <a href="#" class="button close-del-slot-ignore">cancel</a>
                                   <input type="hidden" name="id" value="<%= slot._id %>">
                                   <button>Delete slot</button>
                                 </form>
+                                <ion-icon name="close-outline" class="del-slot-admin"></ion-icon>
+                            
                                <% } %>
                                <% }) %>
                             </div>
@@ -133,45 +174,133 @@
         </div>
 
 
+        <div class="slot-choice hide">
+            <div class="inner wrapper-ninety">
+                <ion-icon name="close-outline" class="close-slot-method"></ion-icon>
+                <div class="header-box">Choose slot type</div>
+                <div class="content row">
+                    <div class="one-half column call-personalize-slot">
+                        <img src="/assets/icons/brain.svg">
+                        <label class="label-box">Personalized slots</label>
+                    </div>
+                    <div class="one-half column call-calc-slot">
+                        <img src="/assets/icons/processor.svg">
+                        <label class="label-box">Calculate automatically</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+ 
+
+
         <form action="/save-slot" method="POST" class="time-booking hide">
-            <ion-icon name="close-outline" class="close-time-slot"></ion-icon>
+            <ion-icon name="close-outline" class="close-time-slot close-ion-overlay"></ion-icon>
+            <div class="header-box">Calculate automatically</div>
+            <div class="--dash"></div>
             <label class="label-box">Day of week</label>
-            <select name="week" class="week">
-                <option value="Monday">Monday</option>
-                <option value="Tuesday">Tuesday</option>
-                <option value="Wednesday">Wednesday</option>
-                <option value="Thursday">Thursday</option>
-                <option value="Friday">Friday</option>
-                <option value="Saturday">Saturday</option>
-                <option value="Sunday">Sunday</option>
+            <select name="week" class="week u-full-width">
+                <option value="Mon" selected>Monday</option>
+                <option value="Tue">Tuesday</option>
+                <option value="Wed">Wednesday</option>
+                <option value="Thu">Thursday</option>
+                <option value="Fri">Friday</option>
+                <option value="Sat">Saturday</option>
+                <option value="Sun">Sunday</option>
             </select>
-            <label class="label-box">Start time</label>
-            <div class="start-b-time custom-time-med">
-                <div id="timepicker-start-mer"></div>
-                <div class="custom-pm-am">
-                    <select name="meridian">
-                        <option value="AM">AM</option>
-                        <option value="PM">PM</option>
+
+            <label class="label-box">Opening time (Hrs)</label>
+            <div class="custom-row">
+                <div class="one-half column">
+                    <select name="start" class="u-full-width">
+                        <option value="01" selected>01 am</option>
+                        <option value="02">02 am</option>
+                        <option value="03">03 am</option>
+                        <option value="04">04 am</option>
+                        <option value="05">05 am</option>
+                        <option value="06">06 am</option>
+                        <option value="07">07 am</option>
+                        <option value="08">08 am</option>
+                        <option value="09">09 am</option>
+                        <option value="10">10 am</option>
+                        <option value="11">11 am</option>
+                        <option value="12">12 am</option>
+                    </select>
+                </div>
+                <div>To</div>
+                <div class="one-half column">
+                    <select name="stop" class="u-full-width">
+                        <option value="13" selected>01 pm</option>
+                        <option value="14">02 pm</option>
+                        <option value="15">03 pm</option>
+                        <option value="16">04 pm</option>
+                        <option value="17">05 pm</option>
+                        <option value="18">06 pm</option>
+                        <option value="19">07 pm</option>
+                        <option value="20">08 pm</option>
+                        <option value="21">09 pm</option>
+                        <option value="22">10 pm</option>
+                        <option value="23">11 pm</option>
+                        <option value="24">12 pm</option>
                     </select>
                 </div>
             </div>
-            <label class="label-box">End time</label>
-             <div class="end-b-time custom-time-med">
-                <div id="timepicker-end-mer"></div>
-                <div class="custom-pm-am">
-                    <select name="meridian">
-                        <option value="AM">AM</option>
-                        <option value="PM">PM</option>
+          
+            <div class="row">
+                <div class="one-half column">
+                    <label class="label-box">Starting time (Mins)</label>
+                    <select name="min" class="u-full-width">
+                        <option value="00" selected>00 Minute</option>
+                        <option value="15">15 Minutes</option>
+                        <option value="30">30 Minutes</option>
+                    </select>
+                </div>
+                <div class="one-half column">
+                    <label class="label-box">Service duration</label>
+                    <select name="duration" class="u-full-width">
+                        <option value="30" selected>30 Mins</option>
+                        <option value="60">1 Hour</option>
                     </select>
                 </div>
             </div>
-            <br>
-            <input type="hidden" name="slotone">
-            <input type="hidden" name="slottwo">
-            <button type="submit" class="btn-block">Save slot</button>
+          
+            <label class="label-box">Number of appointment per slots</label>
+            <input type="number" name="perday" placeholder="E.g 3 appointments per slot" class="u-full-width" max="20" min="1" required>
+            <button type="submit" class="btn-block btn-fill">Save slot</button>
         </form>
 
     </section>
+
+    <form action="/save-slot-personalized" method="POST" onsubmit="return validateForm();"  class="personalize-slot-form hide">
+        <ion-icon name="close-outline" class="close-personalize-slot close-ion-overlay"></ion-icon>
+        <div class="personalize-slot wrapper-ninety">
+            <div class="header-box">Personalized slot</div>
+            <p class="error"></p>
+            <label class="label-box">Day of week</label>
+            <select name="week" class="u-full-width mt-3">
+                <option value="Mon" selected>Monday</option>
+                <option value="Tue">Tuesday</option>
+                <option value="Wed">Wednesday</option>
+                <option value="Thu">Thursday</option>
+                <option value="Fri">Friday</option>
+                <option value="Sat">Saturday</option>
+                <option value="Sun">Sunday</option>
+            </select>
+            <label class="label-box">Number of appointment per slots</label>
+            <input type="number" name="perday" placeholder="E.g 3 appointments per slot" class="u-full-width mt-3" max="20" min="1" required>
+            <label class="label-box">Time Slot</label>
+            <textarea id="pslot" class="u-full-width" name="slot" placeholder="Enter single or multiple time slots" required></textarea>
+            <p class="help">Add times separated by comma (,). For example - 9:00 AM, 12:00 PM, 3:00 PM, 6:00 PM</p>
+           <button type="submit" class="btn-block btn-fill">save slot</button>
+        </div>
+    </form>
+
+    <div class="tag-holder hide">
+        <div class="header-box">Slot Preview</div>
+        <div id="tag-holder"></div>
+    </div>
+
+
     <div class="global-overlay hide"></div>
     
     <% } %>
@@ -180,88 +309,217 @@
 
 
 
-    <script>
-        function io(){}
-    </script>
-  
-    <script>
 
-
-
+<script>
 function io(){}
 
 
+      
+let errHolder = document.querySelector('.error')
+let sp = document.querySelector('#pslot')
+let tagholder = document.querySelector('#tag-holder')
+let customItems = sp.value;
+let errors
 
-new tui.TimePicker('#timepicker-start-mer', {
-        initialHour: 12,
-        initialMinute: 13,
-        inputType: 'selectbox',
-        showMeridiem: true
-     });
-
-     new tui.TimePicker('#timepicker-end-mer', {
-        initialHour: 12,
-        initialMinute: 13,
-        inputType: 'selectbox',
-        showMeridiem: true
-     });
-
+function validateForm() {
+    if(errHolder.innerHTML == 'Invalid input'){
+        return false;
+    }
+      return true;
+}
 
 
 
-    let el =  document.querySelectorAll('.start-b-time select')
-    let el2 =  document.querySelectorAll('.end-b-time select')
-    const slotone = document.querySelector('input[name=slotone]')
-    const slottwo = document.querySelector('input[name=slottwo]')
 
-
-         for(let i = 0; i < el.length; i++){
-             el[2].disabled = true;
-             el[i].addEventListener('change', () => {
-                let timeVal = `${el[0].value}:${('0' + el[1].value).slice(-2)} ${el[3].value}`
-                 slotone.value = timeVal
-             })
-         }
-
-         for(let i = 0; i < el2.length; i++){
-             el2[2].disabled = true;
-             el2[i].addEventListener('change', () => {
-                let timeVal = `${el2[0].value}:${('0' + el2[1].value).slice(-2)} ${el2[3].value}`
-                slottwo.value = timeVal
-             })
-         }
+sp.addEventListener('keyup', (e) => {
+    if (e.which == 188) {
+   
+        if(sp.value.substr(sp.value.length - 2) == ',' || sp.value.substr(sp.value.length - 2) == ',,' || sp.value.substr(sp.value.length - 2) == ',,,' || sp.value.substr(sp.value.length - 2) == ',,,,' || sp.value.substr(sp.value.length - 2) == ',,,,,'){
+            errors = 'Invalid input'
+            errHolder.classList.add('red-tag')
+        } else {
+            let customItems = sp.value;
+            customItems = customItems.split(',');
             
+            for ( let i = 0; i < customItems.length; i++ )
+                customItems[i] = customItems[i] + '<br>';
+                customItems = customItems.join('');
+            
+            let span = document.createElement('span')
+            span.className = 'tag-input'
+            span.innerHTML = customItems;
+            tagholder.innerHTML = ''
+            setTimeout(() => { tagholder.appendChild(span) }, 100);
+           // console.log(sp.value.substr(sp.value.length - 2));
+            errors = ''
+        }
+        errHolder.innerHTML = errors
+    }
+})
+
+
+
+
+
+
+
+
+
 
          const timeSlotTab = document.querySelector('.time-booking')
-
+         const slotType = document.querySelector('.slot-choice')
+         const personalizeslotForm = document.querySelector('.personalize-slot-form')
+         const tagPreview = document.querySelector('.tag-holder')
+         //@Open Slot type
          document.querySelector('.add-time-slot').addEventListener('click', (e) => {
-             e.preventDefault()
-             timeSlotTab.classList.remove('hide')
+             slotType.classList.remove('hide')
              document.querySelector('.global-overlay').classList.remove('hide')
          })
-         document.querySelector('.close-time-slot').addEventListener('click', (e) => {
-             e.preventDefault()
-             timeSlotTab.classList.add('hide')
+         //@Close Slot type
+         document.querySelector('.close-slot-method').addEventListener('click', (e) => {
+             slotType.classList.add('hide')
              document.querySelector('.global-overlay').classList.add('hide')
          })
 
+         //@Open Calc slot
+         document.querySelector('.call-calc-slot').addEventListener('click', (e) => {
+             slotType.classList.add('hide')
+             timeSlotTab.classList.remove('hide')
+         })
+         //@Close Calc slot
+         document.querySelector('.close-time-slot').addEventListener('click', (e) => {
+             timeSlotTab.classList.add('hide')
+             document.querySelector('.global-overlay').classList.add('hide')
+         })
+          //@Open Personalize slot
+          document.querySelector('.call-personalize-slot').addEventListener('click', (e) => {
+             slotType.classList.add('hide')
+             personalizeslotForm.classList.remove('hide')
+             tagPreview.classList.remove('hide')
+         })
+        //@Close Personalize slot
+         document.querySelector('.close-personalize-slot').addEventListener('click', (e) => {
+             personalizeslotForm.classList.add('hide')
+             tagPreview.classList.add('hide')
+             document.querySelector('.global-overlay').classList.add('hide')
+         })
+         
 
-         setTimeout(() => {
+         
+
+         
+
+        
+
+        //@Delete slot
+        document.querySelectorAll('.del-slot-admin').forEach((delslotadmin) => {
+            delslotadmin.addEventListener('click', (e) => {
+                e.preventDefault()
+
+                let form = delslotadmin.previousElementSibling
+                form.style.display = 'block'
+                document.querySelector('.global-overlay').classList.remove('hide')
+            })
+        })
+
+        document.querySelectorAll('.close-del-slot-ignore').forEach(ignoredel => {
+            ignoredel.addEventListener('click', (e) => {
+                e.preventDefault()
+
+                document.querySelectorAll('.admin-slot form').forEach(form => {
+                    form.style.display = 'none'
+                    document.querySelector('.global-overlay').classList.add('hide')
+                })
+            })
+        })
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+    //     function tConvert (time) {
+    //         // Check correct time format and split into components
+    //         time = time.toString ().match (/^([01]?\d|2[0-3])(:)([0-5]?\d)(:[0-5]?\d)?$/) || [time];
+
+    //         if (time.length > 1) { // If time format correct
+    //            time = time.slice (1);  // Remove full string match value
+    //             time[5] = +time[0] < 12 ? ' am' : ' pm'; // Set AM/PM
+    //             time[0] = +time[0] % 12 || 12; // Adjust hours
+    //         }
+    //          return time.join (''); // return adjusted time or original string
+    //     }
+
+    //    // console.log(tConvert(`${'01'}:${'00'}`).length);
+    //     let adj = tConvert('13:00')
+
+        
+
+    //    let modified = ((tConvert('12:00').length == '7') ? '0' + tConvert('12:00') : tConvert('12:00'))
+
+    //   console.log(r);
+      //console.log('g ' + tConvert('10:00').length);
+       
+
+
+
+        
+
+ 
+
+     //  ('0' + el[1].value).slice(-2)
+                
+
+      
+      
+
+      
+        // let start  = 08;
+        // let min = 15
+        // let duration = 30
+        // let stop = 16 + 1
+
+        // while(start < stop){
+        //    let d = tConvert(`${start}:${min}`)
     
+            
+        //     let next,
+        //     prev;
+        //     if(duration != 60){
+        //         let d = tConvert(`${start}:${min}`)
+        //         let afterOrigin;
+        //         if(duration == 30 && min == 30){
+        //           afterOrigin = tConvert(`${start + 1}:${00}`)
+        //         } else if(duration == 30 && min == 00){
+        //             afterOrigin = tConvert(`${start}:${duration}`)
+        //         } else if(duration == 30 && min == 15){
+        //             afterOrigin = tConvert(`${start}:${duration + min}`)
+        //         }
+              
+        //         console.log(`${d} ${afterOrigin}`);
+                
+        //     } else {
 
-            let _1stel = document.getElementsByTagName('select')[2]
-            let _2ndel = document.getElementsByTagName('select')[6]
-        
-        
-            _1stel.querySelectorAll('option').forEach(op => {
-                op.innerHTML =  ('0' + op.innerHTML).slice(-2)
-            })  
-            _2ndel.querySelectorAll('option').forEach(op => {
-                op.innerHTML =  ('0' + op.innerHTML).slice(-2)
-            })   
-        
-        }, 2000);
+        //         console.log(d);
+        //     }
+
+            
+        //     start++;
+        // }
 
 
+
+
+        
+
+   
 
     </script>

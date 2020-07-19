@@ -13,11 +13,12 @@ $tag-props: whitesmoke;
 $faded-gray: #7a7a7a;
 $heading-color: #363636;
 $green: #3ecf8e;
-$bg-opacity: rgba(0, 0, 0, .7);
+$bg-opacity: rgba(0, 0, 0, .3);
 $forge-white: #a4bdc0;
 $front-bg: #2d2338;
 $front-o-color: #e66551;
 $arvo-font: 'Arvo', serif;
+$forge-gray: rgba(0,0,0,.05);
 
 
 @mixin cardHover {
@@ -32,11 +33,14 @@ $arvo-font: 'Arvo', serif;
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 9999;
+    margin-top: -100px; /* Negative half of height. */
+    margin-left: -250px; /* Negative half of width. */
+    z-index: 9999999;
     width: 400px;
+    box-shadow: 0 11px 15px -7px rgba(0,0,0,.2), 0 24px 38px 3px rgba(0,0,0,.14), 0 9px 46px 8px rgba(0,0,0,.12);
     @media (max-width:550px) {
         width: 300px;
+        margin-left: -150px;
     }
 }
 

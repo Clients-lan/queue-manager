@@ -52,13 +52,14 @@
                <% } %>
                <div class="card-queue">
                    <div class="header-box">Remote Sign-in: 
-                       <% if(loc.allowqueue == 'yes'){ %>
+                       <% if(loc.allowqueue == 'yes' && loc.maxnum){ %>
                            <span class="green-tag">Available</span>
                            <ion-icon name="chevron-down-outline" class="show-join-queue__form"></ion-icon>
 
+                           <p class="hide maximun-visitor"><%= loc.maxnum %></p>
                            
                             <div class="queue-msg notify-success hide"></div>
-                            <div class="join-queue-via-planner hide">
+                            <div class="join-queue-via-planner hide maxnum-vfilled">
                                 <div class="row">
                                     <div class="header-box">Not checked in already?</div>
                                 </div>
@@ -268,6 +269,7 @@ const placeIndicators = () => {
 }
 
 init();
+
 
 
 

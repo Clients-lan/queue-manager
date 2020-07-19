@@ -3,7 +3,7 @@ const dom  = document.querySelector('body')
 const uiAlert = dom.querySelector('.ui-alert')
 const uialertText = uiAlert.querySelector('.ui-alert-text')
 const addTeamPanel = dom.querySelector('.add-teams');
-//const socket = io()
+
 
 const socket = io({transports: ['websocket']});
 
@@ -232,16 +232,6 @@ new Calendar('#calendar', {
 
 
   //# Planner Checkboxes
-if(dom.querySelector('#checkreqphone').value == 'yes'){
-    dom.querySelector('input[name=requiredphone]').value = 'yes'
-    dom.querySelector('input[name=requiredphone]').checked = true
-} 
-
-if(document.querySelector('#requiredEmailValue').value == 'yes'){
-    dom.querySelector('input[name=requiredemail]').value = 'yes'
-    dom.querySelector('input[name=requiredemail]').checked = true
-} 
-
 if(dom.querySelector('#allowRemoteValue').value == 'yes'){
     dom.querySelector('input[name=allowqueue]').value = 'yes'
     dom.querySelector('input[name=allowqueue]').checked = true
@@ -361,8 +351,8 @@ plannerForm.addEventListener('submit', (e) => {
         adminmail: plannerForm['adminmail'].value,
         adminphone: plannerForm['adminphone'].value,
         allowqueue: plannerForm['allowqueue'].value,
-        requiredemail: plannerForm['requiredemail'].value,
-        requiredphone: plannerForm['requiredphone'].value,
+        maxnum: plannerForm['maxnum'].value.replace(/\D/g, ''),
+        // requiredphone: plannerForm['requiredphone'].value,
         msg: plannerForm['msg'].value
         })
     }).then(res => {
@@ -962,12 +952,24 @@ function updateCounter() {
                             dom.querySelector('.reatime-postion').textContent = finalVC.indexOf(visitorsNow) + 1;
                             dom.querySelector('.visitor-n-on-v').textContent = visitorsNow.firstname;
                         }
+
+                        const maxmumber = dom.querySelector('.maximun-visitor')
+                        const realV = dom.querySelector('.poqt-counter')
+
+                        if (parseInt(realV.innerHTML, 10) >= parseInt(maxmumber.innerHTML, 10)) {
+                            dom.querySelector('.maxnum-vfilled').style.display = 'none'
+                            dom.querySelector('.green-tag').innerHTML = 'Currently unvailable'
+                            dom.querySelector('.green-tag').style.backgroundColor = '#ff3860'
+                            dom.querySelector('.show-join-queue__form').classList.add('hide')
+                        }
                     }
                     findVisitorPostion()
                 }
             })
         })
 }
+
+
 
 
 //@Get Visitotors Waiting time
@@ -1115,6 +1117,17 @@ if (dom.querySelector('.add-v-via-admin__form')) {
 window.addEventListener('DOMContentLoaded', () => {
     if (dom.querySelector('.join-queue-vp__form')) {
         socket.emit('emiting', 'Hello')
+
+        //@Hide el if filled
+        const maxmumber = dom.querySelector('.maximun-visitor')
+        const realV = dom.querySelector('.poqt-counter')
+
+        if (parseInt(realV.innerHTML, 10) >= parseInt(maxmumber.innerHTML, 10)) {
+            dom.querySelector('.maxnum-vfilled').style.display = 'none'
+            dom.querySelector('.green-tag').innerHTML = 'Currently unvailable'
+            dom.querySelector('.green-tag').style.backgroundColor = '#ff3860'
+            dom.querySelector('.show-join-queue__form').classList.add('hide')
+        }
     }
 
     if (dom.querySelector('.left-service-top')) {
@@ -1149,21 +1162,21 @@ if (dom.querySelector('.time-reveal-bp')) {
         let timeholder = dom.querySelector('#timehd')
         let timeReveal = dom.querySelector('.time-reveal-bp')
            time.addEventListener('click', () => {
-               timeholder.value = `${time.id} ${time.innerHTML}`
+               timeholder.value = `${time.innerHTML}`
                timeReveal.innerHTML = timeholder.value
            })
        })
    
-       const apptCheckerForm =  dom.querySelector('.appt-checker-inner')
-       dom.querySelector('.open-checker').addEventListener('click', (e) => {
+    //    const apptCheckerForm =  dom.querySelector('.appt-checker-inner')
+    //    dom.querySelector('.open-checker').addEventListener('click', (e) => {
    
-           e.preventDefault()
-           if(apptCheckerForm.classList.contains('hide')){
-               apptCheckerForm.classList.remove('hide')
-           } else {
-               apptCheckerForm.classList.add('hide')
-           }
-       })
+    //        e.preventDefault()
+    //        if(apptCheckerForm.classList.contains('hide')){
+    //            apptCheckerForm.classList.remove('hide')
+    //        } else {
+    //            apptCheckerForm.classList.add('hide')
+    //        }
+    //    })
 }
 
 
@@ -1211,11 +1224,6 @@ dom.querySelectorAll('.u-booking-actions').forEach(uactions => {
 
 //@Slot page
 
-if(dom.querySelector('.add-time-slot')){
-
-}
-
-
 
 
 //@Booking page Filter function
@@ -1236,22 +1244,57 @@ dom.querySelector('.u-close-date__filter').addEventListener('click', (e) => {
 })
 
 
-//@Set Dynamic Values to Options
-let lthd = dom.querySelector('#lthd').value = new Date().getMonth()
-let mtd = dom.querySelector('#mtd').value = new Date().getMonth() + 1
-let todayappt = document.querySelector('#today-appt').value = new Date().getDate()    
 
-
-
-//@On Change
-const apptQ = dom.querySelector('#date-filt')
+        //@On Change
+        const apptQ = document.querySelector('#date-filt')
 
     
-    function selectTodayfilter() {
+        function selectTodayfilter() {
+            document.querySelectorAll('.booking-grid .cc').forEach(col => {
+                col.classList.add('hide')
+            })
+            document.querySelectorAll('.u-book-date').forEach((uidate) => {
+                const isFiltered = () => {
+                    let _1stSib = uidate.previousElementSibling;
+                    let _2ndSib = _1stSib.previousElementSibling;
+                    let _3rdSib = _2ndSib.previousElementSibling;
+                    let _4thSib = _3rdSib.previousElementSibling;
+                    let _5thSib = _4thSib.previousElementSibling;
+                    let _6thSib = _5thSib.previousElementSibling;
+        
+                    //@Remove Class
+                    _1stSib.classList.remove('hide')
+                    _2ndSib.classList.remove('hide')
+                    _3rdSib.classList.remove('hide')
+                    _4thSib.classList.remove('hide')
+                    _5thSib.classList.remove('hide')
+                    _6thSib.classList.remove('hide')
+                
+                    //@Nexted
+                    _1stSib.querySelector('.u-booking-actions').classList.remove('hide')
+                    _1stSib.querySelector('.status')
+                }
+        
+            
+                let date = new Date(uidate.innerHTML)
+                let momentO = moment(date)
+                let momentB = momentO.format('YYYY-MM-DD')
+                let days = moment().diff(momentB, 'days');
+              
+                 if (apptQ.value == date.getDate() && apptQ.options[apptQ.selectedIndex].innerHTML == 'Today') {
+                     isFiltered() 
+                }
+            })
+            
+        }    
+        
+        apptQ.addEventListener('change', (e) => {
         dom.querySelectorAll('.booking-grid .cc').forEach(col => {
             col.classList.add('hide')
         })
-        dom.querySelectorAll('.u-book-date').forEach((uidate) => {
+        
+        document.querySelectorAll('.u-book-date').forEach((uidate) => {
+        
             const isFiltered = () => {
                 let _1stSib = uidate.previousElementSibling;
                 let _2ndSib = _1stSib.previousElementSibling;
@@ -1259,7 +1302,7 @@ const apptQ = dom.querySelector('#date-filt')
                 let _4thSib = _3rdSib.previousElementSibling;
                 let _5thSib = _4thSib.previousElementSibling;
                 let _6thSib = _5thSib.previousElementSibling;
-    
+        
                 //@Remove Class
                 _1stSib.classList.remove('hide')
                 _2ndSib.classList.remove('hide')
@@ -1272,70 +1315,31 @@ const apptQ = dom.querySelector('#date-filt')
                 _1stSib.querySelector('.u-booking-actions').classList.remove('hide')
                 _1stSib.querySelector('.status')
             }
-    
         
-            let wasBooked = new Date(Date.parse(uidate.innerHTML))
-            let month = wasBooked.getMonth() + 1;
-            let fulldate = wasBooked.getDate()
-            let now = moment()
-          
-             if (apptQ.value == fulldate && month == new Date().getMonth()+1) {
-                 isFiltered() 
-            }
+        
+            
+        
+            let date = new Date(uidate.innerHTML)
+            let momentO = moment(date)
+            let momentB = momentO.format('YYYY-MM-DD')
+            let days = moment().diff(momentB, 'days');
+            let week = moment().diff(momentB, 'weeks');
+            let thisWeek = moment(momentO).isSame(new Date(), 'week')
+           // console.log(date.getDate());
+            if(apptQ.value == week){
+                isFiltered()
+            } else if(apptQ.value == 'all'){
+                isFiltered()
+            } else if(apptQ.value == date.getDate() && apptQ.options[apptQ.selectedIndex].innerHTML == 'Today'){
+                isFiltered()
+            } 
+            
+        
+        })  
         })
-        
-}    
 
-apptQ.addEventListener('change', (e) => {
-    dom.querySelectorAll('.booking-grid .cc').forEach(col => {
-        col.classList.add('hide')
-    })
 
-    dom.querySelectorAll('.u-book-date').forEach((uidate) => {
     
-        const isFiltered = () => {
-            let _1stSib = uidate.previousElementSibling;
-            let _2ndSib = _1stSib.previousElementSibling;
-            let _3rdSib = _2ndSib.previousElementSibling;
-            let _4thSib = _3rdSib.previousElementSibling;
-            let _5thSib = _4thSib.previousElementSibling;
-            let _6thSib = _5thSib.previousElementSibling;
-
-            //@Remove Class
-            _1stSib.classList.remove('hide')
-            _2ndSib.classList.remove('hide')
-            _3rdSib.classList.remove('hide')
-            _4thSib.classList.remove('hide')
-            _5thSib.classList.remove('hide')
-            _6thSib.classList.remove('hide')
-        
-            //@Nexted
-            _1stSib.querySelector('.u-booking-actions').classList.remove('hide')
-            _1stSib.querySelector('.status')
-        }
-    
-    
-        let wasBooked = new Date(Date.parse(uidate.innerHTML))
-        let month = wasBooked.getMonth() + 1;
-        let fulldate = wasBooked.getDate()
-        let now = moment()
-        let weeks = now.diff(wasBooked, "weeks")
-        if(apptQ.value == lthd && apptQ.value == month){
-            isFiltered()
-        } else if(apptQ.value == mtd && apptQ.value == month){
-            isFiltered() 
-        } else if(apptQ.value == weeks){
-            isFiltered()
-        } else if(apptQ.value == weeks){
-            isFiltered()
-        } else if(apptQ.value == 'all'){
-            isFiltered()
-        } else if (apptQ.value == fulldate && month == new Date().getMonth()+1) {
-            isFiltered()
-        }
-
-})  
-})
 }
 
 
@@ -1345,7 +1349,7 @@ socket.on('appt', apptChecked)
 
 function apptChecked(user) {
     //@User End
-     if (dom.querySelector('.bapt-client')) {
+     if (dom.querySelector('.appt-signup__form')) {
         
          if (user.good != undefined) {
                 uialertText.innerHTML = 'Location owner has been alerted!'
@@ -1369,32 +1373,516 @@ function apptChecked(user) {
     
 }
 
-if(dom.querySelector('.appt-checker-inner')){
-const apptCheckerForm = dom.querySelector('.bapt-client')
-    apptCheckerForm.addEventListener('submit', (e) => {
+// if(dom.querySelector('.appt-checker-inner')){
+// const apptCheckerForm = dom.querySelector('.bapt-client')
+//     apptCheckerForm.addEventListener('submit', (e) => {
 
-        e.preventDefault()
+//         e.preventDefault()
 
-        fetch('/check-appt-client', {
+//         fetch('/check-appt-client', {
+//             method: 'post',
+//             headers: {
+//                 'Content-Type': 'application/json'
+//             },
+//             body: JSON.stringify({
+//                 emailid: apptCheckerForm['emailid'].value,
+//                 email: apptCheckerForm['email'].value,
+//                 phone: apptCheckerForm['phone'].value
+               
+//             })
+//         }).then((res) => {
+//             return res.json()
+//         }).then(res => {
+//             socket.emit('appt', {
+//                 good: res.good,
+//                 error: res.error
+//             })
+//         }) 
+//     })
+
+
+// }
+
+
+
+
+if (dom.querySelector('.appt-signup-btn')) {
+    let yr = new Date().getFullYear()  
+   let months = new Date().getMonth() + 2
+   let dates = new Date().getDate()
+
+
+
+
+ //@If it's Mobile
+ if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+    new Pikaday({ 
+    field: document.getElementById('datepicker'),
+    maxDate: new Date(yr, months, dates),
+    minDate: new Date(),
+ });
+} else {
+    new Pikaday({ 
+    field: document.getElementById('datepicker'),
+    numberOfMonths: 2,
+    maxDate: new Date(yr, months, dates),
+    minDate: new Date(),
+ });
+}
+
+
+
+const apptSignupForm = dom.querySelector('.appt-signup__form')
+const apptLoginForm = dom.querySelector('.appt-login__form')
+const reserveSpotForm  = dom.querySelector('.appt-reserve-spot')
+const confirmClientapptDel = dom.querySelector('.confirm-appt-client-delete')
+
+
+
+
+
+
+
+dom.querySelector('.appt-signup-btn').addEventListener('click', (e) => {
+    e.preventDefault()
+   apptSignupForm.classList.remove('hide')
+})
+
+dom.querySelector('.close-appt-signup').addEventListener('click', () => {
+    apptSignupForm.classList.add('hide')
+})
+
+dom.querySelector('.appt-login-btn').addEventListener('click', (e) => {
+    e.preventDefault()
+   apptLoginForm.classList.remove('hide')
+})
+
+dom.querySelector('.close-appt-login').addEventListener('click', () => {
+    apptLoginForm.classList.add('hide')
+})
+
+const switchAuthforms = () => {
+    apptSignupForm.classList.add('hide')
+    apptLoginForm.classList.remove('hide')
+}
+
+
+
+
+const closeLoginForm = () => {
+    apptLoginForm.classList.add('hide')
+    dom.querySelector('.alert-unauth').classList.add('hide')
+}
+
+
+
+
+//Reseve Booking
+reserveSpotForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+
+    fetch('/reverse-space', {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                emailid: apptCheckerForm['emailid'].value,
-                email: apptCheckerForm['email'].value,
-                phone: apptCheckerForm['phone'].value
-               
+                emailid: reserveSpotForm['emailid'].value,
+                name: reserveSpotForm['name'].value,
+                email: reserveSpotForm['email'].value,
+                phone: reserveSpotForm['phone'].value,
+                time: reserveSpotForm['time'].value,
+                location: reserveSpotForm['location'].value,
+                bizname: reserveSpotForm['bizname'].value,
+                url: reserveSpotForm['url'].value,
+                rdate: reserveSpotForm['rdate'].value
             })
         }).then((res) => {
             return res.json()
         }).then(res => {
-            socket.emit('appt', {
-                good: res.good,
-                error: res.error
+            if(res.data){
+                callUIalert()
+                uialertText.innerHTML = 'Your booking was successful!'
+
+                //@Empty time values
+                dom.querySelector('#timehd').value = ''
+                dom.querySelector('.time-reveal-bp').innerHTML = 'No slot selected'
+                document.getElementById('datepicker').value = ''
+                //@Fill User infos
+                let ul = dom.querySelector('#user-bookings')
+                let li = document.createElement('li')
+
+                res.data.book.forEach(bookings => {
+                    li.innerHTML = `
+                    <span class="rdate">${bookings.rdate}</span>
+                    <span class="status ${bookings.status}">${bookings.status}</span>
+
+                    <span class="bizname">${bookings.bizname}</span>
+                    <span class="time">${bookings.time}</span>
+                    <span class="location">${bookings.location}</span>
+                   
+                    <span class="del" id="${bookings._id}">
+                        <form class="del-appt-client__form">
+                            <input type="hidden" name="id" value="${bookings.oneid}">
+                            <input type="hidden" name="ref" value="${bookings.ref}">
+                            <input type="hidden" name="uemail" value="${reserveSpotForm['email'].value}">
+                            <button type="submit"><ion-icon name="trash-outline"></ion-icon></button>
+                        </form>  
+                    </span>
+                    <a href="#" class="url" id="${bookings.oneid}"><ion-icon name="notifications-outline"></ion-icon></a>
+                    `
+                })
+                ul.appendChild(li)
+                document.querySelector('#appt-number').innerHTML = document.getElementById('user-bookings').getElementsByTagName("li").length;
+                    const apptDelForm = li.querySelector('.del-appt-client__form')
+                    apptDelForm.addEventListener('submit', (e) => {
+                       e.preventDefault()
+
+
+                        //@Delete Appt Client and Admin
+                        fetch('/delete-appt-client', {
+                            method: 'post',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id: apptDelForm['id'].value,
+                                ref: apptDelForm['ref'].value,
+                                uemail: apptDelForm['uemail'].value
+                            })
+                        }).then(res => {
+                            if(res.status === 200){
+                              callUIalert()
+                              uialertText.innerHTML = 'Appointment deleted!'
+                              ul.removeChild(apptDelForm.closest('li'))  
+                              dom.querySelector('#appt-number').innerHTML = document.getElementById('user-bookings').getElementsByTagName("li").length;
+                            }
+                        })
+                    })
+
+
+                 window.scrollTo(0,document.body.scrollHeight);
+
+                //@Alert Biz Owner
+                const apptURL = li.querySelector('.url')
+                let ctime = li.querySelector('.time').innerHTML
+                let cstatus = li.querySelector('.status')
+                  apptURL.addEventListener('click', (e) => {
+                    e.preventDefault()
+                    fetch('/check-appt-client', {
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            emailid: reserveSpotForm['emailid'].value,
+                            email: reserveSpotForm['email'].value,
+                            phone: reserveSpotForm['phone'].value,
+                            id: apptURL.id,
+                            time: ctime,
+                            name: reserveSpotForm['name'].value
+                        })
+                    }).then((res) => {
+                        return res.json()
+                    }).then(res => {
+                        socket.emit('appt', {
+                            good: res.good,
+                            error: res.error
+                        })
+                        if (res.good) {
+                            cstatus.classList.remove('scheduled')
+                            cstatus.classList.add('online')
+                            cstatus.innerHTML = 'ONLINE'
+                        }
+                    })
+                })
+            }
+            
+            if(res.err){
+                const errmsg = dom.querySelector('.error-reserve')
+                errmsg.innerHTML = res.err
+                errmsg.classList.add('red-tag')
+            }
+            
+        })
+})
+
+//@Disable Values
+reserveSpotForm['name'].disabled = true
+reserveSpotForm['email'].disabled = true
+reserveSpotForm['phone'].disabled = true
+
+
+
+
+
+
+
+//@Signup
+apptSignupForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+
+    fetch('/u/register-appt-user', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: apptSignupForm['email'].value,
+                fullname: apptSignupForm['fullname'].value,
+                phone: apptSignupForm['phone'].value.replace(/\D/g, ''),
+                password: apptSignupForm['password'].value
+          })
+        }).then((res) => {
+            return res.json()
+        }).then(res => {
+            if(res.user){
+                callUIalert()
+                uialertText.innerHTML = 'Your registration was successful!'
+                setTimeout(() => { switchAuthforms() }, 4000);
+            }
+            if(res.msg){
+                apptSignupForm.querySelector('p').innerHTML = res.msg[0].msg
+            }
+        })
+})
+
+
+
+apptLoginForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+
+    fetch('/u/login-appt-user', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: apptLoginForm['email'].value,
+                password: apptLoginForm['password'].value
             })
-        }) 
-    })
+        }).then((res) => {
+            return res.json()
+        }).then(res => {
+            if(res.user){
+                //@Set Values
+                 reserveSpotForm['name'].value = res.user.fullname
+                 reserveSpotForm['email'].value = res.user.email
+                 reserveSpotForm['phone'].value = res.user.phone
+
+                //@Change Navbar Items
+                dom.querySelector('.profile-buttons').classList.add('hide')
+                let userProfile = document.querySelector('.dynamic-ui-profile')
+                userProfile.innerHTML = `Hi, ${res.user.fullname}`
+                userProfile.classList.remove('hide')
+
+                 //@Close Login form
+                 closeLoginForm()
+
+                   //@Fill User infos
+                let ul = dom.querySelector('#user-bookings')
+                res.user.book.forEach(bookings => {
+                    let li = document.createElement('li')
+
+                    li.innerHTML = `
+                    <span class="rdate">${bookings.rdate}</span>
+                    <span class="status ${bookings.status}">${bookings.status}</span>
+
+                    <span class="bizname">${bookings.bizname}</span>
+                    <span class="time">${bookings.time}</span>
+                    <span class="location">${bookings.location}</span>
+                   
+                    <span class="del" id="${bookings._id}">
+                        <form class="del-appt-client__form">
+                            <input type="hidden" name="id" value="${bookings.oneid}">
+                            <input type="hidden" name="ref" value="${bookings.ref}">
+                            <input type="hidden" name="uemail" value="${res.user.email}">
+                            <button type="submit"><ion-icon name="trash-outline"></ion-icon></button>
+                        </form>  
+                    </span>
+                    <a href="#" class="url" id="${bookings.oneid}"><ion-icon name="notifications-outline"></ion-icon></a>
+                    `
+                    ul.appendChild(li)
+                    document.querySelector('#appt-number').innerHTML = document.getElementById('user-bookings').getElementsByTagName("li").length;
+                    const apptDelForm = li.querySelector('.del-appt-client__form')
+                    apptDelForm.addEventListener('submit', (e) => {
+                       e.preventDefault()
+
+                        //@Delete Appt Client and Admin
+                        fetch('/delete-appt-client', {
+                            method: 'post',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id: apptDelForm['id'].value,
+                                ref: apptDelForm['ref'].value,
+                                uemail: apptDelForm['uemail'].value
+                            })
+                        }).then(res => {
+                            if(res.status === 200){
+                              callUIalert()
+                              uialertText.innerHTML = 'Appointment deleted!'
+                              ul.removeChild(apptDelForm.closest('li'))  
+                              dom.querySelector('#appt-number').innerHTML = document.getElementById('user-bookings').getElementsByTagName("li").length;
+                            }
+                        })
+                        
+                    })
+
+                    
+                    //@Alert Biz Owner
+                    const apptURL = li.querySelector('.url')
+                    let ctime = li.querySelector('.time').innerHTML
+                      apptURL.addEventListener('click', (e) => {
+                        e.preventDefault()
+                        fetch('/check-appt-client', {
+                            method: 'post',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                emailid: reserveSpotForm['emailid'].value,
+                                email: reserveSpotForm['email'].value,
+                                phone: reserveSpotForm['phone'].value,
+                                id: apptURL.id,
+                                time: ctime,
+                                name: reserveSpotForm['name'].value
+                            })
+                        }).then((res) => {
+                            return res.json()
+                        }).then(res => {
+                            socket.emit('appt', {
+                                good: res.good,
+                                error: res.error
+                            })
+                            if (res.good) {
+                                cstatus.classList.remove('scheduled')
+                                cstatus.classList.add('online')
+                                cstatus.innerHTML = 'ONLINE'
+                            }
+                        })
+                    })
+                    
+                    
+                    
+                })
+
+                //@Show el on login 
+                dom.querySelector('.static-appt').classList.remove('hide-force')
+                dom.querySelector('.appt-counter').classList.remove('hide-force')
+
+                //@Show info
+                setTimeout(() => {
+                    dom.querySelector('.session-info').classList.remove('hide')
+                }, 9000);
+            }
+
+            //@Error
+            if (res.msg) {
+                apptLoginForm.querySelector('p').innerHTML = res.msg[0].msg
+            }
+        })
+})
 
 
+
+//@Close session info
+dom.querySelector('.session-info a').addEventListener('click', (e) => {
+    e.preventDefault()
+    dom.querySelector('.session-info').classList.add('hide')
+})
+
+
+const perdayOut =  dom.querySelector('#perday-unit')
+
+//@Show and Hide Available Slots
+document.getElementById('datepicker').addEventListener('change', (e) => {
+    
+    const customslotlabel =  document.querySelector('#custom-slot-label')
+    customslotlabel.innerHTML = e.target.value
+    customslotlabel.className = 'green-tag'
+ 
+      let  trword = e.target.value.replace(/ .*/,'');
+ 
+      function clearDOM(){
+        document.querySelectorAll('.slots-time-db').forEach(stdb => {
+          stdb.classList.add('hide')
+         if(trword == stdb.id){
+             stdb.classList.remove('hide')
+             let perday = stdb.nextElementSibling;
+            if(perday.innerHTML){
+                 perdayOut.innerHTML = perday.innerHTML
+             }
+          }
+      })
+      }
+      clearDOM()
+   
+      
+      //@Empty time values
+      dom.querySelector('#timehd').value = ''
+      dom.querySelector('.time-reveal-bp').innerHTML = 'No slot selected'
+ 
+      //@Get all bookings
+      fetch('/get-bookings', {
+         method: 'post',
+         headers: {
+             'Content-Type': 'application/json'
+         },
+         body: JSON.stringify({
+             emailid: reserveSpotForm['emailid'].value
+         })
+     }).then((res) => {
+         return res.json()
+     }).then(res => {
+         if(res.data){
+            //@Check how many bookings has this at
+            let limit = parseInt(perdayOut.innerHTML)
+            const results = Array.from(res.data.book)
+
+            let goodResults =  results.filter((el => {
+                return el.rdate === customslotlabel.innerHTML
+            }))
+
+           
+            let names = goodResults
+            let uniq = names
+                    .map((name) => {
+                        return {
+                        count: 1,
+                        name: name.time
+                        }
+                    })
+                    .reduce((a, b) => {
+                        a[b.name] = (a[b.name] || 0) + b.count
+                        return a
+                    }, {})
+
+                    let duplicates = Object.keys(uniq).filter((a) => uniq[a] === limit)
+
+                 if(duplicates.length === 1){
+                    dom.querySelectorAll('.slots-time-db').forEach(slotDB => {
+                       if(slotDB.id == trword){
+                            if(slotDB.innerHTML == duplicates[0]){
+                                slotDB.className = 'grey-out'
+                                slotDB.disabled = true
+                            }
+                        } 
+                    }) 
+                 } else {
+                        dom.querySelectorAll('.grey-out').forEach(prevDisabled => {
+                        prevDisabled.className = 'slots-time-db'
+                        prevDisabled.disabled = false
+                        clearDOM()
+                   })
+                 }
+
+         }
+         
+     })
+})
+    
 }
+
+

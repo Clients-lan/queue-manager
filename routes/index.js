@@ -3,11 +3,16 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
+const moment = require('moment')
+const cron = require('node-cron')
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const User = require('../modules/User');
+const Booking = require('../modules/Booking');
+const Team = require('../modules/Team');
+
 const { ensureAuthenticated } = require('../config/auth');
 
 
@@ -26,6 +31,15 @@ router.get('/queue/:vpurl', (req, res) => {
       url: req.params.vpurl
     })
  })
+})
+
+
+//@Confirm Route
+router.get('/confirm', (req, res) => {
+  res.render('confirm', {
+    msg: '',
+    desc: ''
+  })
 })
 
 
@@ -172,7 +186,7 @@ router.post('/update-est-time', ensureAuthenticated, (req, res) => {
 //@Add Team
 router.post('/add-teams', ensureAuthenticated, (req, res) => {
   const { locid, workemail, fullname, role, location } = req.body;
-  let newTeam = { "workemail": workemail, "fullname": fullname, "location": location, "role": role, "locationId": locid };
+  let newTeam = { "workemail": workemail, "fullname": fullname, "location": location, "role": role, "locationId": locid, "token": req.user.teamToken };
   User.findOneAndUpdate({ email: req.user.email },{$push: { team: newTeam } }).exec((err, docs) => {
     if (!err) {
       const msg = {
@@ -180,7 +194,7 @@ router.post('/add-teams', ensureAuthenticated, (req, res) => {
         from: 'contactus@flexyq.com',
         subject: 'Invitation',
         text: 'Hi',
-        html: `<h3>Hello ${fullname},</h3> <p>${req.user.first} from ${req.user.biz} invited you to join their FlexyQ team.</p> <p>Here is the login ID and password:</p> <p>Login Id: ${req.user.email}</p><p>Password: ${req.user.password2}</p> <p>Login via: https://${req.headers.host}/u/login`
+        html: `<h3>Hello ${fullname},</h3> <p>${req.user.first} from ${req.user.biz} invited you to join their FlexyQ team.</p>  <p>Login via: http://${req.headers.host}/u/team-signup/${req.user.teamToken}`
      };
       sgMail.send(msg)
     }
@@ -204,14 +218,18 @@ router.post('/edit-team', ensureAuthenticated, (req, res) => {
         console.log(err);
         
       }
+    })
+  Team.findOneAndUpdate({ email: workemail, token: req.user.teamToken }, {'fullname': fullname, 'location': location, 'role': role, 'email': workemail}, (err, result) => {
+    if (err) { return }
   })
 })
 //@Delete Team
 router.post('/delete-team', ensureAuthenticated, (req, res) => {
-  const { id } = req.body
+  const { id, workemail } = req.body
   User.updateOne({ email: req.user.email }, { $pull: { team: { _id : id } } },{ safe: true }, (err, obj) => {
     if (err) { return } 
   });
+  Team.findOneAndRemove({email: workemail}, {useFindAndModify: false}, (err, doc) => { if (err) throw err; })
   res.redirect('/u/team')
 })
 
@@ -242,51 +260,143 @@ router.post('/delete-location', ensureAuthenticated, (req, res) => {
   })
 })
 
-//@Temporary aOuth Admin
-router.post('/aouth-admin', ensureAuthenticated, (req, res) => {
-  User.findOne({ email: req.user.email }).then(user => {
-    if (user) {
-      //@Pass first step
-      if (user.onepass == req.body.onepasser) {
-        console.log('Is admin');
-        res.send()
-      } else {
-        console.log('is not admin');
-        res.redirect('/u/dashboard')
-      }
+
+
+//@==Save Slot====
+
+//@Personalize
+router.post('/save-slot-personalized', ensureAuthenticated, (req, res) => {
+
+  let { week, slot, perday } = req.body
+ 
+  slot = slot.split(',');
+  for (let i = 0; i < slot.length; i++){
+    let personalizedSlot = { "time": slot[i], "day": week };
+    User.updateMany({ email: req.user.email }, { $push: { slot: personalizedSlot } }, { new: true }, (err, slots) => { })
+  }
+
+  
+    //@Update Frequency
+    if (week == 'Mon') {
+      User.findByIdAndUpdate(req.user._id, { 'monspday': perday }, (err, res) => { if (err) return; })
+    } else if (week == 'Tue') {
+      User.findByIdAndUpdate(req.user._id, { 'tuespday': perday }, (err, res) => { if (err) return; })
+    } else if (week == 'Wed') {
+      User.findByIdAndUpdate(req.user._id, { 'wenspday': perday }, (err, res) => { if (err) return; })
+    } else if (week == 'Thu') {
+      User.findByIdAndUpdate(req.user._id, { 'thuspday': perday }, (err, res) => { if (err) return; })
+    } else if (week == 'Fri') {
+      User.findByIdAndUpdate(req.user._id, { 'frispday': perday }, (err, res) => { if (err) return; })
+    } else if (week == 'Sat') {
+      User.findByIdAndUpdate(req.user._id, { 'satspday': perday }, (err, res) => { if (err) return; })
+    } else {
+      User.findByIdAndUpdate(req.user._id, { 'sunspday': perday }, (err, res) => { if (err) return; })
     }
-  }) 
+    
+   req.flash('success_msg', 'Custom slot saved!');
+   res.redirect('/u/slots')
 })
 
-//@Save Slot
+
+//@Calculate Automatically
 router.post('/save-slot', ensureAuthenticated, (req, res) => {
-  const { week, slotone, slottwo } = req.body;
+  let { week, start, stop, min, duration, perday } = req.body;
   let user = req.user
-  let slots = req.user.slot
 
-  let errors = []
-  if (slotone == '' || slottwo == '') {
-    errors.push({msg: 'Fields can not be empty!'})
-  }
-  if (errors.length > 0) {
-    res.render('slot', {
-      errors,
-      week,
-      slotone,
-      slottwo,
-      user,
-      slots
-    })
-  } else {
-    let newSlot = { "time": `${slotone} - ${slottwo}`, "day": week };
-    User.findOneAndUpdate({ email: user.email }, { $push: { slot: newSlot }}, {useFindAndModify: false}).exec((err, docs) => {
-      if (!err) {
-        req.flash('success_msg', 'Slot saved!');
-        res.redirect('/u/slots')
+  parseInt(stop) + 1
+    // User.findOneAndUpdate({ email: user.email }, { $push: { slot: newSlot }}, {useFindAndModify: false}).exec((err, docs) => {
+    //   if (!err) {
+    //     req.flash('success_msg', 'Slot saved!');
+    //     res.redirect('/u/slots')
+    //   }
+    // })
+    
+ 
+    function tConvert (time) {
+      // Check correct time format and split into components
+      time = time.toString ().match (/^([01]?\d|2[0-3])(:)([0-5]?\d)(:[0-5]?\d)?$/) || [time];
+
+      if (time.length > 1) { // If time format correct
+          time = time.slice (1);  // Remove full string match value
+          time[5] = +time[0] < 12 ? ' AM' : ' PM'; // Set AM/PM
+          time[0] = +time[0] % 12 || 12; // Adjust hours
       }
-    })
-  }
+      return time.join (''); // return adjusted time or original string
+      }
+       
+        
 
+      
+
+
+        while(parseInt(start) < parseInt(stop)){
+         // let originalTime = tConvert(`${parseInt(start)}:${min}`)
+          let originalTime = ((tConvert(`${parseInt(start)}:${min}`).length == '7') ? '0' + tConvert(`${parseInt(start)}:${min}`) : tConvert(`${parseInt(start)}:${min}`))
+
+           let defaultSlot = { "time": originalTime, "day": week };
+
+          let afterOrigin;
+            if(duration != 60){
+           
+              if(duration == 30 && min == 30){
+               // afterOrigin = tConvert(`${parseInt(start) + 1}:${'00'}`)
+                afterOrigin = ((tConvert(`${parseInt(start) + 1}:${'00'}`).length == '7') ? '0' + tConvert(`${parseInt(start) + 1}:${'00'}`) : tConvert(`${parseInt(start) + 1}:${'00'}`))
+              } else if(duration == 30 && min == 00){
+               // afterOrigin = tConvert(`${parseInt(start)}:${'30'}`)
+                afterOrigin = ((tConvert(`${parseInt(start)}:${'30'}`).length == '7') ? '0' + tConvert(`${parseInt(start)}:${'30'}`) : tConvert(`${parseInt(start)}:${'30'}`))
+              } else if(duration == 30 && min == 15){
+               // afterOrigin = tConvert(`${parseInt(start)}:${parseInt(duration) + parseInt(min)}`)
+                afterOrigin = ((tConvert(`${parseInt(start)}:${parseInt(duration) + parseInt(min)}`).length == '7') ? '0' + tConvert(`${parseInt(start)}:${parseInt(duration) + parseInt(min)}`) : tConvert(`${parseInt(start)}:${parseInt(duration) + parseInt(min)}`))
+
+              }
+                let _30minsSlot = { "time": afterOrigin, "day": week };
+
+                User.updateMany({ email: user.email }, { $push: { slot: defaultSlot } }, { new: true }, (err, slots) => {})
+                User.updateMany({ email: user.email }, { $push: { slot: _30minsSlot } }, { new: true }, (err, slots) => {})
+            } else {
+              //@For One Hours Slots
+              User.updateMany({ email: user.email }, { $push: { slot: defaultSlot } }, { new: true }, (err, slots) => {})
+            }
+    
+            parseInt(start++)
+        }
+
+
+    // while(start < stop){
+    //   let d = tConvert(`${start}:${min}`)
+    //   let newSlot = { "time": d, "day": week };
+
+    //   User.updateMany({ email: user.email }, { $push: { slot: newSlot } }, { new: true }, (err, slots) => {})
+
+
+    //    // console.log(d);
+        
+    //     start++;
+    // }
+
+
+    //@Update Frequency
+    if (week == 'Mon') {
+      User.findByIdAndUpdate(req.user._id, { 'monspday': perday }, (err, res) => { if (err) return; })
+    } else if (week == 'Tue') {
+      User.findByIdAndUpdate(req.user._id, { 'tuespday': perday }, (err, res) => { if (err) return; })
+    } else if (week == 'Wed') {
+      User.findByIdAndUpdate(req.user._id, { 'wenspday': perday }, (err, res) => { if (err) return; })
+    } else if (week == 'Thu') {
+      User.findByIdAndUpdate(req.user._id, { 'thuspday': perday }, (err, res) => { if (err) return; })
+    } else if (week == 'Fri') {
+      User.findByIdAndUpdate(req.user._id, { 'frispday': perday }, (err, res) => { if (err) return; })
+    } else if (week == 'Sat') {
+      User.findByIdAndUpdate(req.user._id, { 'satspday': perday }, (err, res) => { if (err) return; })
+    } else {
+      User.findByIdAndUpdate(req.user._id, { 'sunspday': perday }, (err, res) => { if (err) return; })
+    }
+
+  
+    
+      req.flash('success_msg', 'Slot saved!');
+      res.redirect('/u/slots')
+    
 })
 
 //@Delete Slot
@@ -301,8 +411,8 @@ router.post('/delete-slot', ensureAuthenticated, (req, res) => {
 
 //@Update Booking page Link
 router.post('/save-booking-url', ensureAuthenticated, (req, res) => {
-  const { link } = req.body
-  User.findByIdAndUpdate(req.user._id, { 'bookinglink': `${link}${uuidv4()}` }, { useFindAndModify: false }, function (err, result) {
+  const { link, alert } = req.body
+  User.findByIdAndUpdate(req.user._id, { 'bookinglink': `${link}${uuidv4()}`, 'bookingalert': alert }, { useFindAndModify: false }, function (err, result) {
       if (err) { return } 
   })
   res.redirect('/u/appointment')
@@ -310,27 +420,38 @@ router.post('/save-booking-url', ensureAuthenticated, (req, res) => {
 
 //@ Appointees books from page
 router.post('/reverse-space', (req, res) => {
-  const { emailid, name, email, phone, time, location } = req.body;
-  if (time != '' || time != "") {
-    let newAppt = { "name": name, "phone": phone, "email": email, "location": location, "status": 'offline', "time": time };
-    User.findOneAndUpdate({ email: emailid }, { $push: { book: newAppt }}, {new: true}).exec((err, docs) => {
+  const { emailid, name, email, phone, bizname, url, time, location, rdate } = req.body;
+  
+  const uuidRef = uuidv4()
+
+  if (time != '' && time != "" && email != "" && email != '') {
+    let newAppt = { "name": name, "phone": phone, "email": email, "location": location, "rdate": rdate, "status": 'scheduled', "time": time, "oneid": uuidRef };
+    let clientAppt = { "ref": emailid, "time": time, "status": 'scheduled', "rdate": rdate, "location": location, "bizname": bizname, "url": url, "oneid": uuidRef };
+
+   //@Svae to Admin DB
+    User.findOneAndUpdate({ email: emailid }, { $push: { book: newAppt } }, { new: true }).exec((err, docs) => {
       if (err) { return } 
-      res.render('confirm', {
-        msg: 'Your booking was successful!'
-      })
-      const msg = {
-        to: emailid,
-        from: 'contactus@flexyq.com',
-        subject: 'Appointment Alert',
-        text: 'Hi',
-        html: `Hi, ${name} has scheduled an appointement at ${time}`,
-     };
-      sgMail.send(msg)
+      if (docs.bookingalert == 'Yes') {
+        const msg = {
+          to: emailid,
+          from: 'contactus@flexyq.com',
+          subject: 'Appointment Alert',
+          text: 'Hi',
+          html: `Hi, ${name} has scheduled an appointement at ${time}`,
+       };
+        sgMail.send(msg)
+      }
     })
+
+    //@Save to Client DB too
+    Booking.findOneAndUpdate({ email: email }, { $push: { book: clientAppt }}, {new: true}).exec((err, doc) => {
+      if (err) { return } 
+      res.send({ data: doc })
+    })
+   
+    
   } else {
-    res.render('confirm', {
-      msg: 'Opps! Missing field'
-    })
+    res.send({err: 'Missing fields'})
   }
 })
 
@@ -349,21 +470,73 @@ router.get('/appt/:url', (req, res) => {
 
 //@Cancel Appointment
 router.post('/cancel-appt', ensureAuthenticated, (req, res) => {
-  const { id } = req.body
+  const { id, oneid, uemail } = req.body
   User.findOneAndUpdate({ email: req.user.email }, { $set: { "book.$[elem].status": 'cancelled' } }, { arrayFilters: [{ "elem._id": new mongoose.Types.ObjectId(id) }], new: true }).exec((err, docs) => {
+    if (err) { return }
+  })
+  Booking.findOneAndUpdate({ email: uemail }, { $set: { "book.$[elem].status": 'cancelled' } }, { arrayFilters: [{ "elem.oneid": oneid }], new: true }).exec((err, docs) => {
     if (err) { return }
   })
   res.redirect('/u/appointment')
 })
 
-//@Delete Appointment
+//@Delete Appointment Admin
 router.post('/delete-appt', ensureAuthenticated, (req, res) => {
-  const { id } = req.body
-  User.updateOne({ email: req.user.email }, { $pull: { book: { _id : id } } },{ safe: true }, (err, obj) => {
+  const { id, uemail } = req.body
+  User.updateOne({ email: req.user.email }, { $pull: { book: { oneid : id } } },{ safe: true }, (err, obj) => {
     if (err) { return } 
+  });
+  Booking.updateOne({ email: uemail }, { $pull: { book: { oneid : id } } },{ safe: true }, (err, obj) => {
+    if (err) { throw err } 
   });
   res.redirect('/u/appointment')
 })
+
+
+//@Get All bookings // Appt frontpage
+router.post('/get-bookings', (req, res) => {
+  const { emailid } = req.body
+  User.findOne({ email: emailid }).then(user => {
+    if (user) {
+     res.send({data: user})
+    }
+  })
+})
+
+//@Delete Appt frontend
+router.post('/delete-appt-client', (req, res) => {
+  const { id, ref, uemail } = req.body
+  Booking.updateOne({ email: uemail }, { $pull: { book: { oneid : id } } },{ safe: true }, (err, obj) => {
+    if (err) { throw err } 
+  });
+  User.updateOne({ email: ref }, { $pull: { book: { oneid : id } } },{ safe: true }, (err, obj) => {
+    if (err) { throw err } 
+  });
+  res.send()
+})
+
+
+//@Delete Appt ON AUTO
+cron.schedule('55 23 * * *', () => {
+  User.find((err, doc) => {
+    for (let i = 0; i < doc.length; i++){
+      doc[i].book.forEach(b => {
+        let date = new Date(b.rdate)
+        let momentO = moment(date)
+        let momentB = momentO.format('YYYY-MM-DD')
+        let days = moment().diff(momentB, 'days');
+      //  console.log(`${b}, ${days}`);
+        if (days == 1) {
+          User.updateMany({}, { $pull: { book: { _id: b._id } } }, { safe: true }, (err, del) => {})
+        }
+      })
+    }
+  })
+})
+
+
+
+
 
 
 
@@ -536,15 +709,15 @@ router.post('/stripe-webhook', async function (req, res) {
 
 //@Update Planner
 router.post('/update-planner', ensureAuthenticated, (req, res) => {
-  const { locid, header, subheader, notes, vpurl, adminmail, adminphone, allowqueue, requiredemail, requiredphone, msg } = req.body;
+  const { locid, header, subheader, notes, vpurl, adminmail, adminphone, allowqueue, maxnum, msg } = req.body;
   User.findOne({ 'location.vpurl': vpurl }).then(url => {
     if (url) {
       User.findOneAndUpdate({ email: req.user.email },
         {
           $set: {
             "location.$[elem].header": header, "location.$[elem].subheader": subheader, "location.$[elem].notes": notes,
-            "location.$[elem].adminmail": adminmail, "location.$[elem].adminphone": adminphone, "location.$[elem].allowqueue": allowqueue, "location.$[elem].requiredemail": requiredemail,
-            "location.$[elem].requiredphone": requiredphone, "location.$[elem].msg": msg
+            "location.$[elem].adminmail": adminmail, "location.$[elem].adminphone": adminphone, "location.$[elem].allowqueue": allowqueue,
+            "location.$[elem].maxnum": maxnum, "location.$[elem].msg": msg
           }
         },
           { arrayFilters: [ { "elem._id": new mongoose.Types.ObjectId(locid)}], new: true },

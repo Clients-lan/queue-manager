@@ -2,14 +2,22 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport')
-//User model
 require('dotenv').config();
-const User = require('../modules/User');
-const { ensureAuthenticated } = require('../config/auth');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const async = require('async')
 const crypto = require('crypto');
+const { v4: uuidv4 } = require('uuid');
+
+
+const { ensureAuthenticated } = require('../config/auth');
+
+//@Modules
+
+const Booking = require('../modules/Booking');
+const Team = require('../modules/Team');
+const User = require('../modules/User');
+
 
 
 
@@ -37,7 +45,8 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
         res.render('admin', {
             user: req.user,
             data: req.user.location,
-            vil: req.user.visitors
+            vil: req.user.visitors,
+            role: req.session.role
         })
     } else {
         res.redirect('/plans')
@@ -46,35 +55,89 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
 
 //@ User Profile Page
 router.get('/profile', ensureAuthenticated, (req, res) => {
-    res.render('profile', { user: req.user })
+    res.render('profile', { user: req.user, role: req.session.role })
 })
 
 //@User Billing Page
 router.get('/billing', ensureAuthenticated, (req, res) => {
-    res.render('billing', { user: req.user })
+    res.render('billing', { user: req.user, role: req.session.role })
 })
+
+
+//@Team Login Page
+router.get('/team-login/:token', (req, res) => {
+    User.findOne({ teamToken: req.params.token }).then(user => {
+        if (!user) {
+            return res.redirect('/')
+        } else {
+            res.render('./frontend/teamlog', {
+                email: user.email,
+                password: user.password2
+            })
+        }
+    })
+})
+
+
+//@ Team Login Handler
+router.post('/team-login/:token', (req, res, next) => {
+  
+    const { teamemail, teampassword, email, password } = req.body
+    let errors = [];
+
+    
+    if (!teamemail || !teampassword) {
+        errors.push({msg: 'Fill in all fields'})
+    }
+    
+    if (errors.length > 0) {
+        res.render('frontend/teamlog', {
+            errors,
+            email: email,
+            password: password
+        })
+    } else {
+        Team.findOne({ email: teamemail, password: teampassword, token: req.params.token }).then(team => {
+            if (!team) {
+                errors.push({ msg: 'Incorrect password or email' })
+                res.render('frontend/teamlog', {
+                    errors,
+                    email: email,
+                    password: password
+                })
+            } else {
+                req.session.role = team.role
+                passport.authenticate('local', {
+                    successRedirect: '/u/trial',
+                    failureRedirect: '/u/team-login',
+                    failureFlash: true
+                })(req, res, next);
+            } 
+        })
+    }
+  });
+
 
 //@Trial Page -- Subscription
 router.get('/trial', ensureAuthenticated, (req, res) => {
-    if (req.user.subscribed == 'false' || req.user.subscribed == null) {
+    if (req.user.verified == 'false') {
+        res.render('confirm', { msg: 'You account has not been verified', desc: 'A verification code was sent to your email address, check your inbox and follow the guide.' })
+    } else if (req.user.subscribed == 'false' || req.user.subscribed == null) {
         res.render('sub', { user: req.user })
     } else { 
         res.redirect('/u/setup')
     }
+   
 })
 
-//@Aouth Route
-router.get('/aouth', ensureAuthenticated, (req, res) => {
-    res.render('aouth', {
-        user: req.user
-    })
-})
+
 
 //@Create New Location
 router.get('/new-location', ensureAuthenticated, (req, res) => {
     res.render('setup', {
         user: req.user,
-        greet: 'Hi'
+        greet: 'Hi',
+        role: req.session.role
     })
 })
 
@@ -89,10 +152,13 @@ router.get('/appointment', ensureAuthenticated, (req, res) => {
 
 //@Slots
 router.get('/slots', ensureAuthenticated, (req, res) => {
-    res.render('slot', {
-        user: req.user,
-        slots: req.user.slot
-    })
+   
+    User.findOne({ email: req.user.email }, (err, doc) => {
+        res.render('slot', {
+            user: req.user,
+            slots: doc.slot
+        })
+    }).sort('-date').exec(function(err, docs) { });
 })
 
 //@ See Location Settings
@@ -101,7 +167,8 @@ router.get('/location/:_id', ensureAuthenticated, (req, res) => {
         user: req.user,
         verify: req.params._id,
         locationList: req.user.location,
-        teams: req.user.team
+        teams: req.user.team,
+        role: req.session.role
     })
 })
 
@@ -120,13 +187,14 @@ router.get('/service', ensureAuthenticated, (req, res) => {
 
   //@Get all locations
 router.get('/places', ensureAuthenticated, (req, res) => {
-    if (req.user.onepass != "null") {
+    if (req.user.subscribed != "" || req.user.subscribed != '') {
         res.render('location', {
             user: req.user,
-            locationList: req.user.location
+            locationList: req.user.location,
+            role: req.session.role
         })
     } else {
-        res.redirect('/u/aouth')
+        res.redirect('/u/trial')
     }
 })
 
@@ -136,6 +204,7 @@ router.get('/team', ensureAuthenticated, (req, res) => {
         user: req.user,
         teams: req.user.team,
         data: req.user.location,
+        role: req.session.role
     })
 })
 
@@ -146,7 +215,8 @@ router.get('/analytics', ensureAuthenticated, (req, res) => {
         points: req.user.location,
         visitors: req.user.visitors,
         team: req.user.team,
-        cd: new Date().getDate()
+        cd: new Date().getDate(),
+        role: req.session.role
     })
 })
 
@@ -165,8 +235,9 @@ router.get('/register', (req, res) => {
 //@Register Handle
 router.post('/register', (req, res) => {
     
-    const { first, last, token, onepass, username, plan, plancode, subscribed, email, password, password2, locisadded} = req.body
+    const { first, last, verified, username, plan, plancode, subscribed, email, password, password2, locisadded} = req.body
     
+
     let errors = [];
     //Check required fields
     if (!first || !last || !email || !password || !password2) {
@@ -206,7 +277,7 @@ router.post('/register', (req, res) => {
             plancode,
             password,
             password2,
-            onepass
+            verified
         })
     } else {
        //Validate pass
@@ -224,7 +295,7 @@ router.post('/register', (req, res) => {
                         plancode,
                         password,
                         password2,
-                        onepass
+                        verified
                     });
                 }  else {
                     const newUser = new User({
@@ -238,7 +309,9 @@ router.post('/register', (req, res) => {
                         subscribed,
                         locisadded,
                         password2,
-                        onepass
+                        verified,
+                        verifyToken: uuidv4(),
+                        teamToken: `token${uuidv4()}-${uuidv4()}`
                     });
                     //Hash Password
                     bcrypt.genSalt(10, (err, salt) =>
@@ -249,8 +322,18 @@ router.post('/register', (req, res) => {
                             //Save User
                             newUser.save()
                                 .then(user => {
-                                    req.flash('success_msg', 'You are now registered and can login');
-                                    res.redirect('/u/login')
+                                    const msg = {
+                                        to: user.email,
+                                        from: 'contactus@flexyq.com',
+                                        subject: 'Account Verification',
+                                        text: 'Hello there',
+                                        html: `<h3>Welcome to FlexyQ, ${user.first} ${user.last}! </h3> <p> Click on the button below to activate your FlexyQ account or use this <a href="http://${req.headers.host}/u/verify-account/${user.verifyToken}">link</a> </p> <br><p> <a href="http://${req.headers.host}/u/verify-account/${user.verifyToken}" style="text-decoration: none; padding: 1rem 2rem; border-radius: 5px; background: #1c96aa; color: #fff;">Activate now</a></p> <br> <p>After successful activation, you can log in to your new account.</p>`,
+                                     };
+                                  sgMail.send(msg)
+                                    res.render('confirm', {
+                                        msg: 'Confirm your account',
+                                        desc: 'To make sure that your account is safe there is an additional step needed. Please check your email to confirm your account.'
+                                    })
                                 })
                             .catch(err => console.log(err))
                         }));
@@ -260,14 +343,113 @@ router.post('/register', (req, res) => {
 });
 
 
+//@Verify Account
+router.get('/verify-account/:token', function(req, res) {
+    User.findOne({ verifyToken: req.params.token}, (err, user) => {
+      if (!user) {
+        req.flash('error_msg', 'Account verification failed, please try again.');
+        return res.redirect('/u/register');
+      } else {
+        User.findByIdAndUpdate(user._id,{ 'verified': true, 'verifyToken': '' }, {useFindAndModify: false}, (err, result) => {
+            if (err) {return } 
+        })  
+        req.flash('success_msg', 'Account verification was successful, you can login now');
+        res.redirect('/u/login');
+      }
+    });
+}); 
+   
 
-//@Update Access Code
-router.post('/aouth', ensureAuthenticated, (req, res) => {
-    User.findByIdAndUpdate(req.user._id,{ 'onepass': req.body.onepass }, {useFindAndModify: false}, (err, docs) => {
-        if (err) {return} 
-    })
-    res.redirect('/u/profile')
-  })
+
+//@Team Registration
+router.get('/team-signup/:token', function(req, res) {
+    User.findOne({ teamToken: req.params.token}, (err, user) => {
+      if (!user) {
+        req.flash('error_msg', 'We are unable to verify your token.');
+        return res.redirect('/u/register');
+      } else {
+          res.render('./frontend/teamreg')
+      }
+    });
+});
+
+
+//@Regsiter Team Member
+router.post('/team-signup/:token', function(req, res) {
+   
+    const { email, password } = req.body
+    let errors = [];
+   
+    User.findOne({ teamToken: req.params.token }, (err, user) => {
+      if (!user) {
+        req.flash('error_msg', 'We are unable to verify your token.');
+        return res.redirect('/u/register');
+      } else {
+          let exist,
+              role,
+              fullname,
+              location;
+
+         user.team.forEach(tm => {
+             if (tm.workemail == email) {
+                 exist = true;
+                 role = tm.role
+                 fullname = tm.fullname
+                 location = tm.location
+             }
+         })
+          if (exist != true) {
+              errors.push({msg: 'Invalid email, please provide the email address used in inviting you'})
+          }
+          if (password.length < 8) {
+              errors.push({msg: 'Password must be at least 8 characters'})
+          }
+          if (errors.length > 0) {
+            res.render('./frontend/teamreg', {
+                errors
+            })
+          } else {
+              Team.findOne({ email: email, token: user.teamToken }).then(member => {
+                  if (member) {
+                      errors.push({ msg: 'You are already registered! Please login via your special route' })
+                      res.render('./frontend/teamreg', {
+                        errors
+                    })
+                  } else {
+                      let newTeam = new Team({
+                          email,
+                          password,
+                          token: user.teamToken,
+                          role: role,
+                          fullname: fullname,
+                          location: location
+                      })
+                      newTeam.save()
+                          .then(team => {
+                            const msg = {
+                                to: email,
+                                from: 'contactus@flexyq.com',
+                                subject: 'Your Login route',
+                                text: 'Hi',
+                                html: `<h3>Hello ${fullname},</h3>  <p>This is your login route</p>  <p>Login via: http://${req.headers.host}/u/team-login/${team.token}`
+                             };
+                             sgMail.send(msg)
+                             res.render('confirm', {
+                                msg: 'You account has been created!',
+                                desc: 'Please check your inbox for the special link we just sent you!'
+                            })
+                      })
+                  }
+              })
+          }
+      }
+    });
+});
+
+
+
+
+
 
 //@Update User Settings
 router.post('/update-profile', ensureAuthenticated, (req, res) => {
@@ -282,12 +464,14 @@ router.post('/update-profile', ensureAuthenticated, (req, res) => {
 
 //@ Login Handler
 router.post('/login', (req, res, next) => {
+    req.session.role = 'Admin'
     passport.authenticate('local', {
         successRedirect: '/u/trial',
         failureRedirect: '/u/login',
         failureFlash: true
     })(req, res, next);
 });
+
 
 //@Logout Handle
 router.get('/logout', (req, res) => {
@@ -300,6 +484,64 @@ router.get('/logout', (req, res) => {
 router.post('/delete-account', ensureAuthenticated, (req, res) => {
     User.findByIdAndRemove(req.user._id, {useFindAndModify: false}, (err, doc) => { if (err) throw err; res.redirect('/'); })
 })
+
+
+
+
+//@========== APPOINTEMENT USER REGISTRATION ====== @//
+router.post('/register-appt-user', (req, res) => {
+    const { fullname, email, phone, password } = req.body
+
+    let errors = [];
+    Booking.findOne({ email: email }).then(user => {
+        if (user) {
+            errors.push({ msg: 'Email already exisit' })
+            res.send({msg: errors})
+        } else {
+            const newUBooking = new Booking({
+                fullname,
+                email,
+                phone,
+                password
+            })
+            newUBooking.save()
+                .then(subuser => {
+                    res.send({
+                        user: subuser
+                })
+            })
+        }
+    })
+
+})
+
+
+router.post('/login-appt-user', (req, res) => {
+    const { email, password } = req.body
+    let errors = [];
+
+    Booking.findOne({ email: email, password: password }).then(user => {
+        if (!user) {
+            errors.push({ msg: 'Incorrect password or email' })
+            res.send({msg: errors})
+        } else {
+            res.send({user: user})
+        }
+        
+    })
+})
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -357,7 +599,6 @@ router.get('/forgot', (req, res) => {
 //@Reset Get Post
 router.get('/reset/:token', function(req, res) {
     User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
-        console.log(user);
       if (!user) {
         req.flash('error_msg', 'Password reset token is invalid or has expired.');
         return res.redirect('/u/forgot');

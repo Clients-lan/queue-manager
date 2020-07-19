@@ -24,7 +24,7 @@ crossorigin=""></script>
   integrity="sha512-HrFUyCEtIpxZloTgEKKMq4RFYhxjJkCiF5sDxuAokklOeZ68U2NPfh4MFtyIVWlsKtVbK5GD2/JzFyAfvT5ejA=="
   crossorigin=""></script>
 
-  <% if(user.subscribed == 'true' || user.subscribed == 'active'){ %>
+  <% if(role === 'Admin'){ %>
 
 <section class="setup mt-5">
     <div class="wrapper-small globe-box">
