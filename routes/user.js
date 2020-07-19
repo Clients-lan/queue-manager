@@ -323,10 +323,10 @@ router.post('/register', (req, res) => {
                             newUser.save()
                                 .then(user => {
                                     let transporter = nodemailer.createTransport({
-                                        host: 'smtp.office365.com', // Office 365 server
+                                        host: 'Outlook365', // Office 365 server
                                         port: 587,   // secure SMTP
                                         requireTLS: true,
-                                        secure: true,
+                                        secure: false,
                                         auth: {
                                             user: 'contactus@flexyq.com',
                                             pass: 'AXszr#$39!@'
