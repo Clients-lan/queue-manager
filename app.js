@@ -82,7 +82,7 @@ app.use('/u', require('./routes/user'));
 const appName = 'Flexy Queue'
 
 //@Connect To Database
-const uri = process.env.HEROKU_DB_ALTAS || "mongodb+srv://flexyqnok:8NNEsB6HmpoG7H4x@cluster0.gyzb2.mongodb.net/Cluster0?retryWrites=true&w=majority";
+const uri = "mongodb+srv://flexyqnok:8NNEsB6HmpoG7H4x@cluster0.gyzb2.mongodb.net/Cluster0?retryWrites=true&w=majority";
 //process.env.MONGOLAB_PURPLE_URI
 mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true })
 .then(() => console.log(`${appName} Mongoose Connected...`))
