@@ -325,7 +325,6 @@ router.post('/register', (req, res) => {
                                     let transporter = nodemailer.createTransport({
                                         host: 'smtp.office365.com', // Office 365 server
                                         port: 587,     // secure SMTP
-                                        secure: false, // false for TLS - as a boolean not string - but the default is false so just remove this completely
                                         requireTLS: true,
                                         auth: {
                                             user: 'contactus@flexyq.com',
@@ -336,7 +335,7 @@ router.post('/register', (req, res) => {
                                         }
                                       });
                                       let mailOptions = {
-                                        from: 'FlexyQ Queuing System',
+                                        from: 'contactus@flexyq.com',
                                         to: user.email,
                                         subject: 'Account Verification',
                                         text: 'Welcome to FlexyQ', 
