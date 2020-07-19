@@ -235,7 +235,7 @@ router.get('/register', (req, res) => {
 //@Register Handle
 router.post('/register', (req, res) => {
     
-    const { first, last, verified, username, plan, plancode, subscribed, email, password, password2, locisadded} = req.body
+    const { first, last, verified, username, plan, plancode, subscribed, email, password, password2, locisadded, token} = req.body
     
 
     let errors = [];
