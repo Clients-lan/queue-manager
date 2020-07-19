@@ -332,7 +332,7 @@ router.post('/register', (req, res) => {
                                         tls: {ciphers: 'SSLv3'}
                                       });
                                       let mailOptions = {
-                                        from: 'FlexyQ Queuing System',
+                                        from: 'contactus@flexyq.com',
                                         to: user.email,
                                         subject: 'Account Verification',
                                         text: 'Welcome to FlexyQ', 
