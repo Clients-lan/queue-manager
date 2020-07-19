@@ -608,7 +608,7 @@ textarea{
 
 .ui-alert{
     @include  elFixedTC();
-    top: 10%;
+    top: 5%;
     width: 340px;
     margin-top: -100%;
     transition: all .5s;

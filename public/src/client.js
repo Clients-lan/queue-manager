@@ -21,7 +21,7 @@ const callUIalert = () => {
     setTimeout(() => {
         uiAlert.classList.remove('ui-alert-animated')
         uialertText.innerHTML  = ''
-    }, 6000);
+    }, 5000);
 }
 
 
