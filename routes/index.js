@@ -608,7 +608,7 @@ router.post('/create-customer', ensureAuthenticated, async (req, res) => {
     customer: customer.id,
     items: [{ plan: req.user.plancode }],
     expand: ['latest_invoice.payment_intent'],
-    trial_period_days: 14,
+    trial_period_days: 7,
   });
     res.send(subscription);
     const sub = subscription.id;
