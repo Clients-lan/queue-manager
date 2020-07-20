@@ -620,7 +620,7 @@ router.post('/create-customer', ensureAuthenticated, async (req, res) => {
     })
   
     //@Create Tax
-    await stripe.taxRates.create(
+     stripe.taxRates.create(
       {
         display_name: 'Sales Tax',
         description: 'Provincial Sales Tax',
@@ -630,6 +630,8 @@ router.post('/create-customer', ensureAuthenticated, async (req, res) => {
       function (err, taxRate) {
         if (!err) {
           console.log(taxRate);
+        } else {
+          console.log(`Tax wans't created because of ${err}`);
         }
       }
     )
