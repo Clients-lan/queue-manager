@@ -616,17 +616,30 @@ router.post('/create-customer', ensureAuthenticated, async (req, res) => {
     const uid = req.user._id
 
     User.findByIdAndUpdate(uid,{ 'sub': sub, 'customer': cus }, {useFindAndModify: false}, function(err, result){
-      if (err) {
-          return
-      } 
-  })
+      if (err) { return} 
+    })
+  
+    //@Create Tax
+    await stripe.taxRates.create(
+      {
+        display_name: 'Sales Tax',
+        description: 'Provincial Sales Tax',
+        percentage: 13,
+        inclusive: false
+      },
+      function (err, taxRate) {
+        if (!err) {
+          console.log(taxRate);
+        }
+      }
+    )
 });
 
 router.post('/subscription', async (req, res) => {
   let subscription = await stripe.subscriptions.retrieve(
     req.body.subscriptionId
   );
-    res.send(subscription);
+  res.send(subscription);
 });
 
 //@Update Paid Status
