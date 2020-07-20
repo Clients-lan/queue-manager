@@ -106,17 +106,18 @@ const nexmo = new Nexmo({
 //@Query Visitors and check
 app.post('/query-visitors', (req, res) => {
   User.findOne({ email: req.body.email, 'location._id': req.body.locid }, (err, data) => {
-    if (data.location) {
-      // data.location.forEach(real => {
-      //   if (real._id == req.body.locid) {
-      //     res.send({location: real, data: data})
-      //   }
-      // })
-      //console.log(data.location);
-      data.location.forEach(loc => {
-        console.log(loc);
-      })
-    }
+    // if (data.location) {
+    //   // data.location.forEach(real => {
+    //   //   if (real._id == req.body.locid) {
+    //   //     res.send({location: real, data: data})
+    //   //   }
+    //   // })
+    //   //console.log(data.location);
+    //   data.location.forEach(loc => {
+    //     console.log(loc);
+    //   })
+    // }
+    console.log(data);
   })
 })
 
