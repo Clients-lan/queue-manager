@@ -80,7 +80,7 @@ app.use('/u', require('./routes/user'));
 
 //@App name
 const appName = 'Flexy Queue'
-const URI = process.env.MONGODB_URL || 'mongodb+srv://flexyqnok:1IOvauD5kzNmVprs@flexyqdb.gyzb2.mongodb.net/flexyqdb?retryWrites=true&w=majority'
+const URI = process.env.MONGODB_URL || 'mongodb://kokpit:444999AW@ds143614.mlab.com:43614/allio'; //'mongodb+srv://flexyqnok:1IOvauD5kzNmVprs@flexyqdb.gyzb2.mongodb.net/flexyqdb?retryWrites=true&w=majority'
 
 //@Connect To Database
 
@@ -95,8 +95,6 @@ mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 //@SMS NEXMO
 const Nexmo = require('nexmo');
-const { url } = require('inspector');
-const { log } = require('console');
 const nexmo = new Nexmo({
   apiKey: '229aae5a',
   apiSecret: process.env.NEX_KEY
@@ -106,18 +104,13 @@ const nexmo = new Nexmo({
 //@Query Visitors and check
 app.post('/query-visitors', (req, res) => {
   User.findOne({ email: req.body.email, 'location._id': req.body.locid }, (err, data) => {
-    // if (data.location) {
-    //   // data.location.forEach(real => {
-    //   //   if (real._id == req.body.locid) {
-    //   //     res.send({location: real, data: data})
-    //   //   }
-    //   // })
-    //   //console.log(data.location);
-    //   data.location.forEach(loc => {
-    //     console.log(loc);
-    //   })
-    // }
-    console.log(data);
+    if (!err) {
+      data.location.forEach(real => {
+        if (real._id == req.body.locid) {
+          res.send({location: real, data: data})
+        }
+      })
+    }
   })
 })
 
