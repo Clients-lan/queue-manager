@@ -11,8 +11,8 @@ const http = require('http')
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const app = express();
-const server = http.createServer(app)
-const io = socketio(server)
+//const server = http.createServer(app)
+// const io = socketio(server)
 //Passport config
 require('./config/passport')(passport);
 
@@ -28,17 +28,17 @@ const { ensureAuthenticated } = require('./config/auth');
 //io.set('transports', ['websocket']);
 
 
-//@Run When clients connects
-io.on('connection', socket => {
-  socket.on('emiting', (data) => {
-    socket.emit('emiting', data)
-    socket.broadcast.emit('emiting', data)
-  })
-  socket.on('appt', (user) => {
-    socket.emit('appt', user)
-    socket.broadcast.emit('appt', user)
-  })
-})
+// //@Run When clients connects
+// io.on('connection', socket => {
+//   socket.on('emiting', (data) => {
+//     socket.emit('emiting', data)
+//     socket.broadcast.emit('emiting', data)
+//   })
+//   socket.on('appt', (user) => {
+//     socket.emit('appt', user)
+//     socket.broadcast.emit('appt', user)
+//   })
+// })
 
 //@EJS Template Engine
 app.use(expressLayouts);
@@ -95,7 +95,6 @@ mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 //@SMS NEXMO
 const Nexmo = require('nexmo');
-const { url } = require('inspector');
 const nexmo = new Nexmo({
   apiKey: '229aae5a',
   apiSecret: process.env.NEX_KEY
@@ -223,9 +222,50 @@ app.post('/check-appt-client', (req, res) => {
 
 
 
+require('sticky-cluster')(
+
+  // server initialization function
+  function (callback) {
+   // var http = require('http');
+   // var app = require('express')();
+    //var server = http.createServer(app);
+    const server = http.createServer(app)
+    const io = socketio(server)
+
+
+    //@Run When clients connects
+io.on('connection', socket => {
+  socket.on('emiting', (data) => {
+    socket.emit('emiting', data)
+    socket.broadcast.emit('emiting', data)
+  })
+  socket.on('appt', (user) => {
+    socket.emit('appt', user)
+    socket.broadcast.emit('appt', user)
+  })
+})
+      
+    // configure an app
+      // do some async stuff if needed
+      
+    // don't do server.listen(), just pass the server instance into the callback
+    callback(server);
+  },
+  
+  // options
+  {
+    concurrency: 10,
+    port: PORT,
+    debug: true,
+    env: function (index) { return { stickycluster_worker_index: index }; }
+  }
+);
+
+
+
 
 
 // listener
-server.listen(PORT, function () {
-    console.log(`listening on ${PORT}`);
-});
+// server.listen(PORT, function () {
+//     console.log(`listening on ${PORT}`);
+// });
