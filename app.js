@@ -25,7 +25,7 @@ const Booking = require('./modules/Booking');
 
 const { ensureAuthenticated } = require('./config/auth');
 
-//io.set('transports', ['websocket']);
+io.set('transports', ['websocket']);
 
 
 //@Run When clients connects
@@ -95,7 +95,6 @@ mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 //@SMS NEXMO
 const Nexmo = require('nexmo');
-const { url } = require('inspector');
 const nexmo = new Nexmo({
   apiKey: '229aae5a',
   apiSecret: process.env.NEX_KEY
