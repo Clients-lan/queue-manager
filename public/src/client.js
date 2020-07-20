@@ -627,8 +627,8 @@ if (dom.querySelector('.left-service-top')) {
                           <p class="queue-visitor__waiting">
                             <i class="hide vs-id">${found._id}</i>
                             <small class="hide visitor-label">${found.labels}</small>
-                            <small class="location-id hide">${res.location._id}</small>
-                            <span class="queue-status">${found.status}</span> in <small>${res.location.name}</small>
+                            <small class="location-id hide">${found.line}</small>
+                            <span class="queue-status">${found.status}</span> in <small>${found.place}</small>
                            <div class="queue-time-real tag">
                             <small class="waiting-hours"></small> hrs
                             <small class="waiting-minutes"></small> mins
@@ -658,8 +658,8 @@ if (dom.querySelector('.left-service-top')) {
                           <p class="queue-visitor__waiting">
                             <i class="hide vs-id">${found._id}</i>
                             <small class="hide visitor-label">${found.labels}</small>
-                            <small class="location-id hide">${res.location._id}</small>
-                            <span class="queue-status">${found.status}</span> in <small>${res.location.name}</small>
+                            <small class="location-id hide">${found.line}</small>
+                            <span class="queue-status">${found.status}</span> in <small>${found.place}</small>
                            <div class="queue-time-real">
                           <small class="waiting-hours tag">${found.timeused}</small>
                         </div>
@@ -668,9 +668,9 @@ if (dom.querySelector('.left-service-top')) {
                         servedHolder.innerHTML = ''
                         setTimeout(() => { servedHolder.appendChild(li) }, 500);
                     }
-                    if (dom.querySelector('#sms-dyno')) {
-                        dom.querySelector('#sms-dyno').innerHTML = res.location.sms
-                    }
+                    // if (dom.querySelector('#sms-dyno')) {
+                    //     dom.querySelector('#sms-dyno').innerHTML = res.location.sms
+                    // }
                 }
             
             })
