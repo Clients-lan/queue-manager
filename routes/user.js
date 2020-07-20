@@ -314,6 +314,7 @@ router.post('/register', (req, res) => {
                         subscribed,
                         locisadded,
                         verified,
+                        password2,
                         verifyToken: uuidv4(),
                         teamToken: `token${uuidv4()}-${uuidv4()}`
                     });
