@@ -80,7 +80,7 @@ app.use('/u', require('./routes/user'));
 
 //@App name
 const appName = 'Flexy Queue'
-const URI = process.env.MONGODB_URL || 'mongodb://kokpit:444999AW@ds143614.mlab.com:43614/allio'; //'mongodb+srv://flexyqnok:1IOvauD5kzNmVprs@flexyqdb.gyzb2.mongodb.net/flexyqdb?retryWrites=true&w=majority'
+const URI = process.env.MONGODB_URL || /*'mongodb://kokpit:444999AW@ds143614.mlab.com:43614/allio';*/ 'mongodb+srv://flexyqnok:1IOvauD5kzNmVprs@flexyqdb.gyzb2.mongodb.net/flexyqdb?retryWrites=true&w=majority'
 
 //@Connect To Database
 
