@@ -609,6 +609,9 @@ router.post('/create-customer', ensureAuthenticated, async (req, res) => {
     items: [{ plan: req.user.plancode }],
     expand: ['latest_invoice.payment_intent'],
     trial_period_days: 7,
+    default_tax_rates: [
+      'txr_1GziNPDs4JGjbQ5TYhfKTIY5'
+    ]
   });
     res.send(subscription);
     const sub = subscription.id;
@@ -620,21 +623,21 @@ router.post('/create-customer', ensureAuthenticated, async (req, res) => {
     })
   
     //@Create Tax
-     stripe.taxRates.create(
-      {
-        display_name: 'Sales Tax',
-        description: 'Provincial Sales Tax',
-        percentage: 13,
-        inclusive: false
-      },
-      function (err, taxRate) {
-        if (!err) {
-          console.log(taxRate);
-        } else {
-          console.log(`Tax wans't created because of ${err}`);
-        }
-      }
-    )
+    //  stripe.taxRates.create(
+    //   {
+    //     display_name: 'Sales Tax',
+    //     description: 'Provincial Sales Tax',
+    //     percentage: 13,
+    //     inclusive: false
+    //   },
+    //   function (err, taxRate) {
+    //     if (!err) {
+    //       console.log(taxRate);
+    //     } else {
+    //       console.log(`Tax wans't created because of ${err}`);
+    //     }
+    //   }
+    // )
 });
 
 router.post('/subscription', async (req, res) => {
