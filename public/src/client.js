@@ -618,7 +618,7 @@ if (dom.querySelector('.left-service-top')) {
             let queueHolder = dom.querySelector('#queue-holder')
             let servedHolder = document.querySelector('#served-holder')
             res.data.visitors.forEach(found => {
-                if (found.line == res.location._id) {
+                if (found.line == preferedId.value/*res.location._id*/) {
                     if (found.status === 'Waiting') {
     
                         let li = document.createElement('li')
@@ -941,10 +941,10 @@ function updateCounter() {
         }).then(res => {
             const visitorsCount = Array.from(res.data.visitors)
             visitorsCount.forEach(visitorsNow => {
-                if(visitorsNow.line === res.location._id){
+                if(visitorsNow.line === preferedId.value){
                     //@Filter Array
                     let finalVC = visitorsCount.filter((el) => {
-                        return el.status == 'Waiting' & el.line === res.location._id
+                        return el.status == 'Waiting' & el.line === preferedId.value/*res.location._id*/;
                     })
                     dom.querySelector('.poqt-counter').innerHTML = finalVC.length;
                     const findVisitorPostion = () => {

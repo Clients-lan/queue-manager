@@ -611,6 +611,7 @@ textarea{
     left: 50%;
     top: 10%;
     transform: translate(-50%, -50%);
+    z-index: 9999999;
     width: 340px;
     margin-top: -100%;
     transition: all .5s;

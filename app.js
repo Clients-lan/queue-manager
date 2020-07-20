@@ -104,11 +104,14 @@ const nexmo = new Nexmo({
 app.post('/query-visitors', (req, res) => {
   User.findOne({ email: req.body.email, 'location._id': req.body.locid }, (err, data) => {
     if (!err) {
-      data.location.forEach(real => {
-        if (real._id == req.body.locid) {
-          res.send({location: real, data: data})
-        }
-      })
+     // data.location.forEach(real => {
+        // if (real._id == req.body.locid) {
+        //   res.send({location: real, data: data})
+        // }
+     //})
+     if (data) {
+      res.send({data: data})
+    }
     }
   })
 })
