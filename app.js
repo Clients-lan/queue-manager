@@ -7,6 +7,7 @@ const session = require('express-session');
 const passport = require('passport');
 require('dotenv').config();
 const socketio = require('socket.io')
+const path = require('path')
 const http = require('http')
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -258,7 +259,9 @@ app.post('/check-appt-client', (req, res) => {
 // );
 
 
-
+app.get('/loaderio-099f8bc8c93299be59644d058df2e7d8/', (req, res) => {
+  res.sendFile('./assets/loader.txt', { root: path.join(__dirname, './public') });
+})
 
 // listener
 server.listen(PORT, function () {
